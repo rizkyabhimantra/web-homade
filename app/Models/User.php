@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Notifications\ResetPasswordNotification;
+use App\UserRole;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -22,11 +24,8 @@ class User extends Authenticatable implements JWTSubject
     protected $fillable = [
         'first_name',
         'last_name',
-        'phone_countr_code',
         'phone',
         'email',
-        'role',
-        'password',
     ];
 
     /**
@@ -49,15 +48,32 @@ class User extends Authenticatable implements JWTSubject
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'role' => UserRole::class,
         ];
     }
 
-    public function address(){
+    public function address()
+    {
         return $this->hasMany(UserAddress::class, 'id_user');
     }
 
-    public function orders(){
+    public function orders()
+    {
         return $this->hasMany(Transaction::class, 'id_user');
+    }
+
+    public function isAdminOrOwner(){
+        return in_array( $this->role, [ UserRole::ADMIN, UserRole::OWNER ]);
+    }
+
+    /**
+     * Send a password reset notification to the user.
+     *
+     * @param  string  $token
+     */
+    public function sendPasswordResetNotification($token): void
+    {
+        $this->notify(new ResetPasswordNotification($token));
     }
 
 

@@ -23,7 +23,8 @@ class DetailUserAddressResource extends JsonResource
             'note' => $this->note,
             'longitude' => $this->longitude,
             'latitude' => $this->latitude,
-            'created_at' => $this->created_at
+            'created_at' => $this->created_at,
+            'is_main' =>(bool) $this->is_main_address,
         ];
     }
 }

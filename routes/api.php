@@ -22,31 +22,23 @@ Route::name('api')->group(function () {
         return response()->json(['message' => 'hello']);
     });
 
-    // Route::get('/menus', [ DocumentationController::class, 'userMenus' ])->name('menus');
-    // Route::get('/menus/{id}', [ DocumentationController::class, 'userDetailMenu' ])->name('detail-menu');
-
-    // Route::get('/menus-weekly', [ DocumentationController::class, 'userWeeklyMenus' ])->name('weekly-menu');
-    // Route::get('/achievements', [ DocumentationController::class, 'achievements' ] )->name('achievements');
-
-    // Route::get('/contact', [ DocumentationController::class, 'contact' ])->name('contact');
-
-    // Route::get('/additional', [ DocumentationController::class, 'additional' ])->name('additional');
-
-
     Route::post('/signin', [AuthController::class, 'signin'])->name('signin');
     Route::post('/signup', [AuthController::class, 'signup'])->name('signup');
+    Route::post('/forgot-password', [AuthController::class, 'forgot'])->name('create-forgot-password');
+    Route::put('/reset-password/{token}', [AuthController::class, 'reset'])->name('reset-password');
 
     Route::get('/menus', [MenuController::class, 'menu'])->name('menu');
     Route::get('/menus/{id}', [MenuController::class, 'detail'])->name('detail-menu');
     Route::get('/menu-weekly', [MenuController::class, 'weekly'])->name('menu-weekly');
+    Route::get('/menu-date', [MenuController::class, 'getByDate'])->name('menu-date');
+    Route::get('/menu-weekly-populer', [MenuController::class, 'getPopulerWeeklyMenu'])->name('menu-weekly-populer');
     Route::get('/packages', [MenuController::class, 'package'])->name('packages');
 
     Route::get('/achievements', [ProfileController::class, 'achievements'])->name('achievements');
     Route::get('/partners', [ProfileController::class, 'partners'])->name('partners');
-    
-    Route::prefix('contact')->group(function(){
+
+    Route::prefix('contact')->group(function () {
         Route::get('/', [ContactController::class, 'contact'])->name('contact');
-        Route::get('/full', [ContactController::class, 'full'])->name('contact-full');
         Route::get('/social-media', [ContactController::class, 'socialMedia'])->name('social-media');
         Route::get('/address', [ContactController::class, 'address'])->name('address');
         Route::get('/operational', [ContactController::class, 'operational'])->name('operational');
@@ -58,6 +50,9 @@ Route::name('api')->group(function () {
             Route::get('/', [UserController::class, 'me'])->name('me');
             Route::put('/', [UserController::class, 'edit'])->name('edit-me');
 
+            // password
+            Route::put('/change-password', [AuthController::class, 'change'])->name('change-password');
+
             // user address
             Route::get('/address', [UserAddressController::class, 'address'])->name('user-address');
             Route::get('/address/{id}', [UserAddressController::class, 'detail'])->name('detail-user-address');
@@ -67,9 +62,12 @@ Route::name('api')->group(function () {
 
             Route::get('/orders', [TransactionController::class, 'all'])->name('orders');
             Route::get('/orders/{id}', [TransactionController::class, 'detailTransaction'])->name('detail-order');
+        });
 
-            });
-            Route::get('/test-email', [TestEmailController::class, 'local'])->name('test-email');
+        // order
+        Route::post('/checkout', [TransactionController::class, 'checkout'])->name('checkout');
+        Route::post('/orders', [TransactionController::class, 'create'])->name('create-trabsaction');
+        Route::get('/test-email', [TestEmailController::class, 'local'])->name('test-email');
         Route::post('/signout', [AuthController::class, 'signout'])->name('signout');
     });
 
