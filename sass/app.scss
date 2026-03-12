@@ -259,6 +259,11 @@ body
         background-color: #f1f1f1;
     }
 
+    &-beige
+    {
+        background-color: #FFFBD7;
+    }
+
     &-gradient-bw
     {
         background: linear-gradient(0deg,#fff 0%, #000 100%);
@@ -302,6 +307,11 @@ body
     height: 100%;
     z-index: 99;
     background-color: #00000030;
+}
+
+.text-overflow
+{
+    text-overflow: ellipsis;
 }
 
 .rounded-5 {border-radius: 25px;}
@@ -360,6 +370,12 @@ body
     &-text {cursor: text !important;}
 }
 
+.theme-position
+{
+    top: 10px;
+    left: 10px;
+}
+
 .fw-black {font-weight: 800;}
 
 .d-none2 {display: none;}
@@ -384,7 +400,7 @@ $fsc-map: (
   9: $font-size-6xl
 );
 
-$custom-scales: (10, 20, 30, 40, 51, 60, 65, 70, 75, 76, 80, 90, 101, 125, 150, 175, 200);
+$custom-scales: (10, 15, 20, 30, 35, 40, 51, 55, 60, 65, 70, 75, 76, 80, 90, 101, 125, 150, 175, 200);
 
 $breakpoints: (
   sm: 576px,
@@ -430,4 +446,15 @@ $breakpoints: (
       }
     }
   }
+}
+
+.sonic
+{
+    width: 90%;
+    height: 1.3em;
+    position: absolute;
+    top: 0;
+    right: 0;
+    object-fit: fill;
+    font-size: $font-size-l;
 }

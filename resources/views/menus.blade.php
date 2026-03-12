@@ -88,8 +88,9 @@
                     @foreach (range(1, 8) as $i)
                     <a href="menus/9" class="d-flex flex-column gap-5 h-500px">
 
-                        <div class="w-100 h-75">
+                        <div class="w-100 h-75 position-relative">
                             <img src="{{ $placeImg }}" class="w-100 h-100 object-fit-cover">
+                            <span class="w-max py-2 px-10 fsc-2 fw-bold bg-accent rounded-3 text-white position-absolute theme-position">Sunda</span>
                         </div>
 
                         <div class="w-100 h-25">

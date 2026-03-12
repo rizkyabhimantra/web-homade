@@ -16,7 +16,7 @@
 
         <span class="h-40px flex-shrink-0"></span>
 
-        <div class="d-flex w-10 h-125 flex-shrink-0 justify-content-center">
+        <div class="d-flex w-100 h-125 flex-shrink-0 justify-content-center">
             
             <div class="d-flex w-75 gap-5">
 
