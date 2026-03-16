@@ -100,8 +100,8 @@
 
                 @foreach (range(1,3) as $i)
                 <div class="d-flex w-100 h-350px h-sm-400px flex-column">
-                    <div class="w-100 h-100 bg-black">
-                        <!-- <img src="{{ $placeImg }}" alt="" class="w-100 h-100 rounded object-fit-cover"> -->
+                    <div class="w-100 h-100 overflow-hidden">
+                        <img src="{{ $placeImg }}" alt="" class="w-100 h-100 rounded object-fit-cover">
                     </div>
                     <p class="fs-1 mb-0 mt-3 w-100 text-center overflow-hidden flex-shrink-0 text-nowrap">Ayam Geprek</p>
                 </div>
@@ -202,10 +202,10 @@
 
         <span class="d-flex w-1px h-25 flex-shrink-0"></span>
 
-        <div class="d-flex w-100 h-md-50 flex-shrink-0 mb-5 align-items-center justify-content-center">
-            <div class="d-flex align-items-center flex-column d-md-grid grid-template-homade-sponsor w-75 h-100 gap-5">
+        <div class="d-flex w-100 flex-shrink-0 mb-5 align-items-center justify-content-center">
+            <div class="d-grid grid-template-homade-partner w-75 gap-5">
                 @foreach (range(1,12) as $i)
-                <img src="{{ $placeImg }}" alt="" class="object-fit-cover w-25 bg-black">
+                <img src="{{ $placeImg }}" alt="" class="object-fit-cover w-100 ratio-1 bg-black">
                 @endforeach
             </div>
         </div>

@@ -71,7 +71,7 @@
                     <div class="d-flex mb-5 w-100 align-items-center gap-3 overflow-scroll">
                         <button class="text-accent fsc-3 fw-bold w-100">All</button>
                         @foreach (range(1,15) as $i)
-                        <button class="fsc-3 px-2 position-relative">Sonic <img src="https://pbs.twimg.com/media/GvF8AkFXwAAA2Ai.jpg" alt="" class="sonic"></button>
+                        <button class="fsc-3 px-2 position-relative">Test <img src="https://pbs.twimg.com/media/GvF8AkFXwAAA2Ai.jpg" alt="" class="sonic"></button>
                         @endforeach
                     </div> 
                     
@@ -96,7 +96,7 @@
 
                         <div class="d-flex justify-content-between flex-column flex-shrink-0">
                             <p class="fsc-2 fw-bold bg-light-accent p-1 px-4 py-3 text-accent w-max rounded-3">Waiting Review</p>
-                            <button class="fsc-2 border-grey-1 p-1 py-3 px-4 fw-bold w-max rounded-3">Detail Pesanan</button>
+                            <a href="/select-menu" class="text-black fsc-2 border-grey-1 p-1 py-3 px-4 fw-bold w-max rounded-3">Detail Pesanan</a>
                         </div>
 
                     </div>

@@ -4,7 +4,7 @@
     $placeImg = "https://placehold.co/400";
 @endphp
 
-<div id="kt_app_header" class="app-header h-200px" data-kt-sticky="true" data-kt-sticky-activate="{default: true, lg: true}" data-kt-sticky-name="app-header-minimize" data-kt-sticky-animation="false">
+<div id="kt_app_header" class="app-header h-200px bg-transparent" data-kt-sticky="true" data-kt-sticky-activate="{default: true, lg: true}" data-kt-sticky-name="app-header-minimize" data-kt-sticky-animation="false">
     
     <!--begin::Header container-->
 

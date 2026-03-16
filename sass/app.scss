@@ -14,10 +14,6 @@ $color-primary: #ffffff;
 $color-secondary: #EAF0F6;
 $color-accent: #EE2227;
 $color-accent-secondary: #fcdc31;
-$color-red: #ff5454;
-$color-bronze: #a54d2a;
-$color-silver: #55777b;
-$color-gold: #ceaf00;
 $color-text: #212121;
 $color-text-secondary: #7b7b7b;
 
@@ -58,9 +54,9 @@ input::-webkit-inner-spin-button {
   margin: 0;
 }
 
-input[type=number] {
-  -moz-appearance: textfield;
-}
+// input[type=number] {
+//   -moz-appearance: textfield;
+// }
 
 
 a, button, input, textarea {
@@ -132,18 +128,28 @@ body
 .h-max {height: max-content;}
 .w-max {width: max-content;}
 
-.grid-template-homade-sponsor
-{
-    grid-template-columns: repeat(6, 1fr);
-    grid-auto-rows:1fr;
+.grid-template-homade-partner {
+    display: grid;
     gap: 5px;
+    grid-auto-rows: 1fr;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    @media (min-width: 577px) {
+        grid-template-columns: repeat(6, 1fr);
+    }
 }
 
 .grid-template-homade-menus
 {
-    grid-template-columns: repeat(4, 1fr);
     grid-auto-rows:1fr;
     gap: 5px;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    @media (min-width: 900px) {
+        grid-template-columns: repeat(4, 1fr);
+    }
 }
 
 .translate-50
@@ -324,6 +330,10 @@ body
 .border-black-2 {border: 2px solid #000;}
 .border-black-3 {border: 3px solid #000;}
 
+.borderx-black-1 {border-left: 1.5px solid #000; border-right: 1.5px solid #000;}
+.borderx-black-2 {border-left: 2px solid #000; border-right: 1.5px solid #000;}
+.borderx-black-3 {border-left: 3px solid #000; border-right: 1.5px solid #000;}
+
 .border-grey-1 {border: 1.5px solid #DBDFE9}
 .border-grey-2 {border: 2px solid #DBDFE9;}
 .border-grey-3 {border: 3px solid #DBDFE9;}
@@ -370,6 +380,11 @@ body
     &-text {cursor: text !important;}
 }
 
+.resize-0 {resize: none;}
+
+.max-h-100px {max-height: 100px;}
+.max-h-120px {max-height: 120px;}
+
 .theme-position
 {
     top: 10px;
@@ -379,7 +394,9 @@ body
 .fw-black {font-weight: 800;}
 
 .d-none2 {display: none;}
+.d-flex2 {display: flex;}
 
+.h-05em {height: .5em;}
 .h-1em {height: 1em;}
 .h-11em {height: 1.1em;}
 .h-12em {height: 1.2em;}
@@ -400,7 +417,7 @@ $fsc-map: (
   9: $font-size-6xl
 );
 
-$custom-scales: (10, 15, 20, 30, 35, 40, 51, 55, 60, 65, 70, 75, 76, 80, 90, 101, 125, 150, 175, 200);
+$custom-scales: (10, 15, 20, 30, 35, 40, 45, 51, 55, 60, 65, 70, 75, 76, 80, 85, 90, 95, 101, 125, 150, 175, 200);
 
 $breakpoints: (
   sm: 576px,
