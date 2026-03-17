@@ -3,15 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\DetailMenuResource;
-use App\Http\Resources\MenuByDateResource;
 use App\Http\Resources\MenuResource;
 use App\Http\Resources\MenuScheduleResource;
 use App\Http\Resources\PaginationResource;
 use App\Http\Resources\SelectMenuResource;
 use App\ResponseData;
-use App\Service\ContactService;
 use App\Service\MenuService;
 use App\TransactionCategory;
+use App\Utils\ConvertDateSafely;
+use App\Utils\TransactionHelper;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -24,13 +24,10 @@ class MenuController extends Controller
 
     private ResponseData $responseData;
 
-    private ContactService $contactService;
-
     public function __construct()
     {
         $this->menuService = new MenuService();
         $this->responseData = new ResponseData();
-        $this->contactService = new ContactService();
     }
 
     public function all(Request $request)
@@ -63,8 +60,8 @@ class MenuController extends Controller
             $response = $this->responseData->create(
                 'Berhasil Mendapatkan Menu - Menu',
                 [
-                    'pagination' => new PaginationResource($menus),
-                    'items' => MenuResource::collection($menus),
+                    'pagination' => (new PaginationResource($menus))->toArray($request),
+                    'items' => MenuResource::collection($menus)->toArray($request),
                 ],
                 isJson: false
             );
@@ -83,7 +80,7 @@ class MenuController extends Controller
         }
     }
 
-    public function detail(string $id)
+    public function detail(Request $request,string $id)
     {
         try {
 
@@ -115,7 +112,7 @@ class MenuController extends Controller
 
             $response = $this->responseData->create(
                 'Berhasil mendapatkan menu',
-                $menu,
+                $menu->toArray($request),
                 isJson: false
             );
 
@@ -161,7 +158,7 @@ class MenuController extends Controller
 
             $response = $this->responseData->create(
                 'Berhasil mendapatkan menu mingguan',
-                MenuScheduleResource::collection($menus),
+                MenuScheduleResource::collection($menus)->toArray($request),
                 isJson: false
             );
 
@@ -184,45 +181,40 @@ class MenuController extends Controller
         try {
 
             $date_at = $request->query('date_at', now()->addDays(1));
-            
-            $date_at = Carbon::parse($date_at);
+            // ini perlu di perbaiki nih, kalo error berabe
+            $date_at = (new ConvertDateSafely)->convert($date_at, now()->addDays(1));
 
-            $menus = $this->menuService->getByDate($date_at);
+            $menus = $this->menuService->getBySingleDate($date_at);
+
+            // $date_at
 
             if ($menus->isEmpty()) {
-               $response = $this->responseData->create(
+                $response = $this->responseData->create(
                     'Tidak dapat menemukan menu mingguan pada tanggal ini',
                     status: 'warning',
                     status_code: 404,
-                    isJson: true
+                    isJson: false
                 );
                 return view('order.select-menu-weekly', compact('response'));
             }
 
-            // kurang jam aja
-            if ($date_at < now()->addDays(1)) {
-                $response = $this->responseData->create(
-                    'Anda sudah tidak bisa menu mingguan pada tanggal ini, dan jika ingin memesan minimal 50 box',
-                    [
-                        'date' => $date_at,
-                        'category' => TransactionCategory::PRE_ORDER,
-                        'items' => SelectMenuResource::collection($menus)
-                    ],
+            $transactionHelper = new TransactionHelper();
+            if (!$transactionHelper->canOrderDeliveryWeeklyMenu($date_at)) {
+               $response=  $this->responseData->create(
+                    'Menu mingguan hanya dapat di pesan pada h-1 dan paling lambar di jam 3 sore',
                     status: 'warning',
-                    status_code: 404,
-                    isJson: true
+                    status_code: 400,
+                    isJson: false
                 );
                 return view('order.select-menu-weekly', compact('response'));
             }
 
-            // validasi jam 3 sore
-
-            return $response = $this->responseData->create(
+            $response = $this->responseData->create(
                 'Berhasil Menemukan Menu Mingguan Pada Tanggal Ini',
                 [
-                    'date' => $date_at,
+                    'date' => $date_at->format('d-m-Y'),
                     'category' => TransactionCategory::ORDER,
-                    'items' => SelectMenuResource::collection($menus)
+                    'items' => SelectMenuResource::collection($menus)->toArray($request)
                 ],
                 isJson: false,
             );
@@ -246,10 +238,16 @@ class MenuController extends Controller
         try {
 
             $search = $request->query('search');
+            $theme = $request->query('theme');
             $category = $request->query('category'); //category menu
-            // $limit = $request->query('limit', ); 
+            $limit = $request->query('limit', 10); 
 
-            $menus = $this->menuService->menuNonWeekly($search, category: $category);
+            $menus = $this->menuService->menuNonWeekly(
+                $search,
+                $theme,
+                $category,
+                $limit,
+            );
 
             if ($menus->isEmpty()) {
                 $response = $this->responseData->create(
@@ -265,7 +263,7 @@ class MenuController extends Controller
                 'Berhasil menemukan menu',
                 [
                     'category' => TransactionCategory::PRE_ORDER,
-                    'pagination' => new PaginationResource(resource: $menus),
+                    'pagination' => (new PaginationResource(resource: $menus))->toArray($request),
                     'items' => SelectMenuResource::collection($menus)->toArray($request),
                 ],
                 isJson: false,

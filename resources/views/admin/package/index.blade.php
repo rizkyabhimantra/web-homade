@@ -50,31 +50,26 @@ License: For each use you must have a valid license purchased only from above li
 <!--begin::Body-->
 
 <body id="kt_app_body" data-kt-app-layout="dark-sidebar" data-kt-app-header-fixed="true">
-	<a href="{{ route('admin.add-order-page') }}">Tambahkan Transaksi</a>
+	<a href="{{ route('admin.add-package-page') }}">Tambahkan Paket</a>
 	@if ($response['status'] === 'success')
 		<table class="table table-striped">
 		<thead>
 			<tr>
-				<th scope="col">ID Transaksi</th>
-				<th scope="col">Nama Pengguna</th>
-				{{-- <th scope="col">Total Pesanan</th> --}}
-				<th scope="col">Total Harga</th>
-				<th scope="col">Kategori</th>
-				<th scope="col">Status</th>
-				<th scope="col">Tanggal Pengiriman</th>
+				<th scope="col">ID Paket Menu</th>
+				<th scope="col">Nama Paket</th>
+				<th scope="col">Minimum Order</th>
+				<th scope="col">Tanggal Dibuatnya</th>
 				<th scope="col">Detail Pemesanan</th>
 			</tr>
 		</thead>
 		<tbody>
-			@foreach ($response['data']['orders'] as $order)
+			@foreach ($response['data']['packages'] as $package)
 				<tr>
-					<td>{{ $order->id }}</td>
-					<td>{{ $order->user->first_name }}</td>
-					<td>{{ $order->total_price }}</td>
-					<td>{{ $order->category }}</td>
-					<td>{{ $order->status }}</td>
-					<td>{{ $order->delivery_at }}</td>
-					<td><a href="{{ route('admin.detail-order', ['id' => $order->id]) }}">Detail</a></td>
+					<td>{{ $package->id }}</td>
+					<td>{{ $package->name }}</td>
+					<td>{{ $package->minimum_order }}</td>
+					<td>{{ $package->created_at }}</td>
+					<td><a href="{{ route('admin.detail-package', ['id' => $package->id]) }}">Detail</a></td>
 				</tr>
 			@endforeach
 		</tbody>
@@ -82,6 +77,13 @@ License: For each use you must have a valid license purchased only from above li
 	@else
 		{{ dd($response) }}
 	@endif
+
+    <div style="margin-top:200px">
+        @if (session()->has('response'))
+            {{ dd(session()->get('response')) }}
+        @endif
+    </div>
+
 </body>
 
 </html>

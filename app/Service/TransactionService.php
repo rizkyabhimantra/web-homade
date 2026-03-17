@@ -12,10 +12,12 @@ use App\StatusTransaction;
 use App\TransactionPaymentProofStatus;
 use App\Utils\CloudinaryClient;
 use Cloudinary\Cloudinary;
+use ErrorException;
 use Exception;
 use File;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
+use Log;
 use PHPUnit\TextUI\XmlConfiguration\FailedSchemaDetectionResult;
 
 class TransactionService
@@ -118,108 +120,175 @@ class TransactionService
             ->first();
     }
 
-    public function create(array $data)
-    {
-        return DB::transaction(function () use ($data) {
-            $data['transaction']['created_at'] = now();
-            $data['transaction']['updated_at'] = now();
-            $createdTransaciton = Transaction::create($data['transaction']);
-            foreach ($data['items'] as $item) {
-                foreach ($item->prices as $price) {
-                    TransactionOrder::create([
-                        'id_transaction' => $createdTransaciton->id,
-                        'id_menu_price' => $price->id,
-                        'id_menu' => $item->id,
-                        'total_price' => $price->quantity * $price->price,
-                        'price_at_purchase' => $price->price,
-                        'quantity' => $price->quantity,
-                        'note' => $price->note ?? '',
-                        'created_at' => now(),
-                        'updated_at' => now()
-                    ]);
+    public function create(
+        array $data,
+        bool $is_created_by_customer = true,
+    ) {
+        $data = $data['data'];
+        try {
+            return DB::transaction(function () use ($data, $is_created_by_customer) {
+                $createdTransaciton = Transaction::create([
+                    'id_user' => $data['user_info']['id'],
+                    'shipping_cost' => $data['transaction']['shipping_cost'],
+                    'subtotal' => $data['transaction']['sub_total'],
+                    'total_price' => $data['transaction']['sub_total'] + $data['transaction']['shipping_cost'],
+                    'total_items' => $data['transaction']['total_item'],
+                    'category' => $data['transaction']['category'],
+                    'note' => $data['transaction']['note'],
+                    'delivery_at' => $data['delivery_info']['delivery_at'],
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+                foreach ($data['summary_orders']['items'] as $menu) {
+                    foreach ($menu['packages'] as $price) {
+                        TransactionOrder::create([
+                            'id_transaction' => $createdTransaciton->id,
+                            'id_menu_price' => $price['id'],
+                            'id_menu' => $menu['id'],
+                            'total_price' => $price['quantity'] * $price['price'],
+                            'price_at_purchase' => $price['price'],
+                            'quantity' => $price['quantity'],
+                            'note' => $price['note'] ?? '',
+                            'created_at' => now(),
+                            'updated_at' => now()
+                        ]);
+                    }
                 }
-            }
-            TransactionAddress::create([
-                'id_transaction' => $createdTransaciton->id,
-                'received_name' => $data['address']->received_name,
-                'phone' => $data['address']->phone,
-                'label' => $data['address']->label,
-                'address' => $data['address']->address,
-                'note' => $data['address']->note,
-                'longitude' => $data['address']->longitude,
-                'latitude' => $data['address']->latitude,
-                'created_at' => now(),
-                'updated_at' => now()
-            ]);
-            return $createdTransaciton;
-        });
+                $address = $data['delivery_info']['user_address'];
+                $address_raw_data = [
+                    'id_transaction' => $createdTransaciton->id,
+                    'received_name' => $address['received_name'] ?? $address['fullname'],
+                    'phone' => $address['phone'],
+                    'label' => $address['label'],
+                    'address' => $address['address'],
+                    'note' => $address['note'],
+                    'longitude' => $address['longitude'],
+                    'latitude' => $address['latitude'],
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ];
+                TransactionAddress::create($address_raw_data);
+
+                // update alamat & nomor telepon pengguna
+                if (isset($address['save_to_profile']) && $address['save_to_profile']) {
+                    $address_raw_data['id_user'] = $data['user_info']['id'];
+                    $address_raw_data['is_main_address'] = $address['is_main_address'] ?? false;
+                    (new UserAddressService())->saveAndChangeTheMainAdress($address_raw_data);
+                }
+
+                // bahaya nich.....
+                if(isset($data['is_changed']) && $data['is_changed']){
+                    $data['user_info']->save();
+                }
+
+                return [
+                    'is_success' => true,
+                    'message' => 'Berhasil dalam membuat transaksi!',
+                    'user' => $data['user_info'],
+                    'transaction' => $createdTransaciton,
+                ];
+            });
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error('Error when creating the transaction: ' . $e->getMessage());
+            return [
+                'is_success' => false,
+                'message' => 'Telah terjadi kesalahan dalam membuat transaksi'
+            ];
+        }
     }
 
     public function uploudPaymentProof(
         Transaction $transaction,
         UploadedFile|null $image,
-    ){
+    ) {
 
-        if(!$image){
+        if (!$image) {
             return [
                 'is_success' => false,
                 'message' => 'Membutuhkan gambar untuk menguploud bukti pembayaran!'
             ];
         }
 
-        // validasi ini udh nge carry wkwk
-        if(!$this->isAcceptableStatusForChangingShippingCost($transaction->status) || $transaction->payment_proof && !$this->isPaymentProofRejected($transaction->payment_proof)){
-            return [
-                'is_success' => false,
-                'message' => 'Maaf, saat ini kamu tidak memenuhi syarat untuk menguploud ulang kembali bukti pembayaran'
-            ];
-        }
+        // kalo mau uploud payment proff harus pending kocak wkwkkwkw salah gw 
 
-        $cloudinary = new CloudinaryClient();
-        // uploud gambar disini!
-        $uplouded = $cloudinary->uploudPaymentProof($image->getRealPath());
-        if(!$uplouded){
-            return [
-                'is_success' => false,
-                'message' => 'Tidak berhasil dalam photo mengunggah bukti pembayaran'
-            ];
-        }
-        // ganti gambar
-        return DB::transaction(function()use($transaction, $uplouded, $cloudinary){
-
-            if($transaction->payment_proof){
-                $old_public_id = $transaction->payment_proof->public_id;
-                $transaction->payment_proof->url = $uplouded['secure_url'];
-                $transaction->payment_proof->status = TransactionPaymentProofStatus::WAIT_FOR_CONFIRMATION;
-                $transaction->payment_proof->public_id = $uplouded['public_id'];
-                $transaction->payment_proof->save();
-                // hapus gambar
-                $cloudinary->deleteThePaymentProofImage($old_public_id);
+        if (StatusTransaction::tryFrom($transaction->status) == StatusTransaction::PENDING) {
+            if ($transaction->payment_proof && !$this->isPaymentProofRejected($transaction->payment_proof)) {
                 return [
-                    'is_success' => true,
-                    'is_created' => false,
-                    'message' => 'Berhasil dalam menguploud ulang bukti pembayaran'
+                    'is_success' => false,
+                    'message' => 'Maaf, saat ini kamu tidak memenuhi syarat untuk menguploud ulang kembali bukti pembayaran'
+                ];
+            }
+            // syarat masuk kesini adalaah
+            // status transaksi masih waiting for invoice dan pending
+            // jika status pending maka dan payment proof sudah ada maka status payment_proof harus reject
+            $cloudinary = new CloudinaryClient();
+            // uploud gambar disini!
+            $uplouded = $cloudinary->uploudPaymentProof($image->getRealPath());
+            $old_public_id = null;
+            if (!$uplouded) {
+                return [
+                    'is_success' => false,
+                    'message' => 'Tidak berhasil dalam photo mengunggah bukti pembayaran'
                 ];
             }
 
-            TransactionPaymentProof::create([
-                'id_transaction' => $transaction->id,
-                'public_id' => $uplouded['public_id'],
-                'url' => $uplouded['url'],
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+            try {
+                // mulai transction
+                DB::beginTransaction();
+                // logic / ubah transaksi bakal mulai disnii
+                $is_created = false;
+                if ($transaction->payment_proof) {
+                    $old_public_id = $transaction->payment_proof->public_id;
 
-            return [
-                'is_success' => true,
-                'is_created' => true,
-                'message' => 'Berhasil dalam menguploud bukti pembayaran',
-            ];
+                    $transaction->payment_proof->url = $uplouded['secure_url'];
+                    $transaction->payment_proof->status = TransactionPaymentProofStatus::WAIT_FOR_CONFIRMATION;
+                    $transaction->payment_proof->public_id = $uplouded['public_id'];
 
-        });
-        // hapus gambar jika memiliki bukti pembayaran dengan status gagal
+                    $transaction->payment_proof->save();
+                    $cloudinary->deleteThePaymentProofImage($old_public_id);
+                } else {
+                    // kalo blm ada transaction payment proof
+                    TransactionPaymentProof::create([
+                        'id_transaction' => $transaction->id,
+                        'public_id' => $uplouded['public_id'],
+                        'url' => $uplouded['url'],
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                    $is_created = true;
+                }
 
-        
+                $transaction->status = StatusTransaction::PENDING;
+                $transaction->save();
+
+                DB::commit();
+
+                return [
+                    'is_success' => true,
+                    'is_created' => $is_created,
+                    'message' => 'Berhasil dalam menguploud bukti pembayaran',
+                ];
+
+            } catch (Exception $e) {
+                DB::rollBack();
+                Log::error('Error when try to create payment proof : ' . $e->getMessage());
+                if ($uplouded) {
+                    $deleted = $cloudinary->delete($uplouded['public_id']);
+                }
+                return [
+                    'is_success' => false,
+                    'message' => 'Telah Terjadi Kesalahan Pada Server',
+                ];
+            }
+
+        }
+
+        return [
+            'is_success' => false,
+            'message' => 'tidak memenuhi untuk menguploud bukti pembayaran'
+        ];
+
     }
     public function changeShippingCost(
         Transaction $transaction,
@@ -262,7 +331,7 @@ class TransactionService
                     'message' => 'Tidak Bisa Membatalkan Transaksi Syarat & Ketentuan Tidak Terpenuhi'
                 ];
             }
-            $transaction->status = $isManagement? StatusTransaction::CANCELLED_BY_ADMIN : StatusTransaction::CANCELLED_BY_CUSTOMER;
+            $transaction->status = $isManagement ? StatusTransaction::CANCELLED_BY_ADMIN : StatusTransaction::CANCELLED_BY_CUSTOMER;
             $transaction->cancelled_reason = $reason;
             $transaction->save();
             return [
@@ -322,7 +391,7 @@ class TransactionService
             $transaction->payment_proof->save();
 
             // delete the image
-            if($new_proof['is_success']){
+            if ($new_proof['is_success']) {
                 $deleted_image = $cloudinary->deleteThePaymentProofImage($new_proof['old_public_id']);
             }
 
@@ -377,9 +446,9 @@ class TransactionService
     public function changeStatusDelivery(
         Transaction $transaction,
         string $status,
-    ){
+    ) {
         $isValidStatusDelivery = StatusDelivery::tryFrom($status);
-        if(!$isValidStatusDelivery){
+        if (!$isValidStatusDelivery) {
             return [
                 'is_success' => false,
                 'message' => 'Status Delivery Yang DIberikan Tidak Valid',
@@ -387,7 +456,7 @@ class TransactionService
         }
         // di proses => menunggu_diambil => dianterin => sampai tujuan
         // saat diantarkan & sampai tujuan kirimkan email?
-        if(StatusTransaction::from((string) $transaction->status) === StatusTransaction::SUCCESS){
+        if (StatusTransaction::from((string) $transaction->status) === StatusTransaction::SUCCESS) {
             return [
                 'is_success' => false,
                 'message' => 'Status Transaksi Sudah Selesai & Tidak Bisa Merubah Kembali Data',
@@ -397,15 +466,14 @@ class TransactionService
         $transaction->save();
         return [
             'is_success' => true,
-            'message' => 'Berhasil merubah Status Pengiriman Menjadi '. $status
+            'message' => 'Berhasil merubah Status Pengiriman Menjadi ' . $status
         ];
     }
 
     public function completeTheTransaction(
         Transaction $transaction
-    )
-    {
-        if (StatusTransaction::from((string) $transaction->status) === StatusTransaction::SUCCESS){
+    ) {
+        if (StatusTransaction::from((string) $transaction->status) === StatusTransaction::SUCCESS) {
             return [
                 'is_success' => false,
                 'message' => 'Transaksi Sudah Selesai, Tidak Perlu Diubah Kembali!'
@@ -413,7 +481,7 @@ class TransactionService
         }
         // must paid, refund status must none or success, delivery status must delivered and payment proof must accepted
         // keki gini aja dlu kali ya hehe..
-        if (StatusTransaction::from((string) $transaction->status) !== StatusTransaction::PAID){
+        if (StatusTransaction::from((string) $transaction->status) !== StatusTransaction::PAID) {
             return [
                 'is_success' => false,
                 'message' => 'Tidak Dapat Menyelesaikan Transaksi, Pastikan Status Transaksi Adalah Terbayar'
@@ -421,10 +489,10 @@ class TransactionService
         }
         $transaction->status = StatusTransaction::SUCCESS;
         $transaction->save();
-         return [
-                'is_success' => true,
-                'message' => 'Berhasil Merubah Status Transaksi Menjadi Success'
-            ];
+        return [
+            'is_success' => true,
+            'message' => 'Berhasil Merubah Status Transaksi Menjadi Success'
+        ];
     }
 
     private function sort_by(
