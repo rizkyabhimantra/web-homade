@@ -20,6 +20,7 @@ $color-text-secondary: #7b7b7b;
 $filter-accent: brightness(0) saturate(100%) invert(25%) sepia(57%) saturate(4781%) hue-rotate(345deg) brightness(92%) contrast(103%);
 $filter-accent-secondary: brightness(0) saturate(100%) invert(99%) sepia(45%) saturate(673%) hue-rotate(174deg) brightness(100%) contrast(94%);
 $filter-white: brightness(0) saturate(100%) invert(94%) sepia(94%) saturate(2%) hue-rotate(126deg) brightness(109%) contrast(101%);
+$filter-grey: brightness(0) saturate(100%) invert(85%) sepia(0%) saturate(1334%) hue-rotate(189deg) brightness(84%) contrast(93%);
 $filter-text: brightness(0) saturate(100%) invert(10%) sepia(10%) saturate(0%) hue-rotate(163deg) brightness(107%) contrast(95%);
 $filter-text-secondary: brightness(0) saturate(100%) invert(53%) sepia(0%) saturate(0%) hue-rotate(98deg) brightness(91%) contrast(84%);
 $filter-red: brightness(0) saturate(100%) invert(36%) sepia(65%) saturate(1544%) hue-rotate(330deg) brightness(116%) contrast(103%);
@@ -106,6 +107,11 @@ body
 .img-white
 {
     filter: $filter-white;
+}
+
+.img-grey
+{
+    filter: $filter-grey;
 }
 
 .btn-primary-homade

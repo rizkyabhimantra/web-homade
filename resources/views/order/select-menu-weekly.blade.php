@@ -35,7 +35,7 @@
 
                 <div class="d-flex align-items-center justify-content-center gap-5 w-85 mt-5 h-450px">
 
-                    @foreach (range(1,2) as $i)
+                    @foreach (range(1,2) as $j)
 
                     <div class="d-flex align-items-center overflow-hidden justify-content-center w-100 border-grey-1 h-100 flex-column rounded-5">
                         
@@ -53,7 +53,7 @@
 
                             <p class="fsc-2 lh-sm h-100">Ayam kampung ungkep dengan bumbu rempah Dada rahasia, disajikan dengan sambal merah khas Padang, daun singkong rebus.</p>
 
-                            <button onclick="popUp()" class="btn-primary-homade rounded-3 fsc-3 fw-bold w-100 align-items-center justify-content-center">Pilih Menu</button>
+                            <button onclick="popUpOpen()" class="btn-primary-homade rounded-3 fsc-3 fw-bold w-100 align-items-center justify-content-center">Pilih Menu</button>
                         </div>
                     </div>
 
@@ -164,7 +164,7 @@
 
             <span class="h-40px flex-shrink-0"></span>
 
-            <div class="d-flex align-items-center justify-content-center pop-up">
+            <div class="d-none2 align-items-center justify-content-center pop-up" id="popUp">
 
                 <div class="d-flex align-items-center justify-content-center p-5 bg-white w-75 h-95 rounded-4 flex-column">
 
@@ -172,7 +172,7 @@
 
                         <p class="fsc-3 fw-bold">Pilih Kemasan Paket</p>
 
-                        <button class="h-100 ratio-1 align-items-center justify-content-center">
+                        <button onclick="popUpClose()" class="h-100 ratio-1 align-items-center justify-content-center">
                             <img src="{{ asset('icons/close-circle.svg') }}" class="w-60 h-60">
                         </button>
 
@@ -197,7 +197,7 @@
                                         <p class="fsc-2 w-100 h-100 max-h-120px overflow-scroll mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</p>
                                     </div>
 
-                                    <button class="w-100 flex-shrink-0 btn-primary-homade justify-content-center align-items-center fw-bold fsc-3 rounded-3">Konfirmasi</button>
+                                    <button onclick="confirmOrder()" class="w-100 flex-shrink-0 btn-primary-homade justify-content-center align-items-center fw-bold fsc-3 rounded-3">Konfirmasi</button>
 
                                 </div>
 
@@ -238,7 +238,7 @@
 
                                     <div class="d-flex align-items-center justify-content-center gap-5 flex-shrink-0">
                                         <button onclick="counterSubtract('{{ $i }}')" class="d-flex bg-accent text-white justify-content-center align-items-center h-25 ratio-1 rounded-2"><img src="{{ asset('icons/minus.svg') }}" alt="" class="img-white ratio-1 h-75"></button>
-                                        <p class="fsc-2 text-center w-20px mb-0" id="input{{ $i }}">0</p>
+                                        <input class="fsc-2 text-center w-50px mb-0" id="input{{ $i }}" oninput="syncInput('{{ $i }}')" onblur="checkEmpty('{{ $i }}')" value="0" type="number">
                                         <button onclick="counterAdd('{{ $i }}')" class="d-flex bg-accent text-white justify-content-center align-items-center h-25 ratio-1 rounded-2"><img src="{{ asset('icons/plus.svg') }}" alt="" class="img-white ratio-1 h-75"></button>
                                     </div>
 
@@ -292,8 +292,13 @@
         <script src="{{ asset('assets/js/scripts.bundle.js') }}"></script>
 
         <script>
-            function fill()
+
+            function popUpOpen() {document.getElementById('popUp').style.display = "flex"}
+            function popUpClose() {document.getElementById('popUp').style.display = "none"}
+
+            function confirmOrder() 
             {
+                popUpClose()
                 document.getElementById("empty").style.display = "none"
                 document.getElementById("filled").style.display = "flex"
             }
@@ -301,22 +306,23 @@
             function counterAdd(x) 
             {
                 const element = document.getElementById('input' + x)
-                let currentValue = parseInt(element.innerText) || 0
+                let currentValue = parseInt(element.value) || 0
 
-                if (x === 3)
+                if (x === "3")
                 {
-                    element.innerText = currentValue + 1
+                    element.value = currentValue + 1
+                    if (currentValue === 0) {document.getElementById('note' + x).style.display = "flex"}
                 }
                 else
                 {
                     if (currentValue === 0)
                     {
-                        element.innerText = 5
+                        element.value = 5
                         document.getElementById('note' + x).style.display = "flex"
                     }
                     else
                     {
-                        element.innerText = currentValue + 1
+                        element.value = currentValue + 1
                     }
                 }
             }
@@ -324,18 +330,33 @@
             function counterSubtract(x) 
             {
                 const element = document.getElementById('input' + x)
-                let currentValue = parseInt(element.innerText) || 0
-                if (currentValue > 0) {
-                    if (currentValue === 5)
-                    {
-                        element.innerText = 0
-                        document.getElementById('note' + x).style.display = "none"
+                let currentValue = parseInt(element.value) || 0
 
-                        document.getElementById('textareaContainer' + x).style.display = "none"
+                if (currentValue > 0) {
+
+                    if (x === "3")
+                    {
+                        element.value = currentValue - 1
+                        if (currentValue === 1)
+                        {
+                            document.getElementById('note' + x).style.display = "none"
+                            document.getElementById('textareaContainer' + x).style.display = "none"
+                        }
                     }
+
                     else
                     {
-                        element.innerText = currentValue - 1
+                        if (currentValue === 5)
+                        {
+                            element.value = 0
+                            document.getElementById('note' + x).style.display = "none"
+    
+                            document.getElementById('textareaContainer' + x).style.display = "none"
+                        }
+                        else
+                        {
+                            element.value = currentValue - 1
+                        }
                     }
                 }
             }
@@ -365,6 +386,31 @@
                 }
             }
 
+            function syncInput(x)
+            {
+                if (parseInt(document.getElementById('input' + x).value) === 0)
+                {
+                    document.getElementById('note' + x).style.display = "none"
+                    document.getElementById('textareaContainer' + x).style.display = "none"
+                    
+                }
+
+                else
+                {
+                    document.getElementById('note' + x).style.display = "flex"
+                }
+            }
+        
+            function checkEmpty(x) 
+            {
+                const input = document.getElementById('input' + x)
+                
+                if (input.value.trim() === "") {
+                    input.value = 0
+                    syncInput(x)
+                }
+            }
+        
         </script>
 
     </body>
