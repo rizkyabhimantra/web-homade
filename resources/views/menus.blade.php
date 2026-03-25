@@ -15,10 +15,10 @@
                 <div class="d-flex w-100 h-md-75 align-items-center py-5 justify-content-center gap-5 flex-column flex-shrink-0">
                     <p class="fsc-6 fw-bolder text-white mb-5">Menu</p>
                     <div class="d-flex flex-column flex-md-row w-75 h-auto h-md-50 gap-5 mt-5">
-                        <a href="/menus?category=chicken" class="d-flex w-100 h-100px h-md-100 align-items-center justify-content-center text-white text-center fs-3 bg-chicken">Ayam (99)</a>
-                        <a href="/menus?category=fish" class="d-flex w-100 h-100px h-md-100 align-items-center justify-content-center text-white text-center fs-3 bg-fish">Ikan & Seafood (99)</a>
-                        <a href="/menus?category=rice" class="d-flex w-100 h-100px h-md-100 align-items-center justify-content-center text-white text-center fs-3 bg-rice">Nasi (99)</a>
-                        <a href="/menus?category=beef" class="d-flex w-100 h-100px h-md-100 align-items-center justify-content-center text-white text-center fs-3 bg-beef">Sapi & Kambing (99)</a>
+                        <a href="/menus?category=chicken" class="d-flex w-100 h-100px h-md-100 align-items-center justify-content-center text-white text-center fs-3 bg-chicken">Ayam</a>
+                        <a href="/menus?category=fish" class="d-flex w-100 h-100px h-md-100 align-items-center justify-content-center text-white text-center fs-3 bg-fish">Ikan & Seafood</a>
+                        <a href="/menus?category=rice" class="d-flex w-100 h-100px h-md-100 align-items-center justify-content-center text-white text-center fs-3 bg-rice">Nasi</a>
+                        <a href="/menus?category=beef" class="d-flex w-100 h-100px h-md-100 align-items-center justify-content-center text-white text-center fs-3 bg-beef">Sapi & Kambing</a>
                     </div>
                 </div>
             </div>

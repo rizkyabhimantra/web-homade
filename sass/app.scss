@@ -129,6 +129,7 @@ body
 }
 
 .ratio-1 {aspect-ratio: 1/1;}
+.ratio-4 {aspect-ratio: 4/3;}
 .ratio-16 {aspect-ratio: 16/9;}
 
 .h-max {height: max-content;}
@@ -155,6 +156,16 @@ body
 
     @media (min-width: 900px) {
         grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+.bg-custom-nav
+{
+    background-color: #000 !important;
+
+    @media (min-width: 992px)
+    {
+        background-color: transparent !important;
     }
 }
 
@@ -386,6 +397,11 @@ body
     &-text {cursor: text !important;}
 }
 
+.gap-21
+{
+    gap: 100px;
+}
+
 .resize-0 {resize: none;}
 
 .max-h-100px {max-height: 100px;}
@@ -423,7 +439,7 @@ $fsc-map: (
   9: $font-size-6xl
 );
 
-$custom-scales: (10, 15, 20, 30, 35, 40, 45, 51, 55, 60, 65, 70, 75, 76, 80, 85, 90, 95, 101, 125, 150, 175, 200);
+$custom-scales: (10, 15, 20, 30, 35, 40, 45, 51, 55, 60, 65, 70, 75, 76, 80, 85, 90, 95, 99, 101, 125, 150, 175, 200);
 
 $breakpoints: (
   sm: 576px,

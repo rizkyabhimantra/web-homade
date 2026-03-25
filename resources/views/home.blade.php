@@ -10,13 +10,13 @@
         @include('components.navbarHead',[ "page" => "home", "bg" => "black"])
         
         <!-- begin::Main -->
-        <div class="bg-gradient-bw d-flex h-100 flex-shrink-0 flex-column">
+        <div class="bg-gradient-bw d-flex h-75 h-sm-100 flex-shrink-0 flex-column">
 
             <div class="d-flex w-100 h-90">
 
                 <div class="w-100 h-100 d-flex flex-column justify-content-center align-items-center">
                     
-                    <div class="d-flex flex-column w-75 h-75">
+                    <div class="d-flex flex-column w-100 px-5 px-md-10 h-75">
                         
                         <div class="d-flex flex-column h-100">
                             <h3 class="fsc-3 text-white fw-medium">Makanan rumahan, hemat, enak, bersih.</h3>
@@ -49,7 +49,7 @@
 
                 <div class="d-flex flex-column w-100 h-250px align-items-center justify-content-center">
                     <div class="mb-3 h-25 w-auto ratio-1 bg-accent rounded-circle d-flex align-items-center justify-content-center">
-                        <div class="w-50 h-50">
+                        <div class="w-30">
                             <img src="icons/calendar.svg" class="img-white w-100 h-100" alt="">
                         </div>
                     </div>
@@ -62,7 +62,7 @@
 
                 <div class="d-flex flex-column w-100 h-250px align-items-center justify-content-center">
                     <div class="mb-3 h-25 w-auto ratio-1 bg-accent rounded-circle d-flex align-items-center justify-content-center">
-                        <div class="w-50 h-50">
+                        <div class="w-30">
                             <img src="icons/book.svg" class="img-white w-100 h-100" alt="">
                         </div>
                     </div>
@@ -75,7 +75,7 @@
 
                 <div class="d-flex flex-column w-100 h-250px align-items-center justify-content-center">
                     <div class="mb-1 h-25 w-auto ratio-1 bg-accent rounded-circle d-flex align-items-center justify-content-center">
-                        <div class="w-50 h-50">
+                        <div class="w-30">
                             <img src="icons/clock.svg" class="img-white w-100 h-100" alt="">
                         </div>
                     </div>
@@ -98,12 +98,12 @@
 
             <div class="d-flex flex-column flex-sm-row w-90 w-md-76 gap-5">
 
-                @foreach (range(1,3) as $i)
-                <div class="d-flex w-100 h-350px h-sm-400px flex-column">
+                @foreach ($response['data']['menus'] as $menu)
+                <div class="d-flex w-100 h-350px h-sm-400px overflow-hidden flex-column">
                     <div class="w-100 h-100 overflow-hidden">
-                        <img src="{{ $placeImg }}" alt="" class="w-100 h-100 rounded object-fit-cover">
+                        <img src="{{ $menu['image_url'] }}" alt="{{ $menu['name'] }}" class="w-100 h-100 rounded object-fit-contain">
                     </div>
-                    <p class="fs-1 mb-0 mt-3 w-100 text-center overflow-hidden flex-shrink-0 text-nowrap">Ayam Geprek</p>
+                    <p class="fsc-3 mb-0 mt-3 w-100 text-center overflow-hidden flex-shrink-0 ">{{ $menu['name'] }}</p>
                 </div>
                 @endforeach
 
@@ -193,28 +193,57 @@
 
         <div class="d-flex w-100 align-items-center justify-content-center flex-shrink-0">
             <div class="d-flex flex-column flex-md-row w-75 gap-5">
-                <a href="/menus" class="d-flex w-100 h-150px align-items-center justify-content-center text-white fsc-2 bg-chicken">Ayam (99)</a>
-                <a href="/menus" class="d-flex w-100 h-150px align-items-center justify-content-center text-white fsc-2 bg-fish">Ikan & Seafood (99)</a>
-                <a href="/menus" class="d-flex w-100 h-150px align-items-center justify-content-center text-white fsc-2 bg-rice">Nasi (99)</a>
-                <a href="/menus" class="d-flex w-100 h-150px align-items-center justify-content-center text-white fsc-2 bg-beef">Sapi & Kambing (99)</a>
+
+                @foreach ($response['data']['categories'] as $category)
+
+                    @php
+                        $bgClasses = ['bg-rice', 'bg-chicken', 'bg-fish', 'bg-beef'];
+                        $currentBg = $bgClasses[$loop->index % count($bgClasses)];
+                    @endphp
+
+                    <a href="/menus" class="d-flex w-100 h-150px align-items-center justify-content-center text-white fsc-2 {{ $currentBg }}">{{ $category['label'] }} ({{ $category['total'] }})</a>
+
+                @endforeach
+
             </div>
         </div>
 
         <span class="d-flex w-1px h-25 flex-shrink-0"></span>
 
+        <!-- begin::partners -->
         <div class="d-flex w-100 flex-shrink-0 mb-5 align-items-center justify-content-center">
             <div class="d-grid grid-template-homade-partner w-75 gap-5">
                 @foreach (range(1,12) as $i)
-                <img src="{{ $placeImg }}" alt="" class="object-fit-cover w-100 ratio-1 bg-black">
+                <img src="{{ $placeImg }}" loading="lazy" alt="" class="object-fit-cover w-100 ratio-1 bg-black">
                 @endforeach
             </div>
         </div>
+        <!-- end::partners -->
 
         <span class="d-flex w-1px h-50px flex-shrink-0"></span>
 
         @include('components.navbarFoot',[ "page" => "home"])
         <script src="assets/plugins/global/plugins.bundle.js"></script>
         <script src="assets/js/scripts.bundle.js"></script>
+
+        <!-- ===================================================================================== -->
+
+        <hr>
+
+        <section class="package-section">
+            <h2>Our Packages</h2>
+            <div class="package-list">
+                @foreach($response['data']['packages'] as $package)
+                    <div class="package-item">
+                        <img src="{{ $package['image_url'] }}" width="50">
+                        <h4>{{ $package['name'] }}</h4>
+                        <p>Min. Order: {{ $package['minimum_order'] }} pax</p>
+                    </div>
+                @endforeach
+            </div>
+        </section>
+
+
     </body>
 
 </html>

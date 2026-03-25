@@ -185,6 +185,15 @@
                                 </div>
 
                             </div>
+
+                            <div class="d-flex w-100 h-100px flex-column gap-5">
+
+                                <div class="d-flex w-100 h-100 flex-column">
+                                    <p class="fsc-2 mb-0 fw-bolder text-black">NOMOR TELEPON</p>
+                                    <p class="fsc-3 mb-0 fw-bold text-black">0895-3912-9237</p>
+                                </div>
+
+                            </div>
                         </div>
                     </div>
 
