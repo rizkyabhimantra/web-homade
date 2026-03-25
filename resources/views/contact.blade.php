@@ -127,11 +127,8 @@
         </div>
 
         <span class="h-100px flex-shrink-0"></span>
-        
         @include('components.navbarFoot',[ "page" => "contact"])
         <script src="assets/plugins/global/plugins.bundle.js"></script>
         <script src="assets/js/scripts.bundle.js"></script>
     </body>
-
-
 </html>
