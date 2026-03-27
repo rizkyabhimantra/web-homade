@@ -13,10 +13,10 @@
 
         <div class="d-flex w-100 align-items-center justify-content-center">
 
-            <div class="d-flex w-90 align-items-start gap-5">
+            <div class="d-flex w-90 align-items-start flex-column flex-lg-row gap-5">
 
             <!-- begin::Left Side -->
-                <div class="d-flex w-25 flex-column border-grey-1 rounded-4 gap-1 p-5 flex-shrink-0">
+                <div class="d-flex w-100 w-lg-25 flex-column border-grey-1 rounded-4 gap-1 p-5 flex-shrink-0">
 
                     <div class="d-flex w-100 mb-2 h-100px align-items-center gap-5">
 
@@ -64,7 +64,7 @@
                 <span class="w-70px flex-shrink-0"></span>
 
             <!-- begin::Right Side -->
-                <form class="d-flex w-75 p-10 flex-column border-grey-1 rounded-4" action="{{ route('user.edit-me') }}" method="post">
+                <form class="d-flex w-100 w-lg-75 p-10 flex-column border-grey-1 rounded-4" action="{{ route('user.edit-me') }}" method="post">
                     @csrf
                     @method('put')
                     <p class="fs-1 fw-bold mb-0">Profil Saya</p>
@@ -96,17 +96,18 @@
                     
                     <label class="mb-1 fs-6 opacity-0">halo teman teman, nama aku wildan</label>
                     <button class="btn-primary-homade rounded-3 w-100 align-items-center justify-content-center fs-2 p-4 fw-bold mb-5">Simpan</button>
-                    <button class="btn-primary-homade rounded-3 w-100 align-items-center justify-content-center fs-2 p-4 fw-bold" onclick="openPopUp()">Ubah Password</button>
+                    <button class="btn-primary-homade rounded-3 w-100 align-items-center justify-content-center fs-2 p-4 fw-bold" type="button" onclick="openPopUp()">Ubah Password</button>
                 </form>
             <!-- end::Right Side -->
 
             <!-- begin::pop up change password -->
-             <div class="w-100 h-100 pop-up" id="popUp">
-                <button class="w-100 h-100 bg-transparent cursor-default" onclick="closePopUp()"></button>
-                <div class="d-flex w-50 align-items-center flex-shrink-0 flex-column">
+             <div class="w-100 h-100 pop-up d-none2" id="popUp">
+                <button class="w-100 h-100 d-none d-md-flex bg-transparent cursor-default" onclick="closePopUp()"></button>
+
+                <div class="d-flex w-100 w-md-50 align-items-center flex-shrink-0 flex-column">
                     <button class="w-100 h-100 bg-transparent cursor-default" onclick="closePopUp()"></button>
 
-                    <div class="d-flex w-75 h-75 flex-shrink-0 p-10 px-20 flex-column bg-white justify-content-center align-content-center rounded-5 border-grey-1">
+                    <div class="d-flex w-100 w-md-75 h-75 flex-shrink-0 p-10 px-20 flex-column bg-white justify-content-center align-content-center rounded-5 border-grey-1">
                         <p class="w-100 text-center fs-2 text-accent fw-bold ">Ubah Password</p>
                         <input type="text" class="w-100 border-grey-1 h-50px ps-5 rounded-4 fs-4 mb-5 mt-5" placeholder="Password Lama">
                         <input type="text" class="w-100 border-grey-1 h-50px ps-5 rounded-4 fs-4" placeholder="Password Baru">
@@ -117,7 +118,8 @@
                     
                     <button class="w-100 h-100 bg-transparent cursor-default" onclick="closePopUp()"></button>
                 </div>
-                <button class="w-100 h-100 bg-transparent cursor-default" onclick="closePopUp()"></button>
+
+                <button class="w-100 h-100 d-none d-md-flex bg-transparent cursor-default" onclick="closePopUp()"></button>
              </div>
             <!-- end::pop up change password -->
 

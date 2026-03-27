@@ -30,7 +30,7 @@
                 </div>
 
                 <div class="d-flex w-75 h-100 align-items-center justify-content-center">
-                    <img src="{{ asset("img/profile.png") }}" class="w-90 h-90 d-none d-md-flex rounded">
+                    <img src="{{ asset("img/profile.webp") }}" class="w-90 h-90 d-none d-md-flex rounded">
                 </div>
 
             </div>
@@ -41,7 +41,7 @@
 
             <div class="w-90 d-flex">
 
-                <a href="/menu" class="btn-primary-homade rounded-pill bg-accent fs-2">Lihat Menu <img src="icons/arrow-right-c.svg" class="img-white"></a>
+                <a href="/menus-" class="btn-primary-homade rounded-pill bg-accent fs-2">Lihat Menu <img src="icons/arrow-right-c.svg" class="img-white"></a>
 
             </div>
             
@@ -106,7 +106,7 @@
                 <div class="d-flex mb-5 flex-column align-items-center w-100 w-md-50">
                     <div class="w-75 d-flex flex-column gap-1 align-items-center">
 
-                        <img src="{{ $placeImg }}" alt="" class="w-100 h-250px object-fit-cover">
+                        <img src="{{ asset('img/profile2.webp') }}" alt="" class="w-100 h-450px object-fit-cover">
 
                     </div>
                 </div>
@@ -193,8 +193,8 @@
 
         <div class="d-flex w-100 h-md-50 flex-shrink-0 mb-5 align-items-center justify-content-center">
             <div class="d-grid grid-template-homade-partner w-75 gap-5">
-                @foreach (range(1,12) as $i)
-                <img src="{{ $placeImg }}" loading="lazy" alt="" class="object-fit-cover w-100 ratio-1 bg-black">
+                @foreach ($response['data']['partners'] as $partner)
+                <img src="{{ $partner['image_url'] }}" loading="lazy" alt="{{ $partner['name'] }}" class="object-fit-contain w-100 ratio-1">
                 @endforeach
             </div>
         </div>

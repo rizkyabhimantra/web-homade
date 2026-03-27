@@ -13,10 +13,10 @@
 
         <div class="d-flex w-100 align-items-center justify-content-center">
 
-            <div class="d-flex w-90 align-items-start gap-5">
+            <div class="d-flex w-90 flex-column flex-lg-row align-items-start gap-5">
 
             <!-- begin::Left Side -->
-                <div class="d-flex w-25 flex-column border-grey-1 rounded-4 gap-1 p-5 flex-shrink-0">
+                <div class="d-flex w-100 w-lg-25 flex-column border-grey-1 rounded-4 gap-1 p-5 flex-shrink-0">
 
                     <div class="d-flex w-100 mb-2 h-100px align-items-center gap-5">
 
@@ -55,7 +55,7 @@
                     </div>
                     <!--end::Accordion-->
 
-                    <a href="/" class="fs-2 fw-bolder px-3 mb-0 d-flex align-items-center text-black mb-3 gap-1"><img src="{{ asset('icons/document.svg')}}" class="h-15em" alt="">Pesanan Saya</a>
+                    <a href="/me/orders" class="fs-2 fw-bolder px-3 mb-0 d-flex align-items-center text-black mb-3 gap-1"><img src="{{ asset('icons/document.svg')}}" class="h-15em" alt="">Pesanan Saya</a>
                     <a href="/" class="fs-2 fw-bolder px-3 mb-0 d-flex align-items-center text-accent gap-1"><img src="{{asset('icons/log-out.svg')}}" class="h-15em img-accent" alt="">Log Out</a>
 
                 </div>
@@ -64,24 +64,24 @@
                 <span class="w-1px flex-shrink-0"></span>
 
             <!-- begin::Right Side -->
-                <div class="d-flex w-75 p-10 flex-column border-grey-1 rounded-4">
+                <div class="d-flex w-100 w-lg-75 p-10 flex-column border-grey-1 rounded-4">
 
-                    <div class="d-flex w-100 justify-content-between h-50px">
+                    <div class="d-flex w-100 justify-content-between flex-column mb-3 mb-lg-0 flex-lg-row h-lg-50px">
                         <p class="fsc-4 fw-bold">Daftar Alamat</p>
-                        <button onclick="openPopUp()" class="btn-primary-homade rounded-3 fsc-3"><img class="img-white h-12em" src="{{ asset('icons/plus.svg') }}" alt=""> Tambah Alamat Baru</button>
+                        <button onclick="openPopUp()" class="btn-primary-homade rounded-3 fsc-3 w-100 w-lg-auto"><img class="img-white h-12em" src="{{ asset('icons/plus.svg') }}" alt=""> Tambah Alamat Baru</button>
                     </div>
 
-                    <p class="fsc-3 fw-bold">Alamat</p>
+                    <p class="fsc-3 d-none d-lg-inline fw-bold">Alamat</p>
 
-                    <div class="d-flex w-100 rounded-3 mb-5 p-5 px-7 bg-light-accent border-homade-1">
-                        <div class="d-flex w-100 flex-column">
+                    <div class="d-flex w-100 rounded-3 mb-5 p-5 px-7 bg-light-accent flex-column flex-lg-row border-homade-1">
+                        <div class="d-flex w-100 mb-5 mb-lg-0 flex-column">
                             <p class="fsc-2 border-grey-1 bg-dark-grey p-1 px-4 text-accent w-max rounded-pill">Rumah</p>
                             <p class="fsc-3 mb-0 fw-bolder">Jl. Kemajuan V No.45</p>
                             <p class="fsc-2 mb-0 fw-bold">0812-3456-7890</p>
-                            <p class="fsc-2 mb-0 w-50">Jl. Kemajuan V No.45, RT.5/RW.4, Petukangan Sel., Kec. Pesanggrahan, Kota Jakarta Selatan.</p>
+                            <p class="fsc-2 mb-0 w-100 w-md-50">Jl. Kemajuan V No.45, RT.5/RW.4, Petukangan Sel., Kec. Pesanggrahan, Kota Jakarta Selatan.</p>
                         </div>
 
-                        <div class="d-flex justify-content-end flex-column flex-shrink-0">
+                        <div class="d-flex w-100 w-md-auto justify-content-end flex-row flex-lg-column flex-shrink-0">
                             <div class="d-flex gap-5 px-5">
                                 <button class="text-accent fw-bold fsc-2">Ubah</button>
                                 <button class="text-accent fw-bold fsc-2">Hapus</button>
@@ -89,16 +89,16 @@
                         </div>
 
                     </div>
-                    
-                    <div class="d-flex w-100 rounded-3 mb-5 p-5 px-7 border-grey-1">
-                        <div class="d-flex w-100 flex-column">
-                            <p class="fsc-2 border-grey-1 bg-dark-grey p-1 px-4 text-accent w-max rounded-pill">Kantor</p>
+
+                    <div class="d-flex w-100 rounded-3 mb-5 p-5 px-7 bg-grey-1 flex-column flex-lg-row border-grey-1">
+                        <div class="d-flex w-100 mb-5 mb-lg-0 flex-column">
+                            <p class="fsc-2 border-grey-1 bg-dark-grey p-1 px-4 text-accent w-max rounded-pill">Rumah</p>
                             <p class="fsc-3 mb-0 fw-bolder">Jl. Kemajuan V No.45</p>
                             <p class="fsc-2 mb-0 fw-bold">0812-3456-7890</p>
-                            <p class="fsc-2 mb-0 w-50">Jl. Kemajuan V No.45, RT.5/RW.4, Petukangan Sel., Kec. Pesanggrahan, Kota Jakarta Selatan.</p>
+                            <p class="fsc-2 mb-0 w-100 w-md-50">Jl. Kemajuan V No.45, RT.5/RW.4, Petukangan Sel., Kec. Pesanggrahan, Kota Jakarta Selatan.</p>
                         </div>
 
-                        <div class="d-flex justify-content-end flex-column flex-shrink-0">
+                        <div class="d-flex w-100 w-md-auto justify-content-end flex-row flex-lg-column flex-shrink-0">
                             <div class="d-flex gap-5 px-5">
                                 <button class="text-accent fw-bold fsc-2">Ubah</button>
                                 <button class="text-accent fw-bold fsc-2">Hapus</button>
@@ -111,9 +111,9 @@
             <!-- end::Right Side -->
 
             <!-- begin::pop up add address -->
-             <div class="d-none2 w-100 h-100 pop-up" id="popUp">
-                <button class="w-100 h-100 bg-transparent cursor-default" onclick="closePopUp()"></button>
-                <div class="d-flex w-60 align-items-center overflow-scroll flex-shrink-0 flex-column">
+             <div class="d-none2 w-100 justify-content-center h-100 pop-up" id="popUp">
+                <button class="d-none d-md-flex w-100 h-100 bg-transparent cursor-default" onclick="closePopUp()"></button>
+                <div class="d-flex w-99 w-md-60 align-items-center overflow-scroll flex-shrink-0 flex-column">
                     
                     <button class="w-100 h-50px bg-transparent flex-shrink-0 cursor-default" onclick="closePopUp()"></button>
 
@@ -158,14 +158,14 @@
                             </div>
                             <p id="test"></p>
 
-                            <button class="btn-primary-homade my-5 rounded-4 w-100 align-content-center h-50px justify-content-center fs-3">Simpan</button>
+                            <button class="btn-primary-homade my-5 rounded-4 w-100 align-content-center h-50px justify-content-center fs-3" onclick="closePopUp()">Simpan</button>
                         </div>
                     </div>
 
                     <button class="w-100 h-50px bg-transparent flex-shrink-0 cursor-default" onclick="closePopUp()"></button>
                     
                 </div>
-                <button class="w-100 h-100 bg-transparent cursor-default" onclick="closePopUp()"></button>
+                <button class="d-none d-md-flex w-100 h-100 bg-transparent cursor-default" onclick="closePopUp()"></button>
              </div>
             <!-- end::pop up add address -->
 

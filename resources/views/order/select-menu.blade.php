@@ -189,8 +189,8 @@
                             <div class="d-flex w-100 h-100px flex-column gap-5">
 
                                 <div class="d-flex w-100 h-100 flex-column">
-                                    <p class="fsc-2 mb-0 fw-bolder text-black">NOMOR TELEPON</p>
-                                    <p class="fsc-3 mb-0 fw-bold text-black">0895-3912-9237</p>
+                                    <p class="fsc-2 mb-3 fw-bolder text-black">Note Opsional</p>
+                                    <p class="fsc-2 w-100 h-100px overflow-scroll px-3 py-3 rounded-2 border-grey-1 mb-0 text-black">Sambalnya dipisah Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</p>
                                 </div>
 
                             </div>

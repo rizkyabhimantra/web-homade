@@ -16,11 +16,11 @@
 
         <span class="h-40px flex-shrink-0"></span>
 
-        <div class="d-flex w-100 h-125 flex-shrink-0 justify-content-center">
+        <div class="d-flex w-100 h-md-15- flex-shrink-0 justify-content-center">
             
-            <div class="d-flex w-75 gap-5">
+            <div class="d-flex w-90 w-md-76 flex-column flex-md-row gap-5">
 
-                <div class="d-flex flex-column w-50 h-100">
+                <div class="d-flex flex-column align-items-center align-items-md-start h-200 h-md-100 w-100 w-md-50">
                     <p class="fsc-5 fw-black mb-3">Alamat</p>
                     <span class="d-flex h-5px bg-accent w-80px flex-shrink-0 mb-5"></span>
 
@@ -95,14 +95,14 @@
 
                     <span class="h-40px flex-shrink-0"></span>
                     
-                    <div class="d-flex w-90 h-100 rounded-4">
+                    <div class="d-flex w-99 w-md-90 ratio-16 rounded-4">
                         <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.223779593465!2d106.85558407355448!3d-6.234205161047454!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f3ba3fb17413%3A0xe50e0d2266ac9e74!2sPT.%20Abhimantra%20Sistem%20Solusindo!5e0!3m2!1sen!2sid!4v1772608159435!5m2!1sen!2sid" style="border:0;" class="w-100 h-100 rounded-4" allowfullscreen="true" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                     </div>
 
                     
                 </div>
 
-                <form class="d-flex flex-column w-50 p-10 border-grey-1 overflow-scroll rounded-4">
+                <form class="d-flex flex-column w-100 w-md-50 h-200 h-md-100 p-10 border-grey-1 overflow-scroll rounded-4">
 
                     <p class="fsc-5 flex-shrink-0 fw-black">Hubungi Kami</p>
                     <p class="fs-3 flex-shrink-0">Silahkan isi form di bawah ini, kami akan membalas pesan Anda secepatnya.</p>

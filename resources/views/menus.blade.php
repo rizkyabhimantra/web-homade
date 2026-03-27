@@ -81,25 +81,44 @@
                 </div>
             </div>
 
-            <div class="d-flex w-100 flex-shrink-0 align-items-center justify-content-center">
+            <div class="d-flex w-100 flex-shrink-0 align-items-center flex-column justify-content-center">
                 
                 <div class="d-flex flex-column d-sm-grid grid-template-homade-menus w-90 align-items-center justify-content-center flex-shrink-0 gap-5">
 
-                    @foreach (range(1, 8) as $i)
-                    <a href="menus/9" class="d-flex flex-column gap-5 w-100 h-500px">
+                    @foreach ($response['data']['items'] as $menu)
+                    <a href="menus/{{ $menu['id'] }}" class="d-flex flex-column gap-5 w-100 h-500px">
 
                         <div class="w-100 h-75 position-relative">
-                            <img src="{{ $placeImg }}" class="w-100 h-100 object-fit-cover">
-                            <span class="w-max py-2 px-10 fsc-2 fw-bold bg-accent rounded-3 text-white position-absolute theme-position">Sunda</span>
+                            <img src="{{ $menu['image_url'] }}" alt="{{ $menu['name'] }}" class="w-100 h-100 object-fit-cover">
+                            <span class="w-max py-2 px-10 fsc-2 fw-bold bg-accent rounded-3 text-white position-absolute theme-position">{{ $menu['theme'] }}</span>
                         </div>
 
                         <div class="w-100 h-25">
-                            <p class="fs-1 fw-bold text-center">Ayam Geprek Wildan Maknyus Meletus</p>
+                            <p class="fs-1 fw-bold text-center">{{ $menu['name'] }}</p>
                         </div>
                         
                     </a>
                     @endforeach
                     
+                </div>
+
+                <div class="d-flex align-items-center justify-content-between w-90">
+                    <select name="per_page" onchange="window.location.href='?per_page=' + this.value" class="h-100 border-grey-1 outline-0 bg-transparent fs-4 py-2 px-2 rounded-2">
+                        @foreach ([4, 8, 12, 16] as $limit)
+                            <option value="{{ $limit }}" {{ $response['data']['pagination']['per_page'] == $limit ? 'selected' : '' }}>
+                                {{ $limit }}
+                            </option>
+                        @endforeach
+                    </select>
+
+                    <div class="d-flex h-100">
+                        <button class="h-100 ratio-1 rounded-2 d-flex align-items-center justify-content-center"><img src="{{ asset('icons/caret-arrow-left.svg') }}" alt="" class="h-90"></button>
+                        <button class="h-100 ratio-1 rounded-2 d-flex align-items-center justify-content-center fw-bold bg-accent text-white">1</button>
+                        <button class="h-100 ratio-1 rounded-2 d-flex align-items-center justify-content-center fw-bold">2</button>
+                        <button class="h-100 ratio-1 rounded-2 d-flex align-items-center justify-content-center fw-bold">...</button>
+                        <button class="h-100 ratio-1 rounded-2 d-flex align-items-center justify-content-center fw-bold">99</button>
+                        <button class="h-100 ratio-1 rounded-2 d-flex align-items-center justify-content-center"><img src="{{ asset('icons/caret-arrow-right.svg') }}" alt="" class="h-90"></button>
+                    </div>
                 </div>
             
             </div>

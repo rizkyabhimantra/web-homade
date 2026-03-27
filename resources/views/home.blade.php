@@ -213,8 +213,8 @@
         <!-- begin::partners -->
         <div class="d-flex w-100 flex-shrink-0 mb-5 align-items-center justify-content-center">
             <div class="d-grid grid-template-homade-partner w-75 gap-5">
-                @foreach (range(1,12) as $i)
-                <img src="{{ $placeImg }}" loading="lazy" alt="" class="object-fit-cover w-100 ratio-1 bg-black">
+                @foreach ($response['data']['partners'] as $partner)
+                <img src="{{ $partner['image_url'] }}" loading="lazy" alt="{{ $partner['name'] }}" class="object-fit-contain w-100 ratio-1">
                 @endforeach
             </div>
         </div>
@@ -225,25 +225,7 @@
         @include('components.navbarFoot',[ "page" => "home"])
         <script src="assets/plugins/global/plugins.bundle.js"></script>
         <script src="assets/js/scripts.bundle.js"></script>
-
-        <!-- ===================================================================================== -->
-
-        <hr>
-
-        <section class="package-section">
-            <h2>Our Packages</h2>
-            <div class="package-list">
-                @foreach($response['data']['packages'] as $package)
-                    <div class="package-item">
-                        <img src="{{ $package['image_url'] }}" width="50">
-                        <h4>{{ $package['name'] }}</h4>
-                        <p>Min. Order: {{ $package['minimum_order'] }} pax</p>
-                    </div>
-                @endforeach
-            </div>
-        </section>
-
-
+        
     </body>
 
 </html>
