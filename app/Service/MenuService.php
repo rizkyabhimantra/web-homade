@@ -21,11 +21,20 @@ class MenuService
         string $category = null,
         int $limit = 10,
         string|null $status_active = 'active',
+        string $status = 'available',
         bool $is_has_limit = true,
         bool $is_with_price = false,
     ) {
+        $status = strtolower($status);
+        $menus = Menu::query();
 
-        $menus = Menu::with(['menu_categories', 'theme'])
+        if ($status === 'all') {
+            $menus->withTrashed();
+        } else if ($status === 'deleted') {
+            $menus->onlyTrashed();
+        }
+
+        $menus->with(['menu_categories', 'theme'])
             ->when($is_with_price, function ($query) {
                 return $query->with('prices');
             })
@@ -64,18 +73,21 @@ class MenuService
         return $this->all(limit: 3);
     }
 
-    public function searchByID(string|int $id)
-    {
-        return Menu::with([
-            'menu_categories',
-            'theme',
-            'prices' => function ($query) {
-                if (!auth()->user() || !auth()->user()->isAdminOrOwner()) {
-                    return $query->where('price', '>', 0);
-                }
-                return $query;
-            },
-        ])->find($id);
+    public function searchByID(
+        string|int $id,
+        bool $with_trashed = false,
+    ) {
+        return Menu::withTrashed($with_trashed)
+            ->with([
+                'menu_categories',
+                'theme',
+                'prices' => function ($query) {
+                    if (!auth()->user() || !auth()->user()->isAdminOrOwner()) {
+                        return $query->where('price', '>', 0);
+                    }
+                    return $query;
+                },
+            ])->find($id);
     }
 
     public function withThemeAndCategory(
@@ -466,8 +478,14 @@ class MenuService
 
     }
 
-    public function delete()
+    public function delete(Menu $menu)
     {
+        $menu->delete();
+    }
+
+    public function restore(Menu $menu)
+    {
+        $menu->restore();
     }
 
     public function saveWeeklyMenu(

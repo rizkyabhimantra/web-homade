@@ -93,34 +93,39 @@ Route::middleware([
     // theme
     Route::get('/themes', [\App\Http\Controllers\Admin\ThemeController::class, 'index'])->name('themes');
     Route::get('/themes/{id}', [\App\Http\Controllers\Admin\ThemeController::class, 'detail'])->name('detail-theme');
-    Route::get('/theme-create', [\App\Http\Controllers\Admin\ThemeController::class, 'store'])->name('add-theme-page');
+    Route::get('/create-theme', [\App\Http\Controllers\Admin\ThemeController::class, 'store'])->name('add-theme-page');
     Route::post('/themes', [\App\Http\Controllers\Admin\ThemeController::class, 'storeHandler'])->name('add-theme');
     Route::put('/theme/{id}', [\App\Http\Controllers\Admin\ThemeController::class, 'editHandler'])->name('edit-theme');
     Route::delete('/themes/{id}', [\App\Http\Controllers\Admin\ThemeController::class, 'deleteHandler'])->name('delete-theme');
+    Route::patch('/themes/{id}', [\App\Http\Controllers\Admin\ThemeController::class, 'restoreHandler'])->name('restore-theme');
+    
     // kategori
     Route::get('/categories', [\App\Http\Controllers\Admin\CategoryController::class, 'index'])->name('categories');
     Route::get('/categories/{id}', [\App\Http\Controllers\Admin\CategoryController::class, 'detail'])->name('detail-category');
 
-    Route::get('/category-create', [\App\Http\Controllers\Admin\CategoryController::class, 'store'])->name('add-category-page');
-    Route::post('/category', [\App\Http\Controllers\Admin\CategoryController::class, 'storeHandler'])->name('add-category');
+    Route::get('/create-category', [\App\Http\Controllers\Admin\CategoryController::class, 'store'])->name('add-category-page');
+    Route::post('/categories', [\App\Http\Controllers\Admin\CategoryController::class, 'storeHandler'])->name('add-category');
     Route::put('/categories/{id}', [\App\Http\Controllers\Admin\CategoryController::class, 'editHandler'])->name('edit-category');
-    Route::delete('/categories/{id}', [\App\Http\Controllers\Admin\CategoryController::class, 'index'])->name('delete-category');
+    Route::delete('/categories/{id}', [\App\Http\Controllers\Admin\CategoryController::class, 'deleteHandler'])->name('delete-category');
+    Route::patch('/categories/{id}', [\App\Http\Controllers\Admin\CategoryController::class, 'restoreHandler'])->name('restore-category');
 
     // package
     Route::get('/packages', [\App\Http\Controllers\Admin\PackageController::class, 'index'])->name('packages');
     Route::get('/packages/{id}', [\App\Http\Controllers\Admin\PackageController::class, 'detail'])->name('detail-package');
-    Route::get('/package-create', [\App\Http\Controllers\Admin\PackageController::class, 'store'])->name('add-package-page');
-    Route::post('/package', [\App\Http\Controllers\Admin\PackageController::class, 'storeHandler'])->name('add-package');
+    Route::get('/create-package', [\App\Http\Controllers\Admin\PackageController::class, 'store'])->name('add-package-page');
+    Route::post('/packages', [\App\Http\Controllers\Admin\PackageController::class, 'storeHandler'])->name('add-package');
     Route::put('/packages/{id}', [\App\Http\Controllers\Admin\PackageController::class, 'editHandler'])->name('edit-package');
     Route::delete('/packages/{id}', [\App\Http\Controllers\Admin\PackageController::class, 'deleteHandler'])->name('delete-package');
+    Route::patch('/packages/{id}', [\App\Http\Controllers\Admin\PackageController::class, 'restoreHandler'])->name('restore-package');
 
     // menu
     Route::get('/menus', [\App\Http\Controllers\Admin\MenuController::class, 'index'])->name('menus');
     Route::get('/menus/{id}', [\App\Http\Controllers\Admin\MenuController::class, 'detail'])->name('detail-menu');
-    Route::get('/menu-create', [\App\Http\Controllers\Admin\MenuController::class, 'store'])->name('add-menu-page');
-    Route::post('/menu-create', [\App\Http\Controllers\Admin\MenuController::class, 'storeHandler'])->name('add-menu');
+    Route::get('/create-menu', [\App\Http\Controllers\Admin\MenuController::class, 'store'])->name('add-menu-page');
+    Route::post('/menus', [\App\Http\Controllers\Admin\MenuController::class, 'storeHandler'])->name('add-menu');
     Route::put('/menus/{id}', [\App\Http\Controllers\Admin\MenuController::class, 'editHandler'])->name('edit-menu');
     Route::delete('/menus/{id}', [\App\Http\Controllers\Admin\MenuController::class, 'deleteHandler'])->name('delete-menu');
+    Route::patch('/menus/{id}', [\App\Http\Controllers\Admin\MenuController::class, 'restoreHandler'])->name('restore-menu');
     // jadwal menu
     Route::get('/schedules', [\App\Http\Controllers\Admin\ScheduleController::class, 'index'])->name('schedules');
     // Route::get('/schedules/{id}', [\App\Http\Controllers\Admin\ScheduleController::class, 'detail'])->name('detail-schedule');
@@ -129,7 +134,7 @@ Route::middleware([
     Route::get('/orders', [\App\Http\Controllers\Admin\TransactionController::class, 'index'])->name('orders');
     Route::get('/orders/{id}', [\App\Http\Controllers\Admin\TransactionController::class, 'detail'])->name('detail-order');
     Route::get('/create-order', [\App\Http\Controllers\Admin\TransactionController::class, 'store'])->name('add-order-page');
-    Route::post('/create-order', [\App\Http\Controllers\Admin\TransactionController::class, 'storeHandler'])->name('add-order');
+    Route::post('/order', [\App\Http\Controllers\Admin\TransactionController::class, 'storeHandler'])->name('add-order');
 
     // note: id yang diberikan adalah id transaksi
     Route::put('/order/change-shipping-cost/{id}', [\App\Http\Controllers\Admin\TransactionController::class, 'changeShippingCostHandler'])->name('change-shipping-cost');

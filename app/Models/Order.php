@@ -11,12 +11,17 @@ class Order extends Model
 
     protected $table = 'transaction_orders';
 
-    public function menu_price(){
+    public function menu_price()
+    {
         return $this->belongsTo(MenuPrice::class, 'id_menu_price')
-        ->with([
-            'menu',
-            'package'
-        ]);
+            ->with([
+                'menu' => function ($query) {
+                    return $query->withTrashed();
+                },
+                'package' => function ($query) {
+                    return $query->withTrashed();
+                }
+            ]);
     }
 
 }

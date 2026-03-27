@@ -27,6 +27,7 @@ class MenuScheduleResource extends JsonResource
                         'vegetable' => $menu->vegetable,
                         'side_dish' => $menu->side_dish,
                         'sauce' => $menu->chili_sauce,
+                        "fruit" => $this->fruit,
                     ],
                     'categories' => $menu->menu_categories->map(function ($category) {
                         return $category->categories->name;

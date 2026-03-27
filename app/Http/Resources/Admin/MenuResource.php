@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\Admin;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -23,12 +23,12 @@ class MenuResource extends JsonResource
                 "vegetable" => $this->vegetable,
                 "side_dish" => $this->side_dish,
                 "sauce" => $this->chili_sauce,
-                "fruit" => $this->fruit,
             ],
             "image_url" => $this->image_url,
             "categories" => $this->menu_categories->map(function ($category) {
                 return $category->categories->name;
             }),
+            "deleted_at" => $this->deleted_at
         ];
     }
 }

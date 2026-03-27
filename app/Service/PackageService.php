@@ -12,11 +12,21 @@ class PackageService{
     public function all(
         string|null $search=null,
         $limit= 3,
+        string $status = 'active',
         bool $is_has_limit = false,
     ){
-        $packages = Package::when($search, function($query, $search){
+        $status = strtolower($status);
+        $packages = Package::withTrashed($status !== 'active')
+        ->when($search, function($query, $search){
             $search = strtolower($search);
             return $query->whereRAW('LOWER(name) LIKE ?', "%$search%");
+        })
+        ->when($status, function($query, $status){
+            if($status === 'active'){
+                return $query->whereNull('deleted_at');
+            }else if($status === 'deleted'){
+                return $query->whereNotNull('deleted_at');
+            }
         });
         if($is_has_limit){
             return $packages->paginate($limit);
@@ -24,8 +34,12 @@ class PackageService{
         return $packages->get();
     }
 
-    public function detail(string $id){
-        return Package::where('id', $id)->first();
+    public function detail(
+        string $id,
+        bool $with_trashed = false,
+    ){
+        return Package::withTrashed($with_trashed)
+        ->where('id', $id)->first();
     }
 
     public function save(
@@ -142,7 +156,13 @@ class PackageService{
             ];
         }
     }
-    public function delete() {}
+    public function delete(Package $package) {
+        $package->delete();
+    }
+
+    public function restore(Package $package){
+        $package->restore();
+    }
 
 
 }

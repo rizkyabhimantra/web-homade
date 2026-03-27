@@ -128,7 +128,7 @@ class UserAddressController extends Controller
             ]);
 
             if ($validate->fails()) {
-                return $response = $this->responseData->create(
+                $response = $this->responseData->create(
                     'Data Belum Valid',
                     errors: $validate->errors()->toArray(),
                     status: 'warning',
@@ -151,7 +151,6 @@ class UserAddressController extends Controller
                     status_code: 403,
                     isJson: false,
                 );
-
                 return redirect()->back()->withInput()->with(compact('response'));
             }
 

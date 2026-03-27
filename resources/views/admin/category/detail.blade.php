@@ -9,13 +9,20 @@
         <h4>Data category</h4>
         <input type="text" name="name" value="{{ old('name') ?? $response['data']['name'] }}">
         <span>Dibuat Pada: {{ $response['data']['created_at'] }}</span>
+        <span>Dihapus Pada: {{ $response['data']['deleted_at'] }}</span>
         <button>Simpan Perubahan</button>
     </form>
 
     <form action="{{ route('admin.delete-category', ['id' => $response['data']['id']] ) }}" method="post" style="display:flex; flex-direction: column; gap:10px;">
         @csrf
         @method('delete')
-        <button>Hapus Data Perubahan</button>
+        <button>Hapus Data</button>
+    </form>
+
+     <form action="{{ route('admin.restore-category', ['id' => $response['data']['id']] ) }}" method="post" style="display:flex; flex-direction: column; gap:10px;">
+        @csrf
+        @method('patch')
+        <button>Kembalikan Data </button>
     </form>
 
 @else

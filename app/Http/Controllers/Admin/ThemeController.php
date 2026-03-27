@@ -27,7 +27,13 @@ class ThemeController extends Controller
         try {
             $search = $request->query('search');
             $limit = (int) $request->query('limit', 8);
-            $themes = $this->themeService->all($search, $limit);
+            $status = $request->query('status', 'active');
+
+            $themes = $this->themeService->all(
+                $search,
+                $limit,
+                status: $status
+            );
 
             if ($themes->isEmpty()) {
                 $response = $this->responseData->create(
@@ -44,7 +50,7 @@ class ThemeController extends Controller
                 'Berhasil mendapatkan Tema',
                 [
                     'pagination' => (new PaginationResource($themes))->toArray($request),
-                    'themes' => $themes,
+                    'themes' => $themes->toArray()['data'],
                 ],
                 isJson: false,
             );
@@ -67,7 +73,10 @@ class ThemeController extends Controller
     {
         try {
 
-            $theme = $this->themeService->detail($id);
+            $theme = $this->themeService->detail(
+                $id,
+                true
+            );
 
             if (!$theme) {
                 $response = $this->responseData->create(
@@ -137,13 +146,13 @@ class ThemeController extends Controller
 
             $response = $this->responseData->create(
                 'Berhasil Menambahkan data tema',
-                status_code:201,
+                status_code: 201,
                 isJson: false
             );
 
             return redirect()->route('admin.themes')->with(compact('response'));
 
-        }catch (Exception $e) {
+        } catch (Exception $e) {
             Log::error($e->getMessage());
             $response = $this->responseData->create(
                 'Telah Terjadi Duplikasi Data Atau Terjadi Kesalahan Pada Server!',
@@ -216,4 +225,82 @@ class ThemeController extends Controller
             return redirect()->back()->withInput()->with(compact('response'));
         }
     }
+
+    public function deleteHandler(Request $request, string $id)
+    {
+        try {
+
+            $theme = $this->themeService->detail($id, true);
+
+            if (!$theme) {
+                $response = $this->responseData->create(
+                    'Tidak Dapat Menemukan Tema!',
+                    status: 'warning',
+                    status_code: 404,
+                    isJson: false
+                );
+                return redirect()->back()->withInput()->with(compact('response'));
+            }
+
+            $this->themeService->delete($theme);
+
+            $response = $this->responseData->create(
+                'Berhasil dalam menghapus tema',
+                isJson:false
+            );
+
+            return redirect()->route('admin.themes')->with(compact('response'));
+
+        } catch (Exception $e) {
+            Log::error('There Something Error When Handling Delete The Theme :' . $e->getMessage());
+            $resposne = $this->responseData->create(
+                'Telah Terjadi Kesalahan Pada Server',
+                status: 'error',
+                status_code: 500,
+                isJson: false,
+            );
+
+            return redirect()->back()->withInput()->with(compact('response'));
+        }
+    }
+
+    public function restoreHandler(Request $request, string $id)
+    {
+        try {
+
+            $theme = $this->themeService->detail($id, true);
+
+            if (!$theme) {
+                $response = $this->responseData->create(
+                    'Tidak Dapat Menemukan Tema!',
+                    status: 'warning',
+                    status_code: 404,
+                    isJson: false
+                );
+                return redirect()->back()->withInput()->with(compact('response'));
+            }
+
+            $this->themeService->restore($theme);
+
+            $response = $this->responseData->create(
+                'Berhasil dalam mengembalikan tema',
+                isJson:false
+            );
+
+            return redirect()->route('admin.themes')->with(compact('response'));
+
+        } catch (Exception $e) {
+            Log::error('There Something Error When Restoring The Deleted Theme :' . $e->getMessage());
+            $resposne = $this->responseData->create(
+                'Telah Terjadi Kesalahan Pada Server',
+                status: 'error',
+                status_code: 500,
+                isJson: false,
+            );
+
+            return redirect()->back()->withInput()->with(compact('response'));
+        }
+
+    }
+
 }

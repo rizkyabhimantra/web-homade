@@ -38,7 +38,7 @@ class MenuController extends Controller
             $theme = $request->query('theme');
             $category = $request->query('category');
             $page = (int) $request->query('page', 1);
-            $limit = (int) $request->query('limit', 5);
+            $limit = (int) $request->query('limit', 20);
 
             $menus = $this->menuService->all(
                 $search,

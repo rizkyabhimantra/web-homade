@@ -18,7 +18,7 @@ License: For each use you must have a valid license purchased only from above li
 		'sass/app.scss',
 		'sass/metronic/style.scss',
 		'resources/js/app.js',
-		'resources/js/metronic/scripts.js'
+		// 'resources/js/metronic/scripts.js'
 	])
 	<meta charset="utf-8" />
 	<meta name="description"
@@ -59,16 +59,18 @@ License: For each use you must have a valid license purchased only from above li
 				<th scope="col">ID Category</th>
 				<th scope="col">Nama Category</th>
 				<th scope="col">Tanggal Dibuatnya</th>
+				<th scope="col">Tanggal Dihapus</th>
 				<th scope="col">Detail Pemesanan</th>
 			</tr>
 		</thead>
 		<tbody>
 			@foreach ($response['data']['categories'] as $category)
 				<tr>
-					<td>{{ $category->id }}</td>
-                    <td>{{ $category->name }}</td>
-                    <td>{{ $category->created_at }}</td>
-					<td><a href="{{ route('admin.detail-category', ['id' => $category->id]) }}">Detail</a></td>
+					<td>{{ $category['id'] }}</td>
+                    <td>{{ $category['name'] }}</td>
+                    <td>{{ $category['created_at'] }}</td>
+					<td>{{ $category['deleted_at'] }}</td>
+					<td><a href="{{ route('admin.detail-category', ['id' => $category['id']]) }}">Detail</a></td>
 				</tr>
 			@endforeach
 		</tbody>

@@ -200,6 +200,20 @@
                 </div>
             </div>
         </form>
+        <form action="{{ route('admin.delete-menu', [ 'id' => $menu['id'] ]) }}" method="post">
+            @csrf
+            @method('delete')
+             <div class="card-footer bg-white text-end py-3 px-4">
+                    <button type="submit" class="btn btn-danger"><i class="bi bi-save me-1"></i> Hapus Menu</button>
+                </div>
+        </form>
+         <form action="{{ route('admin.restore-menu', [ 'id' => $menu['id'] ]) }}" method="post">
+            @csrf
+            @method('patch')
+             <div class="card-footer bg-white text-end py-3 px-4">
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-save me-1"></i> Kembalikan Menu</button>
+                </div>
+        </form>
     </div>
 
 @else

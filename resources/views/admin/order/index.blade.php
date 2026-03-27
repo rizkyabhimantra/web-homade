@@ -68,13 +68,13 @@ License: For each use you must have a valid license purchased only from above li
 		<tbody>
 			@foreach ($response['data']['orders'] as $order)
 				<tr>
-					<td>{{ $order->id }}</td>
-					<td>{{ $order->user->first_name }}</td>
-					<td>{{ $order->total_price }}</td>
-					<td>{{ $order->category }}</td>
-					<td>{{ $order->status }}</td>
-					<td>{{ $order->delivery_at }}</td>
-					<td><a href="{{ route('admin.detail-order', ['id' => $order->id]) }}">Detail</a></td>
+					<td>{{ $order['id'] }}</td>
+					<td>{{ $order['user']['first_name'] }}</td>
+					<td>{{ $order['total_price'] }}</td>
+					<td>{{ $order['category'] }}</td>
+					<td>{{ $order['status'] }}</td>
+					<td>{{ $order['delivery_at'] }}</td>
+					<td><a href="{{ route('admin.detail-order', ['id' => $order['id']]) }}">Detail</a></td>
 				</tr>
 			@endforeach
 		</tbody>

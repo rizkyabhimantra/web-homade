@@ -277,6 +277,7 @@ License: For each use you must have a valid license purchased only from above li
 										<tr>
 											<th scope="col">ID Menu</th>
 											<th scope="col">Nama Menu</th>
+											<th scope="col">Dihapus pada</th>
 											<th scope="col">Detail Menu</th>
 										</tr>
 									</thead>
@@ -285,6 +286,7 @@ License: For each use you must have a valid license purchased only from above li
 											<tr>
 												<td>{{ $menu['id'] }}</td>
 												<td>{{ $menu['name'] }}</td>
+												<td>{{ $menu['deleted_at'] }}</td>
 												<td><a href="{{ route('admin.detail-menu', ['id' => $menu['id']]) }}">Detail</a>
 												</td>
 											</tr>
