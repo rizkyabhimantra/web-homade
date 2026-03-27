@@ -1,87 +1,192 @@
+@php
+    $placeImg = "https://placehold.co/400"
+@endphp
+
 <!DOCTYPE html>
-<!--
-Author: Keenthemes
-Product Name: MetronicProduct Version: 8.3.2
-Purchase: https://1.envato.market/EA4JP
-Website: http://www.keenthemes.com
-Contact: support@keenthemes.com
-Follow: www.twitter.com/keenthemes
-Dribbble: www.dribbble.com/keenthemes
-Like: www.facebook.com/keenthemes
-License: For each use you must have a valid license purchased only from above link in order to legally use the theme for your project.
--->
 <html lang="en">
-<!--begin::Head-->
+    @include('components.header' )
 
-<head>
-	@vite([
-		'sass/app.scss',
-		'sass/metronic/style.scss',
-		'resources/js/app.js',
-		// 'resources/js/metronic/scripts.js'
-	])
-	<meta charset="utf-8" />
-	<meta name="description"
-		content="The most advanced Tailwind CSS & Bootstrap 5 Admin Theme with 40 unique prebuilt layouts on Themeforest trusted by 100,000 beginners and professionals. Multi-demo, Dark Mode, RTL support and complete React, Angular, Vue, Asp.Net Core, Rails, Spring, Blazor, Django, Express.js, Node.js, Flask, Symfony & Laravel versions. Grab your copy now and get life-time updates for free." />
-	<meta name="keywords"
-		content="tailwind, tailwindcss, metronic, bootstrap, bootstrap 5, angular, VueJs, React, Asp.Net Core, Rails, Spring, Blazor, Django, Express.js, Node.js, Flask, Symfony & Laravel starter kits, admin themes, web design, figma, web development, free templates, free admin themes, bootstrap theme, bootstrap template, bootstrap dashboard, bootstrap dak mode, bootstrap button, bootstrap datepicker, bootstrap timepicker, fullcalendar, datatables, flaticon" />
-	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<meta property="og:locale" content="en_US" />
-	<meta property="og:type" content="article" />
-	<meta property="og:title"
-		content="Metronic - The World's #1 Selling Tailwind CSS & Bootstrap Admin Template by KeenThemes" />
-	<meta property="og:url" content="https://keenthemes.com/metronic" />
-	<meta property="og:site_name" content="Metronic by Keenthemes" />
-	<link rel="canonical" href="http://preview.keenthemes.comindex.html" />
-	<link rel="shortcut icon" href="/assets/media/logos/favicon.ico" />
-	<!--begin::Fonts(mandatory for all pages)-->
-	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
-	<!--end::Fonts-->
-	<!--begin::Vendor Stylesheets(used for this page only)-->
-	<link href="/assets/plugins/custom/fullcalendar/fullcalendar.bundle.css" rel="stylesheet" type="text/css" />
-	<link href="/assets/plugins/custom/datatables/datatables.bundle.css" rel="stylesheet" type="text/css" />
-	<!--end::Vendor Stylesheets-->
-	<!--begin::Global Stylesheets Bundle(mandatory for all pages)-->
-	<link href="/assets/plugins/global/plugins.bundle.css" rel="stylesheet" type="text/css" />
-	<link href="/assets/css/style.bundle.css" rel="stylesheet" type="text/css" />
-	<!--end::Global Stylesheets Bundle-->
-	<script>// Frame-busting to prevent site from being loaded within a frame without permission (click-jacking) if (window.top != window.self) { window.top.location.replace(window.self.location.href); }</script>
-</head>
-<!--end::Head-->
-<!--begin::Body-->
+    <body class="d-flex flex-column">
+        @include('components.navbarHead',[ "page" => "", "bg" => "grey"])
 
-<body id="kt_app_body" data-kt-app-layout="dark-sidebar" data-kt-app-header-fixed="true">
-	@if ($response['status'] === 'success')
-		<table class="table table-striped">
-		<thead>
-			<tr>
-				<th scope="col">ID Transaksi</th>
-				<th scope="col">Nama Pengguna</th>
-				{{-- <th scope="col">Total Pesanan</th> --}}
-				<th scope="col">Total Harga</th>
-				<th scope="col">Kategori</th>
-				<th scope="col">Status</th>
-				<th scope="col">Tanggal Pengiriman</th>
-				<th scope="col">Detail Pemesanan</th>
-			</tr>
-		</thead>
-		<tbody>
-			@foreach ($response['data']['orders'] as $order)
-				<tr>
-					<td>{{ $order->id }}</td>
-					<td>{{ $order->user->first_name }}</td>
-					<td>{{ $order->total_price }}</td>
-					<td>{{ $order->category }}</td>
-					<td>{{ $order->status }}</td>
-					<td>{{ $order->delivery_at }}</td>
-					<td><a href="{{ route('user.detail-order', ['id' => $order->id]) }}">Detail</a></td>
-				</tr>
-			@endforeach
-		</tbody>
-	</table>
-	@else
-		{{ dd($response) }}
-	@endif
-</body>
+        <span class="h-40px flex-shrink-0"></span>
+
+        <div class="d-flex w-100 align-items-center justify-content-center">
+
+            <div class="d-flex w-90 align-items-start gap-5">
+
+            <!-- begin::Left Side -->
+                <div class="d-flex w-25 flex-column border-grey-1 rounded-4 gap-1 p-5 flex-shrink-0">
+
+                    <div class="d-flex w-100 mb-2 h-100px align-items-center gap-5">
+
+                        <div class="h-100 ratio-1 flex-shrink-0">
+                            <img src="{{ $placeImg }}" class="w-100 h-100 rounded-circle" alt="">
+                        </div>
+
+                        <div class="d-flex w-100 h-75 flex-column justify-content-center w-100 ">
+                            <p class="fs-3 text-accent fw-bolder mb-0">Andi Pratama</p>
+                            <a href="/me" class="fs-5 mb-0 text-accent fw-light d-flex align-items-center gap-1"><img src="{{ asset("icons/edit.svg") }}" class="h-12em"> Ubah Profil</a>
+                        </div>
+
+                    </div>
+
+                    <!--begin::Accordion-->
+                    <div class="accordion accordion-icon-collapse px-3" id="kt_accordion_3">
+                        <!--begin::Item-->
+                        <div class="">
+                            <!--begin::Header-->
+                            <div class="accordion-header py-3 d-flex" data-bs-toggle="collapse" data-bs-target="#kt_accordion_3_item_1">
+                                <h3 class="fs-2 fw-bolder mb-0 d-flex text-black align-items-center gap-1"><img src="{{ asset("icons/user-circle.svg") }}" class="h-15em" alt="">Akun Saya</h3>
+                            </div>
+                            <!--end::Header-->
+
+                            <!--begin::Body-->
+                            <div id="kt_accordion_3_item_1" class="fs-6 mb-3 collapse show ps-10 flex-column" data-bs-parent="#kt_accordion_3">
+                                <div class="d-flex flex-column w-100 h-100">
+                                    <a href="/me" class="fs-4 w-100 px-5 text-black fw-semibold">Profil</a>
+                                    <a href="/me/address" class="fs-4 w-100 px-5 text-black fw-semibold">Alamat</a>
+                                </div>
+                            </div>
+                            <!--end::Body-->
+                        </div>
+                        <!--end::Item-->
+
+                    </div>
+                    <!--end::Accordion-->
+
+                    <a href="/me/orders" class="fs-2 fw-bolder px-3 mb-0 d-flex align-items-center text-black mb-3 gap-1"><img src="{{ asset('icons/document.svg')}}" class="h-15em" alt="">Pesanan Saya</a>
+                    <a href="/" class="fs-2 fw-bolder px-3 mb-0 d-flex align-items-center text-accent gap-1"><img src="{{asset('icons/log-out.svg')}}" class="h-15em img-accent" alt="">Log Out</a>
+
+                </div>
+            <!-- end::Left Side -->
+
+                <span class="w-1px flex-shrink-0"></span>
+
+            <!-- begin::Right Side -->
+                <div class="d-flex w-75 p-10 flex-column border-grey-1 rounded-4">
+
+                    <p class="fsc-4 fw-bold">Daftar Pesanan</p>
+
+                    <div class="d-flex mb-5 w-100 align-items-center gap-3 overflow-scroll">
+                        <button class="text-accent fsc-3 fw-bold w-100">All</button>
+                        @foreach (range(1,15) as $i)
+                        <button class="fsc-3 px-2 position-relative">Test <img src="https://pbs.twimg.com/media/GvF8AkFXwAAA2Ai.jpg" alt="" class="sonic"></button>
+                        @endforeach
+                    </div> 
+                    
+
+                    <div class="d-flex w-100 rounded-3 mb-5 p-5 px-7 border-grey-1 overflow-hidden">
+                        <div class="d-flex w-100 flex-column overflow-hidden">
+                            <p class="fsc-2 border-grey-1 bg-dark-grey p-1 px-4 text-accent w-max rounded-pill">Rumah</p>
+                            <p class="fsc-3 mb-0 fw-bolder">Jl. Kemajuan V No.45</p>
+                            <p class="fsc-2 mb-0 fw-bold">0812-3456-7890</p>
+                            <p class="fsc-2 mb-5 w-50">Jl. Kemajuan V No.45, RT.5/RW.4, Petukangan Sel., Kec. Pesanggrahan, Kota Jakarta Selatan.</p>
+
+                            <div class="d-flex w-100 h-75px mt-5 gap-5">
+                                <div class="d-flex h-100 ratio-1">
+                                    <img src="https://pbs.twimg.com/media/GvF8AkFXwAAA2Ai.jpg" alt="" class="w-100 h-100">
+                                </div>
+                                <div class="d-flex flex-column overflow-hidden justify-content-center">
+                                    <p class="fsc-2 fw-bolder mb-0">Paket A - Bento Mealbox</p>
+                                    <p class="fsc-2 mb-0 w-25 overflow-hidden text-nowrap text-overflow">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between flex-column flex-shrink-0">
+                            <p class="fsc-2 fw-bold bg-light-accent p-1 px-4 py-3 text-accent w-max rounded-3">Waiting Review</p>
+                            <a href="/select-menu" class="text-black fsc-2 border-grey-1 p-1 py-3 px-4 fw-bold w-max rounded-3">Detail Pesanan</a>
+                        </div>
+
+                    </div>
+
+                </div>
+            <!-- end::Right Side -->
+
+            </div>
+
+        </div>
+
+        <span class="h-40px flex-shrink-0"></span>
+        
+        <script src="{{ asset('assets/plugins/global/plugins.bundle.js') }}"></script>
+        <script src="{{ asset('assets/js/scripts.bundle.js') }}"></script>
+
+        <script>
+            
+            document.addEventListener("wheel", function(event) {
+                if (document.activeElement.type === "number") {
+                    document.activeElement.blur()
+                }
+            })
+        </script>
+    </body>
+
 
 </html>
+
+<div>
+    <!-- Live as if you were to die tomorrow. Learn as if you were to live forever. - Mahatma Gandhi -->
+    @if ($response['status'] == 'success')
+        <h2>Data Berhasil</h2>
+        <h2>akun {{ auth()->user()->first_name }}</h2>
+        @foreach ($response['data'] as $key => $address)
+            <a href="{{ route('user.detail-user-address', ['id' => $address->id]) }}">
+                Alamat ke - {{ $key + 1 }}
+                <br>
+            </a>
+            <span>Alamat : {{ $address->address }}</span>
+            <br>
+        @endforeach
+    @endif
+    @if(session()->has('response'))
+        @if(isset(session()->get('response')['data']['show_form']) && session()->get('response')['data']['show_form'])
+            <h2>Tampilkan detail alamat</h2>
+            <form action="{{ route('user.edit-user-address', ['id' => session()->get('response')['data']['address']->id]) }}" method="POST">
+                @csrf
+                @method("PUT")
+                <span>Nama Penerima</span>
+                <input type="text" name="fullname" value="{{ session()->get('response')['data']['address']->received_name }}">
+                <br>
+                 <span>Nomor Telepon Penerima</span>
+                <input type="text" name="phone" value="{{ session()->get('response')['data']['address']->phone }}">
+                <br>
+                 <span>Label Alamat</span>
+                <input type="text" name="label" value="{{ session()->get('response')['data']['address']->label }}">
+                <br>
+                 <span>Alamat Rumah</span>
+                <input type="text" name="address" value="{{ session()->get('response')['data']['address']->address }}">
+                <br>
+                <span>Catatan</span>
+                <textarea type="text" name="note">{{ session()->get('response')['data']['address']->note }}"></textarea>
+                <br>
+                <span>Pin Point</span>
+                <input type="text" name="longitude" value="{{ session()->get('response')['data']['address']->longitude }}">
+                <input type="text" name="latitude" value="{{ session()->get('response')['data']['address']->latitude }}">
+                <br>
+                <button class="">Ubah Data</button>
+            </form>
+            <br>
+            <h2>Hapus Data</h2>
+            <br>
+            <form action="{{ route('user.delete-user-address', [ 'id' => session()->get('response')['data']['address']->id ]) }}" method="post" id="kamu-yakin">
+                @csrf
+                @method('delete')
+                <button>Delete Alamat Ini</button>
+            </form>
+        @else 
+            <h2>Response (Alert)</h2>
+            {{ dd(session()->get('response')) }}
+        @endif      
+    @endif
+</div>
+
+<script>
+    document.getElementById('kamu-yakin').addEventListener('submit', (e) => {
+        e.preventDefault()
+        if(confirm('apakah kamu yakin ingin menhapus alamat ini?')){
+            e.target.submit()
+        }
+    })
+</script>

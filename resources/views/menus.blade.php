@@ -11,56 +11,56 @@
     <body class="d-flex flex-column">
         @include('components.navbarHead',[ "page" => "menu", "bg" => ""])
         
-            <div class="d-flex w-100 h-75 flex-shrink-0">
-                <div class="d-flex w-100 h-75 align-items-center justify-content-center gap-5 flex-column flex-shrink-0">
+            <div class="d-flex w-100 h-md-75 flex-shrink-0">
+                <div class="d-flex w-100 h-md-75 align-items-center py-5 justify-content-center gap-5 flex-column flex-shrink-0">
                     <p class="fsc-6 fw-bolder text-white mb-5">Menu</p>
-                    <div class="d-flex w-75 h-50 gap-5 mt-5">
-                        <a href="/menus?category=chicken" class="d-flex w-100 h-100 align-items-center justify-content-center text-white fs-3 bg-chicken">Ayam (99)</a>
-                        <a href="/menus?category=fish" class="d-flex w-100 h-100 align-items-center justify-content-center text-white fs-3 bg-fish">Ikan & Seafood (99)</a>
-                        <a href="/menus?category=rice" class="d-flex w-100 h-100 align-items-center justify-content-center text-white fs-3 bg-rice">Nasi (99)</a>
-                        <a href="/menus?category=beef" class="d-flex w-100 h-100 align-items-center justify-content-center text-white fs-3 bg-beef">Sapi & Kambing (99)</a>
+                    <div class="d-flex flex-column flex-md-row w-75 h-auto h-md-50 gap-5 mt-5">
+                        <a href="/menus?category=chicken" class="d-flex w-100 h-100px h-md-100 align-items-center justify-content-center text-white text-center fs-3 bg-chicken">Ayam</a>
+                        <a href="/menus?category=fish" class="d-flex w-100 h-100px h-md-100 align-items-center justify-content-center text-white text-center fs-3 bg-fish">Ikan & Seafood</a>
+                        <a href="/menus?category=rice" class="d-flex w-100 h-100px h-md-100 align-items-center justify-content-center text-white text-center fs-3 bg-rice">Nasi</a>
+                        <a href="/menus?category=beef" class="d-flex w-100 h-100px h-md-100 align-items-center justify-content-center text-white text-center fs-3 bg-beef">Sapi & Kambing</a>
                     </div>
                 </div>
             </div>
 
             <div class="bg-menu">
-                <img src="img/food2.webp" alt="" class="w-100 h-100 object-fit-cover">
+                <img src="img/food2.webp" alt="" class="w-100 h-900px h-md-100 object-fit-cover">
             </div>
 
-            <div class="d-flex w-100 h-50 flex-shrink-0 bg-white align-items-center flex-column justify-content-between pt-5 pb-5" id="category">
+            <div class="d-flex w-100 h-50 overflow-hidden flex-shrink-0 bg-white align-items-center flex-column justify-content-between pt-5 pb-5" id="category">
 
-                <div class="d-flex h-40px w-100 justify-content-center gap-5">
+                <div class="d-flex h-40px w-100 overflow-scroll justify-content-sm-center px-5 gap-5">
                     
-                    <a href="/menus#category" class="d-flex {{ !$category ? 'bg-accent' : '' }} h-100 align-items-center px-5 rounded-pill">
+                    <a href="/menus#category" class="d-flex text-nowrap {{ !$category ? 'bg-accent' : '' }} h-100 align-items-center px-5 rounded-pill">
                         <p class="fs-2 {{ !$category ? 'text-white' : 'text-grey' }} mb-0 fw-bold">ALL</p>
                     </a>
 
-                    <a href="/menus?category=chicken#category" class="d-flex {{ $category == "chicken" ? 'bg-accent' : '' }} h-100 align-items-center px-5 rounded-pill">
+                    <a href="/menus?category=chicken#category" class="d-flex text-nowrap {{ $category == "chicken" ? 'bg-accent' : '' }} h-100 align-items-center px-5 rounded-pill">
                         <p class="fs-2 {{ $category == "chicken" ? 'text-white' : 'text-grey' }} mb-0 fw-bold">Ayam</p>
                     </a>
 
-                    <a href="/menus?category=fish#category" class="d-flex {{ $category == "fish" ? 'bg-accent' : '' }} h-100 align-items-center px-5 rounded-pill">
+                    <a href="/menus?category=fish#category" class="d-flex text-nowrap {{ $category == "fish" ? 'bg-accent' : '' }} h-100 align-items-center px-5 rounded-pill">
                         <p class="fs-2 {{ $category == "fish" ? 'text-white' : 'text-grey' }} mb-0 fw-bold">Ikan & Seafood</p>
                     </a>
 
-                    <a href="/menus?category=rice#category" class="d-flex {{ $category == "rice" ? 'bg-accent' : '' }} h-100 align-items-center px-5 rounded-pill">
+                    <a href="/menus?category=rice#category" class="d-flex text-nowrap {{ $category == "rice" ? 'bg-accent' : '' }} h-100 align-items-center px-5 rounded-pill">
                         <p class="fs-2 {{ $category == "rice" ? 'text-white' : 'text-grey' }} mb-0 fw-bold">Nasi</p>
                     </a>
 
-                    <a href="/menus?category=beef#category" class="d-flex {{ $category == "beef" ? 'bg-accent' : '' }} h-100 align-items-center px-5 rounded-pill">
+                    <a href="/menus?category=beef#category" class="d-flex text-nowrap {{ $category == "beef" ? 'bg-accent' : '' }} h-100 align-items-center px-5 rounded-pill">
                         <p class="fs-2 {{ $category == "beef" ? 'text-white' : 'text-grey' }} mb-0 fw-bold">Sapi & Kambing</p>
                     </a>
                 </div>
 
-                <div class="d-flex h-50px w-100 justify-content-center align-items-center">
-                    <div class="w-90 h-100 d-flex justify-content-between">
+                <div class="d-flex h-100px h-md-50px w-100 justify-content-center align-items-center">
+                    <div class="w-90 h-100 d-flex flex-column gap-1 flex-md-row justify-content-between">
 
-                        <div class="h-100 w-50 bg-light-grey rounded d-flex align-items-center px-5 gap-5 cursor-text" onclick="focusInput()">
+                        <div class="h-100 w-100 w-md-50 bg-light-grey rounded d-flex align-items-center px-5 gap-5 cursor-text" onclick="focusInput()">
                             <div class="d-flex h-50 ratio-1"> <img src="icons/search.svg" class="w-100 h-100" alt=""></div>
                             <input type="text" class="w-100 h-100 fs-2" id="searchInput" placeholder="cari menu...">
                         </div>
 
-                        <div class="h-100 w-25 bg-light-grey rounded px-5">
+                        <div class="h-100 w-100 w-md-25 bg-light-grey rounded px-5">
                             <select name="" id="" class="w-100 h-100 border-0 outline-0 bg-transparent fs-4">
                                 <option value="" selected>Semua Tema Menu</option>
                                 <option value="">Wildan</option>
@@ -69,27 +69,28 @@
                     </div>
                 </div>
                 
-                <p class="w-100 fs-3 text-center">Porsinya pas, buat perut kenyang, aktifitas jadi lancar.</p>
+                <p class="w-100 fsc-3 text-center">Porsinya pas, buat perut kenyang, aktifitas jadi lancar.</p>
                 
 
             </div>
 
             <div class="d-flex w-100 flex-shrink-0 align-items-md-center justify-content-center">
-                <div class="d-flex w-90 flex-shrink-0 flex-column">
-                    <p class="fsc-5 homade-underline">{{ !$category ? 'Menu' : '' }}{{ $category == "chicken" ? 'Ayam' : '' }}{{ $category == "fish" ? 'Ikan & Seafood' : '' }}{{ $category == "rice" ? 'Nasi' : '' }}{{ $category == "beef" ? 'Sapi & Kambing' : '' }}</p>
+                <div class="d-flex w-90 flex-shrink-0 flex-column align-items-center align-items-lg-start">
+                    <p class="fsc-md-5 fsc-6 homade-underline">{{ !$category ? 'Menu' : '' }}{{ $category == "chicken" ? 'Ayam' : '' }}{{ $category == "fish" ? 'Ikan & Seafood' : '' }}{{ $category == "rice" ? 'Nasi' : '' }}{{ $category == "beef" ? 'Sapi & Kambing' : '' }}</p>
                     <p class="fs-2">99 menu masakan {{ $category == "chicken" ? 'ayam' : '' }}{{ $category == "fish" ? 'ikan & seafood' : '' }}{{ $category == "rice" ? 'nasi' : '' }}{{ $category == "beef" ? 'sapi & kambing' : '' }} enak ala homade</p>
                 </div>
             </div>
 
             <div class="d-flex w-100 flex-shrink-0 align-items-center justify-content-center">
                 
-                <div class="d-grid grid-template-homade-menus w-90 flex-wrap flex-shrink-0 gap-5">
+                <div class="d-flex flex-column d-sm-grid grid-template-homade-menus w-90 align-items-center justify-content-center flex-shrink-0 gap-5">
 
                     @foreach (range(1, 8) as $i)
-                    <a href="menus/9" class="d-flex flex-column gap-5 h-500px">
+                    <a href="menus/9" class="d-flex flex-column gap-5 w-100 h-500px">
 
-                        <div class="w-100 h-75">
+                        <div class="w-100 h-75 position-relative">
                             <img src="{{ $placeImg }}" class="w-100 h-100 object-fit-cover">
+                            <span class="w-max py-2 px-10 fsc-2 fw-bold bg-accent rounded-3 text-white position-absolute theme-position">Sunda</span>
                         </div>
 
                         <div class="w-100 h-25">

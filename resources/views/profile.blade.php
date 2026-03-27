@@ -13,12 +13,12 @@
 
         <div class="d-flex flex-column align-items-center mt-5 mb-5">
             <p class="fsc-7 fw-bolder text-black homade-underline-black">Profile Homade</p>
-            <p class="fs-2 fw-bolder text-black text-center">Menghadirkan rasa masakan rumahan yang higienis dan terjangkau <br> untuk menemani setiap langkah  perjalanan anda</p>
+            <p class="fsc-4 fw-bolder w-80 text-black text-center">Menghadirkan rasa masakan rumahan yang higienis dan terjangkau <br><br class="d-md-none"> untuk menemani setiap langkah  perjalanan anda</p>
         </div>
 
         <div class="d-flex h-100 w-100 align-items-center justify-content-center gap-5 flex-shrink-0">
             
-            <div class="d-flex h-75 w-90">
+            <div class="d-flex w-90 flex-column flex-md-row">
 
                 <div class="d-flex w-100 h-100 flex-column">
                     <p class="fs-1 fw-bolder text-accent">SIAPA KAMI</p>
@@ -30,7 +30,7 @@
                 </div>
 
                 <div class="d-flex w-75 h-100 align-items-center justify-content-center">
-                    <img src="{{ asset("img/profile.png") }}" class="w-90 h-90 rounded">
+                    <img src="{{ asset("img/profile.png") }}" class="w-90 h-90 d-none d-md-flex rounded">
                 </div>
 
             </div>
@@ -53,7 +53,7 @@
 
             <p class="fsc-7 fw-bolder text-black homade-underline-black mb-5">Visi dan Misi</p>
 
-            <div class="w-70 p-5 d-flex gap-5 mb-5">
+            <div class="w-90 w-md-70 p-5 d-flex flex-column flex-md-row gap-5 mb-5">
 
                 <div class="w-100 h-100 d-flex flex-column p-5 border-grey-1 rounded-4">
 
@@ -101,34 +101,27 @@
         
         <div class="d-flex flex-shrink-0 align-items-center justify-content-center w-100">
 
-            <div class="d-flex w-90">
+            <div class="d-flex flex-column flex-md-row w-90">
 
-                <div class="d-flex flex-column align-items-center w-50">
+                <div class="d-flex mb-5 flex-column align-items-center w-100 w-md-50">
                     <div class="w-75 d-flex flex-column gap-1 align-items-center">
 
                         <img src="{{ $placeImg }}" alt="" class="w-100 h-250px object-fit-cover">
 
-                        <div class="w-100 h-250px d-flex align-items-center gap-1 overflow-hidden">
-
-                            <img src="{{ $placeImg }}" alt="" class="w-50 h-100 object-fit-cover">
-                            <img src="{{ $placeImg }}" alt="" class="w-50 h-100 object-fit-cover">
-
-                        </div>  
-
                     </div>
                 </div>
                 
-                <div class="w-50 d-flex flex-column">
+                <div class="w-100 w-md-50 d-flex flex-column">
 
-                    <div class="w-100 h-125px d-flex flex-column justify-content-between">
-                        <p class="fs-2 fw-bolder text-accent">JEJAK LANGKAH</p>
-                        <p class="fsc-4 fw-bold">Pencapaian Homade</p>
-                        <p class="fs-3 fw-bolder">Prestasi yand dicapai oleh Homade sebagai startup copany</p>
+                    <div class="w-100 h-125px d-flex flex-column py-5 justify-content-between">
+                        <p class="fsc-5 fsc-sm-3 mb-0 fw-bolder text-accent">JEJAK LANGKAH</p>
+                        <p class="fsc-6 fsc-sm-4 mb-0 fw-bold">Pencapaian Homade</p>
+                        <p class="fsc-4 fsc-sm-3 mb-0 fw-bolder">Prestasi yand dicapai oleh Homade sebagai startup copany</p>
                     </div>
 
                     <span class="h-50px"></span>
 
-                    <div class="d-flex w-100 h-150px gap-5">
+                    <div class="d-flex w-100 h-200px gap-5">
 
                         <div class="d-flex flex-shrink-0 w-40px flex-column align-items-center h-100">
                             <div class="d-flex w-65 flex-shrink-0 ratio-1 bg-accent rounded-circle"></div>
@@ -136,13 +129,13 @@
                         </div>
 
                         <div class="d-flex flex-column w-100 h-100">
-                            <p class="fs-2 text-accent mb-1">Juni 2017</p>
-                            <p class="fs-2 fw-bolder mb-0">Homade Launching</p>
-                            <p class="fs-3">CEO sekaligus fouder homade bersama tim  membangun homade resmi menjadi startup katering online untuk area jakarta</p>
+                            <p class="fsc-5 fsc-md-3 text-accent mb-1">Juni 2017</p>
+                            <p class="fsc-5 fsc-sm-4 fsc-md-3 fw-bolder mb-0">Homade Launching</p>
+                            <p class="fsc-3 fsc-sm-3 fsc-md-2">CEO sekaligus fouder homade bersama tim  membangun homade resmi menjadi startup katering online untuk area jakarta</p>
                         </div>
                     </div>
 
-                    <div class="d-flex w-100 h-150px gap-5">
+                    <div class="d-flex w-100 h-200px gap-5">
 
                         <div class="d-flex flex-shrink-0 w-40px flex-column align-items-center h-100">
                             <div class="d-flex w-65 flex-shrink-0 ratio-1 bg-accent rounded-circle"></div>
@@ -150,13 +143,13 @@
                         </div>
 
                         <div class="d-flex flex-column w-100 h-100">
-                            <p class="fs-2 text-accent mb-1">Oktober 2017</p>
-                            <p class="fs-2 fw-bolder mb-0">3rd winner - Stratup Instanbul, Turki</p>
-                            <p class="fs-3">Juara 3  kompetisi startup bergengsi di dunia startup Instanbul 2017, Turki. Berhasil memperkenalkan diri ke kancah Internasioanal</p>
+                            <p class="fsc-5 fsc-md-3 text-accent mb-1">Oktober 2017</p>
+                            <p class="fsc-5 fsc-sm-4 fsc-md-3 fw-bolder mb-0">3rd winner - Stratup Instanbul, Turki</p>
+                            <p class="fsc-3 fsc-sm-3 fsc-md-2">Juara 3  kompetisi startup bergengsi di dunia startup Instanbul 2017, Turki. Berhasil memperkenalkan diri ke kancah Internasioanal</p>
                         </div>
                     </div>
 
-                    <div class="d-flex w-100 h-150px gap-5">
+                    <div class="d-flex w-100 h-200px gap-5">
 
                         <div class="d-flex flex-shrink-0 w-40px flex-column align-items-center h-100">
                             <div class="d-flex w-65 flex-shrink-0 ratio-1 bg-accent rounded-circle"></div>
@@ -164,22 +157,22 @@
                         </div>
 
                         <div class="d-flex flex-column w-100 h-100">
-                            <p class="fs-2 text-accent mb-1">February 2018</p>
-                            <p class="fs-2 fw-bolder mb-0">1st Winner - Get In The Ring, Jakarta</p>
-                            <p class="fs-3">Menjuarai kompetisi Get In Ring Jakarta sebagai Juara 1 dan mewakili indonesia di tingkat  global di portugal</p>
+                            <p class="fsc-5 fsc-md-3 text-accent mb-1">February 2018</p>
+                            <p class="fsc-5 fsc-sm-4 fsc-md-3 fw-bolder mb-0">1st Winner - Get In The Ring, Jakarta</p>
+                            <p class="fsc-3 fsc-sm-3 fsc-md-2">Menjuarai kompetisi Get In Ring Jakarta sebagai Juara 1 dan mewakili indonesia di tingkat  global di portugal</p>
                         </div>
                     </div>
 
-                    <div class="d-flex w-100 h-150px gap-5">
+                    <div class="d-flex w-100 h-200px gap-5">
 
                         <div class="d-flex flex-shrink-0 w-40px flex-column align-items-center h-100">
                             <div class="d-flex w-65 flex-shrink-0 ratio-1 bg-accent rounded-circle"></div>
                         </div>
 
                         <div class="d-flex flex-column w-100 h-100">
-                            <p class="fs-2 text-accent mb-1">Global Perticipant</p>
-                            <p class="fs-2 fw-bolder mb-0">Get In Ring Global, Portugal</p>
-                            <p class="fs-3">Kesempatan partisipasi  Homade  di kancah global yang menghubungkan Homade dengan  jejaring bisnis dunia.</p>
+                            <p class="fsc-5 fsc-md-3 text-accent mb-1">Global Perticipant</p>
+                            <p class="fsc-5 fsc-sm-4 fsc-md-3 fw-bolder mb-0">Get In Ring Global, Portugal</p>
+                            <p class="fsc-3 fsc-sm-3 fsc-md-2">Kesempatan partisipasi  Homade  di kancah global yang menghubungkan Homade dengan  jejaring bisnis dunia.</p>
                         </div>
                     </div>
 
@@ -198,10 +191,10 @@
         
         <span class="h-40px flex-shrink-0"></span>
 
-        <div class="d-flex w-100 h-50 flex-shrink-0 mb-5 align-items-center justify-content-center">
-            <div class="d-grid grid-template-homade-sponsor w-75 h-100 gap-5">
+        <div class="d-flex w-100 h-md-50 flex-shrink-0 mb-5 align-items-center justify-content-center">
+            <div class="d-grid grid-template-homade-partner w-75 gap-5">
                 @foreach (range(1,12) as $i)
-                <img src="{{ $placeImg }}" alt="" class="object-fit-cover">
+                <img src="{{ $placeImg }}" loading="lazy" alt="" class="object-fit-cover w-100 ratio-1 bg-black">
                 @endforeach
             </div>
         </div>
