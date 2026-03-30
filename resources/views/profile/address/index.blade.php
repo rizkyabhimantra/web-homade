@@ -72,7 +72,6 @@
                     </div>
 
                     <p class="fsc-3 d-none d-lg-inline fw-bold">Alamat</p>
-                    @dd($response)
                     @foreach ($response['data'] ?? [] as $address)
                     <div class="d-flex w-100 rounded-3 mb-5 p-5 px-7 flex-column flex-lg-row {{ $address['is_main'] === true ? 'bg-light-accent border-homade-1' : 'bg-grey-1' }} ">
                         <div class="d-flex w-100 mb-5 mb-lg-0 flex-column">

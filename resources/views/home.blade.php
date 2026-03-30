@@ -97,8 +97,7 @@
             <p class="fsc-6 fsc-md-5 fw-bold mb-5">Menu Terpopuler Minggu Ini</p>
 
             <div class="d-flex flex-column flex-sm-row w-90 w-md-76 gap-5">
-
-                @foreach ($response['data']['menus'] as $menu)
+                @foreach ($response['data']['menus'] ?? [] as $menu)
                 <div class="d-flex w-100 h-350px h-sm-400px overflow-hidden flex-column">
                     <div class="w-100 h-100 overflow-hidden">
                         <img src="{{ $menu['image_url'] }}" alt="{{ $menu['name'] }}" class="w-100 h-100 rounded object-fit-contain">
@@ -194,7 +193,7 @@
         <div class="d-flex w-100 align-items-center justify-content-center flex-shrink-0">
             <div class="d-flex flex-column flex-md-row w-75 gap-5">
 
-                @foreach ($response['data']['categories'] as $category)
+                @foreach ($response['data']['categories'] ?? [] as $category)
 
                     @php
                         $bgClasses = ['bg-rice', 'bg-chicken', 'bg-fish', 'bg-beef'];
@@ -213,7 +212,7 @@
         <!-- begin::partners -->
         <div class="d-flex w-100 flex-shrink-0 mb-5 align-items-center justify-content-center">
             <div class="d-grid grid-template-homade-partner w-75 gap-5">
-                @foreach ($response['data']['partners'] as $partner)
+                @foreach ($response['data']['partners'] ?? [] as $partner)
                 <img src="{{ $partner['image_url'] }}" loading="lazy" alt="{{ $partner['name'] }}" class="object-fit-contain w-100 ratio-1">
                 @endforeach
             </div>
