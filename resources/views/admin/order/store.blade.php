@@ -112,7 +112,7 @@
                                 <div class="row g-4 mb-4 border-bottom pb-4">
                                     <div class="col-md-6">
                                         <label class="form-label small fw-bold required">Tanggal Pengiriman (Delivery At)</label>
-                                        <input type="date" class="form-control form-control-sm" id="deliveryAt" required>
+                                        <input type="datetime-local" class="form-control form-control-sm" id="deliveryAt" required>
                                         <small class="text-primary" style="font-size: 11px;">Otomatis terisi jika memilih Menu Mingguan</small>
                                     </div>
                                     <div class="col-md-6">

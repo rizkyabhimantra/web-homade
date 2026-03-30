@@ -7,6 +7,7 @@ use App\Http\Resources\DetailTransactionResource;
 use App\Http\Resources\MenuScheduleResource;
 use App\Http\Resources\PaginationResource;
 use App\Http\Resources\SelectMenuResource;
+use App\Http\Resources\TransactionResource;
 use App\Mail\RejectedTransaction;
 use App\Mail\SuccessfullyCreatedNewInvoice;
 use App\ResponseData;
@@ -69,11 +70,11 @@ class TransactionController extends Controller
                 return view('admin.order.index', compact('response'));
             }
 
-            $response = $this->responseData->create(
+           $response = $this->responseData->create(
                 'Berhasil Mendapatkan Transaksi',
                 [
                     'pagination' => (new PaginationResource($transactions))->toArray($request),
-                    'orders' => $transactions->toArray()['data'],
+                    'orders' => TransactionResource::collection($transactions),
                 ],
                 isJson: false
             );
@@ -142,14 +143,24 @@ class TransactionController extends Controller
     {
         try {
 
+
             $validator = Validator::make($request->all(), [
                 'shipping_cost' => 'required|numeric|min:0',
+                'delivery_at' => 'date',
+                'received_transaction_information' => 'email',
+                'notif_after_update_information' => 'boolean'
             ], [
                 'required' => 'Pastikan mengirimakn :attribute ya!',
                 'number' => ':attribute harus berupa angka ya',
+                'email' => ':attribute harus berupa email yang valid ya!',
+                'boolean' => ':attribute harus berupa sebuah boolean ya!',
+                'date' => ':attribute harus berupa tanggal yang valid ya',
                 'min' => 'Minimal :attribute harus :min',
             ], [
                 'shipping_cost' => 'Ongkos Kirim',
+                'delivery_at' => 'Tanggal Pengiriman',
+                'received_transaction_information' => 'Email Penerima Informasi Pemesanan',
+                'notif_after_update_information' => 'Beritahukan Kepada Customer'
             ]);
 
             if ($validator->fails()) {
@@ -176,7 +187,12 @@ class TransactionController extends Controller
                 return redirect()->back()->withInput()->with(compact('response'));
             }
 
-            $updated_info = $this->transactionService->changeShippingCost($transaction, $request->shipping_cost);
+            $updated_info = $this->transactionService->changeInformationTransaction($transaction,
+                $request->shipping_cost,
+                $request->delivery_at,
+                $request->received_transaction_information,
+                (bool)  $request->notif_after_update_information ?? true,
+            );
 
             if (!$updated_info['is_success']) {
                 $response = $this->responseData->create(
@@ -193,8 +209,6 @@ class TransactionController extends Controller
                 $updated_info['message'],
                 isJson: false
             );
-
-            Mail::to($transaction->user->email)->send(new SuccessfullyCreatedNewInvoice($transaction));
 
             return redirect()->back()->withInput()->with(compact('response'));
 

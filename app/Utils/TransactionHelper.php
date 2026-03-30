@@ -556,16 +556,6 @@ class TransactionHelper
         return $minimum_order;
     }
 
-    public function canOrderAtThisTime(Carbon $delivery_at)
-    {
-        $today = Carbon::today()->setTime(15, 0, 0);
-
-        if ($delivery_at->isTomorrow() && now()->greaterThan($today)) {
-            return false;
-        }
-        return true;
-    }
-
     public function canOrderDeliveryWeeklyMenu(Carbon $delivery_at)
     {
         $current_date = now();
