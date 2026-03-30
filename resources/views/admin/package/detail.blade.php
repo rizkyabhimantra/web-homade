@@ -19,7 +19,21 @@
     <span>image</span>
     <img src="{{ $package['image_url'] }}" alt="image_gambar_package">
     <input type="file" name="image" accept="image/*">
+    <span>dihapus pada</span>
+    <input type="text" name="deleted_at" value="{{ old('deleted_at') ?? $package['deleted_at'] }}" readonly>
     <button>edit handler</button>
+</form>
+
+<form action="{{ route('admin.delete-package', ['id' => $package['id']]) }}" method="post">
+    @csrf
+    @method('delete')
+     <button>hapus data</button>
+</form>
+
+<form action="{{ route('admin.restore-package', ['id' => $package['id']]) }}" method="post">
+    @csrf
+    @method('patch')
+     <button>kembalikan data</button>
 </form>
 
 @else

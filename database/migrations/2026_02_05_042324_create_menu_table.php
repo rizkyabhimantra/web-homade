@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string("image_url", 265);
             $table->string("image_public_id", 255)->nullable();
             $table->boolean("is_active")->default(true);
+            $table->softDeletes();
             $table->timestamps();
         });
 

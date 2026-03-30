@@ -18,7 +18,7 @@ License: For each use you must have a valid license purchased only from above li
 		'sass/app.scss',
 		'sass/metronic/style.scss',
 		'resources/js/app.js',
-		'resources/js/metronic/scripts.js'
+		// 'resources/js/metronic/scripts.js'
 	])
 	<meta charset="utf-8" />
 	<meta name="description"
@@ -59,16 +59,18 @@ License: For each use you must have a valid license purchased only from above li
 				<th scope="col">ID Tema</th>
 				<th scope="col">Nama</th>
 				<th scope="col">Tanggal Dibuatnya</th>
+				<th scope="col">Tanggal Dihapus</th>
 				<th scope="col">Detail Pemesanan</th>
 			</tr>
 		</thead>
 		<tbody>
 			@foreach ($response['data']['themes'] as $theme)
 				<tr>
-					<td>{{ $theme->id }}</td>
-                    <td>{{ $theme->name }}</td>
-					<td>{{ $theme->created_at }}</td>
-					<td><a href="{{ route('admin.detail-theme', ['id' => $theme->id]) }}">Detail</a></td>
+					<td>{{ $theme['id'] }}</td>
+                    <td>{{ $theme['name'] }}</td>
+					<td>{{ $theme['created_at'] }}</td>
+					<td>{{ $theme['deleted_at'] }}</td>
+					<td><a href="{{ route('admin.detail-theme', ['id' => $theme['id']]) }}">Detail</a></td>
 				</tr>
 			@endforeach
 		</tbody>

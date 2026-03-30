@@ -44,6 +44,7 @@ class DetailMenuResource extends JsonResource
                     'image_url' => $price->package->image_url,
                 ];
             }),
+            "deleted_at" => $this->deleted_at
         ];
     }
 

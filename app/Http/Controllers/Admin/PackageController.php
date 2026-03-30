@@ -29,7 +29,13 @@ class PackageController extends Controller
         try {
             $search = $request->query('search');
             $limit = $request->query('limit', 8);
-            $packages = $this->packageService->all($search, $limit);
+            $status = $request->query('status', 'active');
+            $packages = $this->packageService->all(
+                $search,
+                $limit,
+                $status,
+                true
+            );
 
             if ($packages->isEmpty()) {
                 $response = $this->responseData->create(
@@ -44,8 +50,8 @@ class PackageController extends Controller
             $response = $this->responseData->create(
                 'Berhasil Mendapatkan Paket - Paket Menu!',
                 [
-                    'pagination' => new PaginationResource($packages),
-                    'packages' => PackageResource::collection($packages)
+                    'pagination' => (new PaginationResource($packages))->toArray($request),
+                    'packages' => $packages->toArray()['data']
                 ],
                 isJson: false,
             );
@@ -68,7 +74,10 @@ class PackageController extends Controller
     {
         try {
 
-            $package = $this->packageService->detail($id);
+            $package = $this->packageService->detail(
+                $id,
+                true
+            );
 
             if (!$package) {
                 $response = $this->responseData->create(
@@ -157,6 +166,7 @@ class PackageController extends Controller
 
             $response = $this->responseData->create(
                 $created_info['message'],
+                status_code:201,
                 isJson: false,
             );
 
@@ -258,7 +268,80 @@ class PackageController extends Controller
         }
     }
 
-    function deleteHandler()
+    public function deleteHandler(Request $request, string $id)
     {
+        try {
+
+            $packages = $this->packageService->detail($id);
+
+            if (!$packages) {
+                $response = $this->responseData->create(
+                    'Tidak Dapat Menemukan paket menu!',
+                    status: 'warning',
+                    status_code: 404,
+                    isJson: false
+                );
+                return redirect()->back()->withInput()->with(compact('response'));
+            }
+
+            $this->packageService->delete($packages);
+
+            $response = $this->responseData->create(
+                'Berhasil dalam menghapus paket menu',
+                isJson:false
+            );
+
+            return redirect()->route('admin.packages')->with(compact('response'));
+
+        } catch (Exception $e) {
+            Log::error('There Something Error When Handling Delete The Menu Package :' . $e->getMessage());
+            $resposne = $this->responseData->create(
+                'Telah Terjadi Kesalahan Pada Server',
+                status: 'error',
+                status_code: 500,
+                isJson: false,
+            );
+
+            return redirect()->back()->withInput()->with(compact('response'));
+        }
+    }
+
+    public function restoreHandler(Request $request, string $id)
+    {
+        try {
+
+            $package = $this->packageService->detail($id, true);
+
+            if (!$package) {
+                $response = $this->responseData->create(
+                    'Tidak Dapat Menemukan Paket Menu!',
+                    status: 'warning',
+                    status_code: 404,
+                    isJson: false
+                );
+                return redirect()->back()->withInput()->with(compact('response'));
+            }
+
+            $this->packageService->restore($package);
+
+            $response = $this->responseData->create(
+                'Berhasil dalam mengembalikan paket menu',
+                isJson:false
+            );
+
+            return redirect()->route('admin.packages')->with(compact('response'));
+
+        } catch (Exception $e) {
+            Log::error('There Something Error When Restoring The Deleted Menu Package :' . $e->getMessage());
+            $resposne = $this->responseData->create(
+                'Telah Terjadi Kesalahan Pada Server',
+                status: 'error',
+                status_code: 500,
+                isJson: false,
+            );
+
+            return redirect()->back()->withInput()->with(compact('response'));
+        }
+
     }
 }

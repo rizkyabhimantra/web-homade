@@ -14,22 +14,25 @@ return new class extends Migration {
             $table->uuid("id")->primary();
             $table->string("name", 60)->unique();
             $table->text("description");
+            $table->softDeletes();
             $table->timestamps();
         });
 
         Schema::create('categories', function (Blueprint $table) {
             $table->uuid("id")->primary();
             $table->string("name", 60)->unique();
+            $table->softDeletes();
             $table->timestamps();
         });
 
-         Schema::create('packages', function (Blueprint $table) {
+        Schema::create('packages', function (Blueprint $table) {
             $table->uuid("id")->primary();
             $table->string("name", 60)->unique();
             $table->text("description");
             $table->integer("minimum_order");
             $table->string("image_url", 265);
             $table->string("image_public_id", 265)->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
 

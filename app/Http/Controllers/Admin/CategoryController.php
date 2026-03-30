@@ -29,8 +29,13 @@ class CategoryController extends Controller
 
             $search = $request->query('search');
             $limit = (int) $request->query('limit', 8);
+            $status = $request->query('status', 'active');
 
-            $categories = $this->categoryService->all($search, $limit);
+            $categories = $this->categoryService->all(
+                $search, 
+                $limit,
+                status: $status,
+            );
 
             if ($categories->isEmpty()) {
                 $response = $this->responseData->create(
@@ -46,8 +51,8 @@ class CategoryController extends Controller
             $response = $this->responseData->create(
                 'Berhasil mendapatkan category',
                 [
-                    'pagination' => new PaginationResource($categories),
-                    'categories' => $categories,
+                    'pagination' => (new PaginationResource($categories))->toArray($request),
+                    'categories' => $categories->toArray()['data'],
                 ],
                 isJson: false,
             );
@@ -70,7 +75,7 @@ class CategoryController extends Controller
     {
         try {
 
-            $category = $this->categoryService->detail($id);
+            $category = $this->categoryService->detail($id, true);
 
             if (!$category) {
                 $response = $this->responseData->create(
@@ -138,7 +143,7 @@ class CategoryController extends Controller
 
             $response = $this->responseData->create(
                 'Berhasil Menambahkan data kategori',
-                status_code:201,
+                status_code: 201,
                 isJson: false
             );
 
@@ -187,7 +192,7 @@ class CategoryController extends Controller
 
             if (!$category) {
                 $response = $this->responseData->create(
-                    'Tidak Dapat Menemukan Category!',
+                    'Tidak Dapat Menemukan Kategori!',
                     status: 'warning',
                     status_code: 404,
                     isJson: false
@@ -217,4 +222,82 @@ class CategoryController extends Controller
             return redirect()->withInput()->with(compact('response'));
         }
     }
+
+    public function deleteHandler(Request $request, string $id)
+    {
+        try {
+
+            $category = $this->categoryService->detail($id, true);
+
+            if (!$category) {
+                $response = $this->responseData->create(
+                    'Tidak Dapat Menemukan Kategori!',
+                    status: 'warning',
+                    status_code: 404,
+                    isJson: false
+                );
+                return redirect()->back()->withInput()->with(compact('response'));
+            }
+
+            $this->categoryService->delete($category);
+
+            $response = $this->responseData->create(
+                'Berhasil dalam menghapus kategori',
+                isJson:false
+            );
+
+            return redirect()->route('admin.categories')->with(compact('response'));
+
+        } catch (Exception $e) {
+            Log::error('There Something Error When Handling Delete The Theme :' . $e->getMessage());
+            $resposne = $this->responseData->create(
+                'Telah Terjadi Kesalahan Pada Server',
+                status: 'error',
+                status_code: 500,
+                isJson: false,
+            );
+
+            return redirect()->back()->withInput()->with(compact('response'));
+        }
+    }
+
+    public function restoreHandler(Request $request, string $id)
+    {
+        try {
+
+            $category = $this->categoryService->detail($id, true);
+
+            if (!$category) {
+                $response = $this->responseData->create(
+                    'Tidak Dapat Menemukan Kategori!',
+                    status: 'warning',
+                    status_code: 404,
+                    isJson: false
+                );
+                return redirect()->back()->withInput()->with(compact('response'));
+            }
+
+            $this->categoryService->restore($category);
+
+            $response = $this->responseData->create(
+                'Berhasil dalam mengembalikan kategori',
+                isJson:false
+            );
+
+            return redirect()->route('admin.categories')->with(compact('response'));
+
+        } catch (Exception $e) {
+            Log::error('There Something Error When Restoring The Deleted Category :' . $e->getMessage());
+            $resposne = $this->responseData->create(
+                'Telah Terjadi Kesalahan Pada Server',
+                status: 'error',
+                status_code: 500,
+                isJson: false,
+            );
+
+            return redirect()->back()->withInput()->with(compact('response'));
+        }
+
+    }
+
 }

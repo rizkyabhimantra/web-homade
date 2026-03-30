@@ -59,17 +59,19 @@ License: For each use you must have a valid license purchased only from above li
 				<th scope="col">Nama Paket</th>
 				<th scope="col">Minimum Order</th>
 				<th scope="col">Tanggal Dibuatnya</th>
+				<th scope="col">Di hapus pada</th>
 				<th scope="col">Detail Pemesanan</th>
 			</tr>
 		</thead>
 		<tbody>
 			@foreach ($response['data']['packages'] as $package)
 				<tr>
-					<td>{{ $package->id }}</td>
-					<td>{{ $package->name }}</td>
-					<td>{{ $package->minimum_order }}</td>
-					<td>{{ $package->created_at }}</td>
-					<td><a href="{{ route('admin.detail-package', ['id' => $package->id]) }}">Detail</a></td>
+					<td>{{ $package['id'] }}</td>
+					<td>{{ $package['name'] }}</td>
+					<td>{{ $package['minimum_order'] }}</td>
+					<td>{{ $package['created_at'] }}</td>
+					<td>{{ $package['deleted_at'] }}</td>
+					<td><a href="{{ route('admin.detail-package', ['id' => $package['id']]) }}">Detail</a></td>
 				</tr>
 			@endforeach
 		</tbody>

@@ -24,6 +24,7 @@ class MenuByDateResource extends JsonResource
                 'vegetable' => $this->menu->vegetable,
                 'side_dish' => $this->menu->side_dish,
                 'sauce' => $this->menu->chili_sauce,
+                "fruit" => $this->fruit,
             ],
             
             // 'packages' => $price

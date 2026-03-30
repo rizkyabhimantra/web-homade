@@ -10,6 +10,7 @@
         <input type="text" name="name" value="{{ old('name') ?? $response['data']['name'] }}">
         <textarea name="description" id="">{{ old('description') ?? $response['data']['description'] }}</textarea>
         <span>Dibuat Pada: {{ $response['data']['created_at'] }}</span>
+         <span>Dihapus Pada: {{ $response['data']['deleted_at'] }}</span>
         <button>Simpan Perubahan</button>
     </form>
 
@@ -17,6 +18,12 @@
         @csrf
         @method('delete')
         <button>Hapus Data Perubahan</button>
+    </form>
+
+    <form action="{{ route('admin.restore-theme', ['id' => $response['data']['id']] ) }}" method="post" style="display:flex; flex-direction: column; gap:10px;">
+        @csrf
+        @method('patch')
+        <button>Kembalikan tema</button>
     </form>
 
 @else

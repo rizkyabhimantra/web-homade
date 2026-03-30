@@ -18,8 +18,17 @@ class ThemeService
         string|null $search = null,
         $limit = 5,
         bool $is_has_limit = true,
+        string|null $status = 'active',
     ) {
-        $themes = Theme::when($search, function ($query, $search) {
+        $themes = Theme::query();
+
+        if($status === 'all'){
+            $themes->withTrashed();
+        }else if($status === 'deleted'){
+            $themes->onlyTrashed();
+        }
+
+        $themes->when($search, function ($query, $search) {
             $search = strtolower($search);
             return $query->whereRaw('LOWER(name) LIKE ?', "%$search%");
         });
@@ -29,9 +38,14 @@ class ThemeService
         return $themes->get();
     }
 
-    public function detail(string $id)
+    public function detail(
+        string $id,
+        bool $is_for_management = false,
+    )
     {
-        return Theme::where('id', $id)->first();
+        return Theme::where('id', $id)
+        ->withTrashed($is_for_management)
+        ->first();
     }
 
     public function save(array $data)
@@ -52,8 +66,13 @@ class ThemeService
         return $theme;
     }
 
-    public function delete()
+    public function delete(Theme $theme)
     {
+        $theme->delete();
+    }
+
+    public function restore(Theme $theme){
+        $theme->restore();
     }
 
 }

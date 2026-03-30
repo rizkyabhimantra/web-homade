@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Admin\DetailMenuResource;
 use App\Http\Resources\Admin\PackageResource;
 use App\Http\Resources\CategoryResource;
+use App\Http\Resources\Admin\MenuResource;
 use App\Http\Resources\PaginationResource;
 use App\Http\Resources\ThemeResource;
 use App\ResponseData;
@@ -47,18 +48,20 @@ class MenuController extends Controller
             $category = $request->query('category');
             $limit = $request->query('limit', 8);
             $status_active = $request->query('status_active', 'all');
+            $status = $request->query('status', 'available');
 
             $menus = $this->menuService->all(
                 $search,
                 $theme,
                 $category,
                 $limit,
-                $status_active
+                $status_active,
+                $status
             );
 
             if ($menus->isEmpty()) {
                 $response = $this->responseData->create(
-                    'Tidak dapa menemukan menu',
+                    'Tidak dapat menemukan menu',
                     status: 'warning',
                     status_code: 404,
                     isJson: false,
@@ -70,7 +73,7 @@ class MenuController extends Controller
                 'Berhasil Mendapatkan Menu',
                 [
                     'pagination' => new PaginationResource($menus),
-                    'menus' => $menus,
+                    'menus' => MenuResource::collection($menus)->toArray($request),
                 ],
                 isJson: false
             );
@@ -92,11 +95,11 @@ class MenuController extends Controller
     {
         try {
 
-            $menu = $this->menuService->searchByID($id);
+            $menu = $this->menuService->searchByID($id, true);
 
             if (!$menu) {
                 $response = $this->responseData->create(
-                    'Tidak dapa menemukan menu',
+                    'Tidak dapat menemukan menu',
                     status: 'warning',
                     status_code: 404,
                     isJson: false,
@@ -223,6 +226,7 @@ class MenuController extends Controller
 
             $response = $this->responseData->create(
                 $created_info['message'],
+                status_code: 201,
                 isJson: false,
             );
 
@@ -342,6 +346,83 @@ class MenuController extends Controller
             );
             return redirect()->back()->withInput()->with(compact('response'));
         }
+    }
+
+     public function deleteHandler(Request $request, string $id)
+    {
+        try {
+
+            $menu = $this->menuService->searchByID($id);
+
+            if (!$menu) {
+                $response = $this->responseData->create(
+                    'Tidak Dapat Menemukan menu!',
+                    status: 'warning',
+                    status_code: 404,
+                    isJson: false
+                );
+                return redirect()->back()->withInput()->with(compact('response'));
+            }
+
+            $this->menuService->delete($menu);
+
+            $response = $this->responseData->create(
+                'Berhasil dalam menghapus menu',
+                isJson:false
+            );
+
+            return redirect()->route('admin.menus')->with(compact('response'));
+
+        } catch (Exception $e) {
+            Log::error('There Something Error When Handling Delete The Menu :' . $e->getMessage());
+            $resposne = $this->responseData->create(
+                'Telah Terjadi Kesalahan Pada Server',
+                status: 'error',
+                status_code: 500,
+                isJson: false,
+            );
+
+            return redirect()->back()->withInput()->with(compact('response'));
+        }
+    }
+
+    public function restoreHandler(Request $request, string $id)
+    {
+        try {
+
+            $menu = $this->menuService->searchByID($id, true);
+
+            if (!$menu) {
+                $response = $this->responseData->create(
+                    'Tidak Dapat Menemukan Menu!',
+                    status: 'warning',
+                    status_code: 404,
+                    isJson: false
+                );
+                return redirect()->back()->withInput()->with(compact('response'));
+            }
+
+            $this->menuService->restore($menu);
+
+            $response = $this->responseData->create(
+                'Berhasil dalam mengembalikan menu',
+                isJson:false
+            );
+
+            return redirect()->route('admin.menus')->with(compact('response'));
+
+        } catch (Exception $e) {
+            Log::error('There Something Error When Restoring The Deleted Menu :' . $e->getMessage());
+            $resposne = $this->responseData->create(
+                'Telah Terjadi Kesalahan Pada Server',
+                status: 'error',
+                status_code: 500,
+                isJson: false,
+            );
+
+            return redirect()->back()->withInput()->with(compact('response'));
+        }
+
     }
 
 }

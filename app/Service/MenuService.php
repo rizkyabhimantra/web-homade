@@ -21,10 +21,23 @@ class MenuService
         string $category = null,
         int $limit = 10,
         string|null $status_active = 'active',
+        string $status = 'available',
         bool $is_has_limit = true,
+        bool $is_with_price = false,
     ) {
+        $status = strtolower($status);
+        $menus = Menu::query();
 
-        $menus = Menu::with(['menu_categories', 'theme'])
+        if ($status === 'all') {
+            $menus->withTrashed();
+        } else if ($status === 'deleted') {
+            $menus->onlyTrashed();
+        }
+
+        $menus->with(['menu_categories', 'theme'])
+            ->when($is_with_price, function ($query) {
+                return $query->with('prices');
+            })
             ->when($search, function ($query, $search) {
                 return $query->whereRaw('LOWER(name) LIKE ? ', ["%$search%"]);
             })
@@ -60,18 +73,21 @@ class MenuService
         return $this->all(limit: 3);
     }
 
-    public function searchByID(string|int $id)
-    {
-        return Menu::with([
-            'menu_categories',
-            'theme',
-            'prices' => function ($query) {
-                if (!auth()->user() || !auth()->user()->isAdminOrOwner()) {
-                    return $query->where('price', '>', 0);
-                }
-                return $query;
-            },
-        ])->find($id);
+    public function searchByID(
+        string|int $id,
+        bool $with_trashed = false,
+    ) {
+        return Menu::withTrashed($with_trashed)
+            ->with([
+                'menu_categories',
+                'theme',
+                'prices' => function ($query) {
+                    if (!auth()->user() || !auth()->user()->isAdminOrOwner()) {
+                        return $query->where('price', '>', 0);
+                    }
+                    return $query;
+                },
+            ])->find($id);
     }
 
     public function withThemeAndCategory(
@@ -102,22 +118,26 @@ class MenuService
     }
 
     public function getWeeklyMenus(
-        int $week = 1
-    ) {        
+        int $week = 1,
+        bool $is_with_price = false,
+    ) {
 
-        if($week > 0){
+        if ($week > 0) {
             $week -= 1;
-        }else if ($week == 0){
+        } else if ($week == 0) {
             $week = 0;
         }
 
-        $currentTime = now()->addDays($week * 7)->setTime(0,0,0);
+        $currentTime = now()->addDays($week * 7)->setTime(0, 0, 0);
         $labubu = $currentTime->getDaysFromStartOfWeek();
         $start_time = $currentTime->subDays($labubu);
         $end_time = $start_time->clone()->addDays(4);
 
         $schedules = MenuSchedule::whereBetween('date_at', [$start_time, $end_time])
             ->with('menu')
+            ->when($is_with_price, function ($query) {
+                return $query->with('menu.prices');
+            })
             ->get();
 
         $schedules = $schedules->groupBy(function ($item) {
@@ -142,9 +162,9 @@ class MenuService
             'prices',
             'schedule'
         ])
-        ->whereHas('schedule', function($query)use($date){
-            $query->whereDate('date_at', $date);
-        })->get();
+            ->whereHas('schedule', function ($query) use ($date) {
+                $query->whereDate('date_at', $date);
+            })->get();
     }
 
     public function getByMultipleDay(array $date)
@@ -302,15 +322,16 @@ class MenuService
                 // cek packages
                 if (isset($data['packages'])) {
                     foreach ($data['packages'] as $package) {
-                        MenuPrice::create([
-                            'id_menu' => $menu->id,
-                            'id_package' => $package['package_id'],
-                            'price' => $package['price'],
-                            'created_at' => now(),
-                            'update_at' => now(),
-                        ]);
+                        if ($package['price']) {
+                            MenuPrice::create([
+                                'id_menu' => $menu->id,
+                                'id_package' => $package['package_id'],
+                                'price' => $package['price'],
+                                'created_at' => now(),
+                                'update_at' => now(),
+                            ]);
+                        }
                     }
-
                 }
 
 
@@ -457,8 +478,14 @@ class MenuService
 
     }
 
-    public function delete()
+    public function delete(Menu $menu)
     {
+        $menu->delete();
+    }
+
+    public function restore(Menu $menu)
+    {
+        $menu->restore();
     }
 
     public function saveWeeklyMenu(
@@ -485,7 +512,7 @@ class MenuService
                 }
                 $date = Carbon::parse($start_date);
                 return [
-                    'is_success' => false,
+                    'is_success' => true,
                     'message' => 'Berhasil dalam mengubah data menu minggu ke ' . $date->weekOfMonth
                 ];
             });
