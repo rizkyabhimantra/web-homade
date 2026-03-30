@@ -25,7 +25,7 @@
                         </div>
 
                         <div class="d-flex w-100 h-75 flex-column justify-content-center w-100 ">
-                            <p class="fs-3 text-accent fw-bolder mb-0">Andi Pratama</p>
+                            <p class="fs-3 text-accent fw-bolder mb-0">{{ old('first_name', $response['data']['first_name']) }} {{ old('last_name', $response['data']['last_name']) }}</p>
                             <a href="/me" class="fs-5 mb-0 text-accent fw-light d-flex align-items-center gap-1"><img src="{{ asset("icons/edit.svg") }}" class="h-12em"> Ubah Profil</a>
                         </div>
 

@@ -13,10 +13,10 @@
 
         <div class="d-flex w-100 align-items-center justify-content-center">
 
-            <div class="d-flex w-90 align-items-start gap-5">
+            <div class="d-flex w-90 flex-column flex-lg-row align-items-start gap-5">
 
             <!-- begin::Left Side -->
-                <div class="d-flex w-25 flex-column border-grey-1 rounded-4 gap-1 p-5 flex-shrink-0">
+                <div class="d-flex w-100 w-lg-25 flex-column border-grey-1 rounded-4 gap-1 p-5 flex-shrink-0">
 
                     <div class="d-flex w-100 mb-2 h-100px align-items-center gap-5">
 
@@ -64,7 +64,7 @@
                 <span class="w-1px flex-shrink-0"></span>
 
             <!-- begin::Right Side -->
-                <div class="d-flex w-75 p-10 flex-column border-grey-1 rounded-4">
+                <div class="d-flex w-100 w-lg-75 p-10 flex-column border-grey-1 rounded-4">
 
                     <p class="fsc-4 fw-bold">Daftar Pesanan</p>
 
@@ -74,32 +74,37 @@
                         <button class="fsc-3 px-2 position-relative">Test <img src="https://pbs.twimg.com/media/GvF8AkFXwAAA2Ai.jpg" alt="" class="sonic"></button>
                         @endforeach
                     </div> 
-                    
+                    @dd($response)
+                    @foreach ($response['data']['orders'] as $pesanan)
 
-                    <div class="d-flex w-100 rounded-3 mb-5 p-5 px-7 border-grey-1 overflow-hidden">
+                    <div class="d-flex w-100 rounded-3 flex-column-reverse flex-lg-row mb-5 p-5 px-7 border-grey-1 overflow-hidden">
                         <div class="d-flex w-100 flex-column overflow-hidden">
                             <p class="fsc-2 border-grey-1 bg-dark-grey p-1 px-4 text-accent w-max rounded-pill">Rumah</p>
                             <p class="fsc-3 mb-0 fw-bolder">Jl. Kemajuan V No.45</p>
                             <p class="fsc-2 mb-0 fw-bold">0812-3456-7890</p>
-                            <p class="fsc-2 mb-5 w-50">Jl. Kemajuan V No.45, RT.5/RW.4, Petukangan Sel., Kec. Pesanggrahan, Kota Jakarta Selatan.</p>
+                            <p class="fsc-2 mb-5 w-100 w-lg-50">Jl. Kemajuan V No.45, RT.5/RW.4, Petukangan Sel., Kec. Pesanggrahan, Kota Jakarta Selatan.</p>
 
-                            <div class="d-flex w-100 h-75px mt-5 gap-5">
+                            <div class="d-flex w-100 h-50px h-lg-75px mt-5 gap-5 mb-5">
                                 <div class="d-flex h-100 ratio-1">
                                     <img src="https://pbs.twimg.com/media/GvF8AkFXwAAA2Ai.jpg" alt="" class="w-100 h-100">
                                 </div>
                                 <div class="d-flex flex-column overflow-hidden justify-content-center">
                                     <p class="fsc-2 fw-bolder mb-0">Paket A - Bento Mealbox</p>
-                                    <p class="fsc-2 mb-0 w-25 overflow-hidden text-nowrap text-overflow">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</p>
+                                    <p class="fsc-2 mb-0 w-100 w-lg-25 overflow-hidden text-nowrap text-overflow">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</p>
                                 </div>
                             </div>
+
+                            <a href="/select-menu" class="text-black fsc-2 border-grey-1 d-flex d-lg-none p-1 py-3 px-4 fw-bold w-max rounded-3">Detail Pesanan</a>
                         </div>
 
-                        <div class="d-flex justify-content-between flex-column flex-shrink-0">
+                        <div class="d-flex justify-content-between align-items-center align-items-sm-end mb-5 mb-lg-0 flex-column w-100 w-lg-auto flex-shrink-0">
                             <p class="fsc-2 fw-bold bg-light-accent p-1 px-4 py-3 text-accent w-max rounded-3">Waiting Review</p>
-                            <a href="/select-menu" class="text-black fsc-2 border-grey-1 p-1 py-3 px-4 fw-bold w-max rounded-3">Detail Pesanan</a>
+                            <a href="/select-menu" class="text-black fsc-2 border-grey-1 d-none d-lg-flex p-1 py-3 px-4 fw-bold w-max rounded-3">Detail Pesanan</a>
                         </div>
 
                     </div>
+                        
+                    @endforeach
 
                 </div>
             <!-- end::Right Side -->

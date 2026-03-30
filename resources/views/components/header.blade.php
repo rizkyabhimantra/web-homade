@@ -28,7 +28,11 @@
 		<link href="/assets/css/style.bundle.css" rel="stylesheet" type="text/css" />
 		<!--end::Global Stylesheets Bundle-->
 		<script>// Frame-busting to prevent site from being loaded within a frame without permission (click-jacking) if (window.top != window.self) { window.top.location.replace(window.self.location.href); }</script>
-		
+
+		<!--begin::Custom Stylesheets-->
+		<link href="{{ asset('assets/css/custom.css') }}" rel="stylesheet" type="text/css" />
+		<!--end::Custom Stylesheets-->
+
 		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 		<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 	</head>

@@ -72,8 +72,9 @@
                     </div>
 
                     <p class="fsc-3 d-none d-lg-inline fw-bold">Alamat</p>
-
-                    <div class="d-flex w-100 rounded-3 mb-5 p-5 px-7 bg-light-accent flex-column flex-lg-row border-homade-1">
+                    @dd($response)
+                    @foreach ($response['data'] ?? [] as $address)
+                    <div class="d-flex w-100 rounded-3 mb-5 p-5 px-7 flex-column flex-lg-row {{ $address['is_main'] === true ? 'bg-light-accent border-homade-1' : 'bg-grey-1' }} ">
                         <div class="d-flex w-100 mb-5 mb-lg-0 flex-column">
                             <p class="fsc-2 border-grey-1 bg-dark-grey p-1 px-4 text-accent w-max rounded-pill">Rumah</p>
                             <p class="fsc-3 mb-0 fw-bolder">Jl. Kemajuan V No.45</p>
@@ -89,29 +90,16 @@
                         </div>
 
                     </div>
-
-                    <div class="d-flex w-100 rounded-3 mb-5 p-5 px-7 bg-grey-1 flex-column flex-lg-row border-grey-1">
-                        <div class="d-flex w-100 mb-5 mb-lg-0 flex-column">
-                            <p class="fsc-2 border-grey-1 bg-dark-grey p-1 px-4 text-accent w-max rounded-pill">Rumah</p>
-                            <p class="fsc-3 mb-0 fw-bolder">Jl. Kemajuan V No.45</p>
-                            <p class="fsc-2 mb-0 fw-bold">0812-3456-7890</p>
-                            <p class="fsc-2 mb-0 w-100 w-md-50">Jl. Kemajuan V No.45, RT.5/RW.4, Petukangan Sel., Kec. Pesanggrahan, Kota Jakarta Selatan.</p>
-                        </div>
-
-                        <div class="d-flex w-100 w-md-auto justify-content-end flex-row flex-lg-column flex-shrink-0">
-                            <div class="d-flex gap-5 px-5">
-                                <button class="text-accent fw-bold fsc-2">Ubah</button>
-                                <button class="text-accent fw-bold fsc-2">Hapus</button>
-                            </div>
-                        </div>
-
-                    </div>
+                        
+                    @endforeach
                     
                 </div>
             <!-- end::Right Side -->
 
             <!-- begin::pop up add address -->
-             <div class="d-none2 w-100 justify-content-center h-100 pop-up" id="popUp">
+             <form class="d-none2 w-100 justify-content-center h-100 pop-up" id="popUp">
+                @csrf
+                @method('post')
                 <button class="d-none d-md-flex w-100 h-100 bg-transparent cursor-default" onclick="closePopUp()"></button>
                 <div class="d-flex w-99 w-md-60 align-items-center overflow-scroll flex-shrink-0 flex-column">
                     
@@ -126,29 +114,25 @@
                             <div type="text" class="w-100 border-grey-1 h-250px rounded-4 fsc-2">
                                 <div id="map" class="w-100 h-100 rounded-4"></div>
                             </div>
-                            <div class="d-flex gap-5 w-100">
-                                <p id="lat-display">lat: </p>
-                                <p id="lng-display">lng: </p>
-                            </div>
 
                             <label class="mb-2 mt-5 ps-5 fsc-2 text-grey fw-bold" for="addressLabel">Label Alamat</label>
-                            <input id="addressLabel" type="text" class="w-100 border-grey-1 h-50px ps-5 rounded-4 fsc-2">
+                            <input id="addressLabel" name="label" type="text" class="w-100 border-grey-1 h-50px ps-5 rounded-4 fsc-2">
                             
                             <label class="mb-2 mt-5 ps-5 fsc-2 text-grey fw-bold" for="address">Alamat Lengkap</label>
-                            <textarea id="address" type="text" class="w-100 border-grey-1 min-h-75px p-5 rounded-4 fsc-2"></textarea>
+                            <textarea id="address" name="address" type="text" class="w-100 border-grey-1 min-h-75px p-5 rounded-4 fsc-2"></textarea>
 
                             <label class="mb-2 mt-5 ps-5 fsc-2 text-grey fw-bold" for="deliveryNote">Catatan kurir (opsional)</label>
-                            <input id="deliveryNote" type="text" class="w-100 border-grey-1 h-50px ps-5 rounded-4 fsc-2">
+                            <input id="deliveryNote" name="note" type="text" class="w-100 border-grey-1 h-50px ps-5 rounded-4 fsc-2">
                             
-                            <label class="mb-2 mt-5 ps-5 fsc-2 text-grey fw-bold" for="reciever">Nama Penerima</label>
-                            <input id="reciever" type="text" class="w-100 border-grey-1 h-50px ps-5 rounded-4 fsc-2">
+                            <label class="mb-2 mt-5 ps-5 fsc-2 text-grey fw-bold" for="fullname">Nama Penerima</label>
+                            <input id="fullname" name="fullname" type="text" class="w-100 border-grey-1 h-50px ps-5 rounded-4 fsc-2">
 
-                            <label class="mb-2 mt-5 ps-5 fsc-2 text-grey fw-bold" for="phoneNumber">Nomor HP</label>
-                            <input id="phoneNumber" type="text" class="w-100 mb-2 border-grey-1 h-50px ps-5 rounded-4 fsc-2">
+                            <label class="mb-2 mt-5 ps-5 fsc-2 text-grey fw-bold" for="phone">Nomor HP</label>
+                            <input id="phone" name="phone" type="text" class="w-100 mb-2 border-grey-1 h-50px ps-5 rounded-4 fsc-2">
 
                             <div class="d-flex w-100 border-grey-1 mt-5 h-50px px-5 align-items-center justify-content-between rounded-4">
                                 <p class="fsc-2 mb-0 text-black fw-bold">Jadikan Alamat Utama?</p>
-                                <button class="d-flex align-content-center flex-column justify-content-center h-100 ratio-1" onclick="activateSwitch()">
+                                <button type="button" class="d-flex align-content-center flex-column justify-content-center h-100 ratio-1" onclick="activateSwitch()">
                                     <div class="d-flex w-100 h-50 rounded-pill p-1 switch" id="mainSwitch">
                                         <span class="fill1"></span>
                                         <span class="h-100 ratio-1 flex-shrink-0 rounded-circle bg-white"></span>
@@ -156,9 +140,12 @@
                                     </div>
                                 </button>
                             </div>
-                            <p id="test"></p>
+                            
+                            <input type="hidden" name="latitude" id="latInput">
+                            <input type="hidden" name="longitude" id="lngInput">
+                            <input type="hidden" name="is_main_address" id="isMainInput" value="0">
 
-                            <button class="btn-primary-homade my-5 rounded-4 w-100 align-content-center h-50px justify-content-center fs-3" onclick="closePopUp()">Simpan</button>
+                            <button class="btn-primary-homade my-5 rounded-4 w-100 align-content-center h-50px justify-content-center fs-3">Simpan</button>
                         </div>
                     </div>
 
@@ -166,7 +153,7 @@
                     
                 </div>
                 <button class="d-none d-md-flex w-100 h-100 bg-transparent cursor-default" onclick="closePopUp()"></button>
-             </div>
+             </form>
             <!-- end::pop up add address -->
 
             </div>
@@ -207,7 +194,7 @@
             function activateSwitch() {
                 mainAddress = !mainAddress
                 document.getElementById("mainSwitch").classList.toggle("active")
-                document.getElementById("test").innerText = mainAddress
+                document.getElementById("isMainInput").value = mainAddress ? 1 : 0  
             }
 
             var map = L.map('map').setView([-6.28, 106.71], 13)
@@ -254,11 +241,37 @@
                     marker = L.marker(e.latlng).addTo(map)
                 }
 
-                document.getElementById('lat-display').innerText = 'lat: ' + lat.toFixed(4)
-                document.getElementById('lng-display').innerText = 'lng: ' + lng.toFixed(4)
+                document.getElementById('latInput').value = lat
+                document.getElementById('lngInput').value = lng
             })
-        
+
         </script>
+
+        <script>
+            document.getElementById("popUp").addEventListener("submit", function(e) {
+            e.preventDefault()
+
+            const fullname = document.getElementById('fullname').value.trim()
+            const phone    = document.getElementById('phone').value.trim()
+            const label    = document.getElementById('addressLabel').value.trim()
+            const address  = document.getElementById('address').value.trim()
+            const lat      = document.getElementById('latInput').value
+            const lng      = document.getElementById('lngInput').value
+
+            if (!fullname) return alert('Nama penerima wajib diisi')
+            if (!phone) return alert('Nomor HP wajib diisi')
+            if (phone.length < 8) return alert('Nomor HP minimal 8 karakter')
+            if (!label) return alert('Label alamat wajib diisi')
+            if (label.length < 3) return alert('Label alamat minimal 3 karakter')
+            if (!address) return alert('Alamat lengkap wajib diisi')
+            if (address.length < 8) return alert('Alamat lengkap minimal 8 karakter')
+            if (!lat || !lng) return alert('Silakan pilih lokasi di peta')
+
+            this.submit()
+        })
+        </script>
+
+
     </body>
 
 

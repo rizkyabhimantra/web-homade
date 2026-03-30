@@ -19,52 +19,82 @@
 
                 <div class="d-flex mt-5 align-items-center flex-column flex-lg-row justify-content-between w-90 w-md-80">
                     <p class="fsc-4 fsc-md-3 fsc-lg-4 mb-3 mb-md-3 mb-lg-0 fw-black">Jadwal Menu Harian Homade Catering</p>
-    
+
+                    @php
+                        $schedules   = collect($response['data'] ?? []);
+                        $appLaunch   = \Carbon\Carbon::createFromFormat('d-m-Y', '30-03-2026');
+                        $curWeek     = (int) request()->query('week', 1);
+                        $prevWeek    = $curWeek - 1;
+                        $nextWeek    = $curWeek + 1;
+
+                        $startOfWeek = $appLaunch->copy()->addWeeks($curWeek - 1);
+                        $endOfWeek   = $startOfWeek->copy()->addDays(4);
+
+                        $schedulesByDate = $schedules->keyBy('date');
+                    @endphp
                     <div class="d-flex w-99 w-md-60 w-lg-55 w-xl-40 h-50px border-grey-1 rounded-2">
-                        <button class="flex-shrink-0 h-100 ratio-1 d-flex align-items-center justify-content-center"><img class=" w-75 h-75" src="{{ asset('icons/caret-arrow-left.svg') }}" alt=""></button>
+
+                        <a href="?week={{ $prevWeek }}" class="flex-shrink-0 h-100 ratio-1 d-flex align-items-center justify-content-center">
+                            <img class="w-75 h-75" src="{{ asset('icons/caret-arrow-left.svg') }}" alt="">
+                        </a>
 
                         <div class="d-flex align-items-center borderx-black-1 justify-content-center w-100 h-100">
-                            <p class="fsc-2 fsc-sm-3 fsc-md-2 fw-bold d-flex gap-4 mb-0 align-items-center text-nowrap"><img src="{{ asset('icons/calendar.svg') }}" class="h-12em"> 9 Februari - 15 Februari 2026 </p>
+                            <p class="fsc-2 fsc-sm-3 fsc-md-2 fw-bold d-flex gap-4 mb-0 align-items-center text-nowrap">
+                                <img src="{{ asset('icons/calendar.svg') }}" class="h-12em">
+                                {{ $startOfWeek->translatedFormat('j F') }} - {{ $endOfWeek->translatedFormat('j F Y') }}
+                            </p>
                         </div>
 
-                        <button class="flex-shrink-0 h-100 ratio-1 d-flex align-items-center justify-content-center"><img class=" w-75 h-75" src="{{ asset('icons/caret-arrow-right.svg') }}" alt=""></button>
+                        <a href="?week={{ $nextWeek }}" class="flex-shrink-0 h-100 ratio-1 d-flex align-items-center justify-content-center">
+                            <img class="w-75 h-75" src="{{ asset('icons/caret-arrow-right.svg') }}" alt="">
+                        </a>
+
                     </div>
+
                 </div>
 
+                <!--  -->
+                
                 <div class="d-flex align-items-center flex-column flex-md-row justify-content-center gap-3 w-95 w-xl-80 h-md-500px">
-                    @foreach (range(1,5) as $i)
-                        <a href="/select-menu-weekly" class="d-flex align-items-center overflow-hidden justify-content-center w-200px w-md-100 h-100 flex-column rounded-3">
+                
+                    @foreach (range(0, 4) as $i)
+                    @php
+                        $day    = $startOfWeek->copy()->addDays($i);
+                        $dayKey = $day->format('d-m-Y');
+                        $menus  = ($schedulesByDate->get($dayKey))['menus'] ?? [];
+                    @endphp
 
-                            <div class="d-flex p-5 justify-content-center flex-column bg-accent rounded-top-3 h-20 w-100">
-                                <p class="fsc-3 mb-1 fw-bolder text-white">Senin</p>
-                                <p class="fsc-2 mb-0 text-white">Feb 09</p>
-                            </div>
+                    <a href="/select-menu-weekly?date={{ $day->format('Y-m-d') }}"
+                    class="d-flex align-items-center overflow-hidden justify-content-center w-200px w-md-100 h-100 flex-column rounded-3">
 
-                            <div class="d-flex align-items-center overflow-hidden justify-content-center rounded-bottom-3 flex-column gap-5 border-grey-1 h-100 w-100">
+                        <div class="d-flex p-5 justify-content-center flex-column bg-accent rounded-top-3 h-20 w-100">
+                            <p class="fsc-3 mb-1 fw-bolder text-white">{{ $day->translatedFormat('l') }}</p>
+                            <p class="fsc-2 mb-0 text-white">{{ $day->translatedFormat('d M') }}</p>
+                        </div>
 
-                                @foreach (range(1,2) as $j)
+                        <div class="d-flex align-items-center overflow-hidden justify-content-center rounded-bottom-3 flex-column gap-5 border-grey-1 h-100 w-100">
+                            @forelse ($menus as $menu)
                                 <div class="d-flex align-items-center overflow-hidden flex-column justify-content-center w-70 h-45 rounded-5 border-grey-1">
-
                                     <div class="d-flex w-100 h-60 flex-shrink-0 overflow-hidden position-relative">
-                                        <img src="{{ $placeImg }}" class="w-100 h-100 rounded-5 object-fit-cover">
-                                        <span class="position-absolute fsc-1 theme-position bg-accent px-3 py-1 text-white fw-bold rounded-pill">Paket A</span>
+                                        <img src="{{ $menu['image_url'] }}" class="w-100 h-100 rounded-5 object-fit-cover" alt="{{ $menu['name'] }}">
+                                        <span class="position-absolute fsc-1 theme-position bg-accent px-3 py-1 text-white fw-bold rounded-pill">
+                                            {{ $menu['theme'] }}
+                                        </span>
                                     </div>
-
                                     <div class="d-flex w-100 h-40 overflow-hidden">
                                         <div class="d-flex px-4 py-2 w-100 h-100 overflow-hidden">
-                                            <p class="fsc-2 w-100 h-100 overflow-hidden text-overflow text-nowrap">Ayam Pop Maknyus Wildan Super Enak Banget Omaigad</p>
-                                            <!-- <p class="fsc-2 w-100 h-100 overflow-scroll">Ayam Pop Maknyus Wildan Super Enak Banget Omaigad</p> -->
+                                            <p class="fsc-2 w-100 h-100 overflow-hidden text-overflow text-nowrap">{{ $menu['name'] }}</p>
                                         </div>
                                     </div>
-
                                 </div>
-                                @endforeach
+                            @empty
+                                <p class="fsc-2 text-muted mb-0">Tidak ada menu</p>
+                            @endforelse
+                        </div>
 
-                            </div>
+                    </a>
+                @endforeach
 
-                            
-                        </a>
-                    @endforeach
                 </div>
 
                 <div class="d-flex align-items-center flex-column flex-md-row justify-content-center mt-5 w-95 w-xl-80 h-md-150px h-lg-125px gap-5 gap-lg-10">

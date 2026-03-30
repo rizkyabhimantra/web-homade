@@ -84,7 +84,7 @@ License: For each use you must have a valid license purchased only from above li
 									<!--begin::Heading-->
 									<div class="text-start mb-10 align-items-center d-flex flex-column">
 										<!--begin::Title-->
-                                        <img src="img/logo.svg" class="w-50 mb-5" alt="">
+                                        <img src="img/logo.svg" class="w-50 mb-5 d-none d-lg-flex" alt="">
                                         <div class="mt-5 mb-5"></div>
 										<h1 class="text-white mb-3 fs-3x text-center w-100" data-kt-translate="sign-in-title">Masuk</h1>
 										<h3 class="text-white mb-3 fs-1x fw-light text-center w-100" data-kt-translate="sign-in-title">Masuk untuk pesan makan</h3>
@@ -121,7 +121,7 @@ License: For each use you must have a valid license purchased only from above li
 									<!--begin::Actions-->
 									<div class="d-flex flex-stack">
 										<!--begin::Submit-->
-										<button id="kt_sign_in_submit" class="btn-primary-homade w-100 p-4 rounded">
+										<button id="kt_sign_in_submit" class="btn-primary-homade align-items-center justify-content-center w-100 p-4 rounded">
 											<!--begin::Indicator label-->
 											<span class="indicator-label text-white fw-medium" data-kt-translate="sign-in-submit">Masuk</span>
 											<!--end::Indicator label-->

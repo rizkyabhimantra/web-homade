@@ -70,6 +70,9 @@ License: For each use you must have a valid license purchased only from above li
 						<!--end::Header-->
 						<!--begin::Body-->
 						<div class="py-20">
+
+
+
 							<!--begin::Form-->
 							<form class="form w-100" novalidate="novalidate" id="form" action="{{ route('user.signup-handler') }}" method="post">
                             @csrf
@@ -92,7 +95,7 @@ License: For each use you must have a valid license purchased only from above li
 									</div>
 									<div class="fv-row mb-8">
 										<!--begin::Email-->
-										<input required type="text" placeholder="Email" id="email" name="email" autocomplete="off" data-kt-translate="sign-in-input-email" class="form-control form-control-solid" />
+										<input required type="email" placeholder="Email" id="email" name="email" autocomplete="off" data-kt-translate="sign-in-input-email" class="form-control form-control-solid" />
 										<!--end::Email-->
 									</div>
 									<!--end::Input group=-->
@@ -128,7 +131,7 @@ License: For each use you must have a valid license purchased only from above li
 									<!--begin::Actions-->
 									<div class="d-flex flex-stack">
 										<!--begin::Submit-->
-										<button id="kt_sign_in_submit" class="btn-primary-homade w-100 p-4 rounded">
+										<button id="kt_sign_in_submit" class="btn-primary-homade align-items-center justify-content-center w-100 p-4 rounded">
 											<!--begin::Indicator label-->
 											<span class="indicator-label text-white fw-medium" data-kt-translate="sign-in-submit">Masuk</span>
 											<!--end::Indicator label-->
@@ -152,6 +155,9 @@ License: For each use you must have a valid license purchased only from above li
 								<!--begin::Body-->
 							</form>
 							<!--end::Form-->
+
+
+
 						</div>
 						<!--end::Body-->
 					</div>
@@ -165,9 +171,10 @@ License: For each use you must have a valid license purchased only from above li
 			<!--end::Authentication - Sign-in-->
 		</div>
 		<!--end::Root-->
-		<!--begin::Javascript-->
-        <script>
 
+		<!--begin::Javascript-->
+
+        <script>
             const firstInput = document.getElementById("firstName")
             const lastInput = document.getElementById("lastName")
             const emailInput = document.getElementById("email")
@@ -228,22 +235,56 @@ License: For each use you must have a valid license purchased only from above li
                     conhideIcon.classList.add("d-none")
                 }
             }
-        
 
-            form.addEventListener('submit', (e) => {
-                if (passInput.value !== conPassInput.value) {
-                    e.preventDefault()
-                    alert("Passwords do not match!")
-                    return false
-                }
+			form.addEventListener('submit', (e) => {
+				const firstName = firstInput.value.trim()
+				const email = emailInput.value.trim()
+				const password = passInput.value
+				const confirmPassword = conPassInput.value
 
-                if (!firstInput.value || !lastInput.value || !emailInput.value || !passInput.value || !conPassInput.value) {
-                    e.preventDefault()
-                    alert("Please fill all the input field!")
-                    return false
-                }
-            })
-            </script>
+				if (firstName.length < 2) {
+					e.preventDefault()
+					alert("First Name must be at least 2 characters long!")
+					firstInput.focus()
+					return false
+				}
+
+				const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+				if (email.length < 8 || !emailRegex.test(email)) {
+					e.preventDefault()
+					alert("Please enter a valid email address (at least 8 characters).")
+					emailInput.focus()
+					return false
+				}
+
+				const hasUppercase = /[A-Z]/.test(password)
+				const hasLowercase = /[a-z]/.test(password)
+				const hasNumbers = /\d/.test(password)
+				const hasSymbols = /[!@#$%^&*(),.?":{}|<>]/.test(password)
+
+				if (password.length < 8) {
+					e.preventDefault()
+					alert("Password must be at least 8 characters!")
+					passInput.focus()
+					return false
+				}
+
+				if (!hasUppercase || !hasLowercase || !hasNumbers || !hasSymbols) {
+					e.preventDefault()
+					alert("Password is too weak! Needs: Uppercase, Lowercase, Number, and Symbol.")
+					passInput.focus()
+					return false
+				}
+
+				if (password !== confirmPassword) {
+					e.preventDefault()
+					alert("Passwords do not match!")
+					conPassInput.focus()
+					return false
+				}
+
+			})
+        </script>
 
             
 		<!--end::Javascript-->

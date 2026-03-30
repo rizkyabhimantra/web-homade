@@ -102,7 +102,7 @@
                     
                 </div>
 
-                <form class="d-flex flex-column w-100 w-md-50 h-200 h-md-100 p-10 border-grey-1 overflow-scroll rounded-4">
+                <form id="contactForm" class="d-flex flex-column w-100 w-md-50 h-200 h-md-100 p-10 border-grey-1 overflow-scroll rounded-4">
 
                     <p class="fsc-5 flex-shrink-0 fw-black">Hubungi Kami</p>
                     <p class="fs-3 flex-shrink-0">Silahkan isi form di bawah ini, kami akan membalas pesan Anda secepatnya.</p>
@@ -116,8 +116,8 @@
                     <label for="subject" class="flex-shrink-0 fs-3 mt-5 mb-1">SUBJEK</label>
                     <input type="text" id="subject" class="flex-shrink-0 h-40px border-grey-1 rounded-3 px-2 fs-4">
                     
-                    <label for="content" class="flex-shrink-0 fs-3 mt-5 mb-1">PESAN ANDA</label>
-                    <textarea type="text" id="content" placeholder="Masukkan pertanyaan atau komentar anda" class="flex-shrink-0 min-h-125px mb-5 border-grey-1 rounded-3 p-2 fs-6"></textarea>
+                    <label for="message" class="flex-shrink-0 fs-3 mt-5 mb-1">PESAN ANDA</label>
+                    <textarea type="text" id="message" placeholder="Masukkan pertanyaan atau komentar anda" class="flex-shrink-0 min-h-125px mb-5 border-grey-1 rounded-3 p-2 fs-6"></textarea>
 
                     <button class="flex-shrink-0 w-100 h-50px bg-accent rounded-3 fs-5 mt-5 fw-bold btn-primary-homade align-items-center justify-content-center">KIRIM PESAN <img src="icons/send.svg" class="img-white h-75"></button>
 
@@ -130,5 +130,46 @@
         @include('components.navbarFoot',[ "page" => "contact"])
         <script src="assets/plugins/global/plugins.bundle.js"></script>
         <script src="assets/js/scripts.bundle.js"></script>
+        
+        <script>
+            const form = document.getElementById('contactForm');
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const fullname = document.getElementById('fullname').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const subject = document.getElementById('subject').value.trim();
+                const message = document.getElementById('message').value.trim();
+
+                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+                if (fullname.length < 1) {
+                    alert('Nama lengkap wajib diisi!');
+                    return;
+                }
+
+                if (!emailPattern.test(email)) {
+                    alert('Format email tidak valid! (contoh: nama@email.com)');
+                    return;
+                }
+
+                if (subject.length < 3) {
+                    alert('Subjek harus minimal 3 karakter!');
+                    return;
+                }
+
+                if (message.length < 10) {
+                    alert('Pesan harus minimal 10 karakter agar kami mengerti maksud Anda!');
+                    return;
+                }
+
+                alert('Pesan Terkirim!')
+                console.log('sending msg');
+                
+                form.reset();
+            });
+        </script>
+
     </body>
 </html>
