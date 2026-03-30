@@ -41,7 +41,7 @@
 
             <div class="w-90 d-flex">
 
-                <a href="/menus-" class="btn-primary-homade rounded-pill bg-accent fs-2">Lihat Menu <img src="icons/arrow-right-c.svg" class="img-white"></a>
+                <a href="/menus" class="btn-primary-homade rounded-pill bg-accent fs-2">Lihat Menu <img src="icons/arrow-right-c.svg" class="img-white"></a>
 
             </div>
             

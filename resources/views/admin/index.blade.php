@@ -13,6 +13,11 @@ License: For each use you must have a valid license purchased only from above li
 <html lang="en">
 	<!--begin::Head-->
 	@include('components.header')
+	<head>
+		<!--begin::Custom Stylesheets-->
+		<link href="{{ asset('assets/css/custom.css') }}" rel="stylesheet" type="text/css" />
+		<!--end::Custom Stylesheets-->
+	</head>
 	<!--end::Head-->
 
 

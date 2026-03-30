@@ -98,7 +98,7 @@
 
             <div class="d-flex flex-column flex-sm-row w-90 w-md-76 gap-5">
                 @foreach ($response['data']['menus'] ?? [] as $menu)
-                <div class="d-flex w-100 h-350px h-sm-400px overflow-hidden flex-column">
+                <div onclick="window.location.href='menus/{{ $menu['id'] }}'" href="{{ $menu['id'] }}" class="d-flex w-100 h-350px h-sm-400px overflow-hidden flex-column cursor-pointer">
                     <div class="w-100 h-100 overflow-hidden">
                         <img src="{{ $menu['image_url'] }}" alt="{{ $menu['name'] }}" class="w-100 h-100 rounded object-fit-contain">
                     </div>

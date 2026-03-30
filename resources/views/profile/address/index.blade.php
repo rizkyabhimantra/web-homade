@@ -73,18 +73,22 @@
 
                     <p class="fsc-3 d-none d-lg-inline fw-bold">Alamat</p>
                     @foreach ($response['data'] ?? [] as $address)
-                    <div class="d-flex w-100 rounded-3 mb-5 p-5 px-7 flex-column flex-lg-row {{ $address['is_main'] === true ? 'bg-light-accent border-homade-1' : 'bg-grey-1' }} ">
+                    <div class="d-flex w-100 rounded-3 mb-5 p-5 px-7 flex-column flex-lg-row {{ $address['is_main'] === true ? 'bg-light-accent border-homade-1' : 'border-grey-1' }} ">
                         <div class="d-flex w-100 mb-5 mb-lg-0 flex-column">
-                            <p class="fsc-2 border-grey-1 bg-dark-grey p-1 px-4 text-accent w-max rounded-pill">Rumah</p>
-                            <p class="fsc-3 mb-0 fw-bolder">Jl. Kemajuan V No.45</p>
-                            <p class="fsc-2 mb-0 fw-bold">0812-3456-7890</p>
-                            <p class="fsc-2 mb-0 w-100 w-md-50">Jl. Kemajuan V No.45, RT.5/RW.4, Petukangan Sel., Kec. Pesanggrahan, Kota Jakarta Selatan.</p>
+                            <p class="fsc-2 border-grey-1 bg-dark-grey p-1 px-4 text-accent w-max rounded-pill">{{ $address['label'] }}</p>
+                            <p class="fsc-3 mb-0 fw-bolder">{{ $address['received_name'] }}</p>
+                            <p class="fsc-2 mb-0 fw-bold">{{ $address['phone'] }}</p>
+                            <p class="fsc-2 mb-0 w-100 w-md-50">{{ $address['address'] }}</p>
                         </div>
 
                         <div class="d-flex w-100 w-md-auto justify-content-end flex-row flex-lg-column flex-shrink-0">
                             <div class="d-flex gap-5 px-5">
-                                <button class="text-accent fw-bold fsc-2">Ubah</button>
-                                <button class="text-accent fw-bold fsc-2">Hapus</button>
+                                <a href="/me/address/{{ $address['id'] }}" class="text-accent fw-bold fsc-2">Ubah</a>
+                                <form action="/me/address/{{ $address['id'] }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" onclick="return confirm('Apakah kamu yakin ingin menghapus alamat ini?')" class="text-accent fw-bold fsc-2">Hapus</button>
+                                </form>
                             </div>
                         </div>
 
@@ -96,13 +100,12 @@
             <!-- end::Right Side -->
 
             <!-- begin::pop up add address -->
-             <form class="d-none2 w-100 justify-content-center h-100 pop-up" id="popUp">
+             <form class="d-none2 w-100 justify-content-center h-100 pop-up" method="post" id="popUp">
                 @csrf
-                @method('post')
-                <button class="d-none d-md-flex w-100 h-100 bg-transparent cursor-default" onclick="closePopUp()"></button>
+                <button type="reset" class="d-none d-md-flex w-100 h-100 bg-transparent cursor-default" onclick="closePopUp()"></button>
                 <div class="d-flex w-99 w-md-60 align-items-center overflow-scroll flex-shrink-0 flex-column">
                     
-                    <button class="w-100 h-50px bg-transparent flex-shrink-0 cursor-default" onclick="closePopUp()"></button>
+                    <button type="reset" class="w-100 h-50px bg-transparent flex-shrink-0 cursor-default" onclick="closePopUp()"></button>
 
                     <div class="d-flex w-100 min-h-100 flex-shrink-0 flex-column bg-white justify-content-center align-content-center rounded-5 border-grey-1">
                         <p class="mb-0 w-100 text-center pb-10 pt-15 fsc-4 text-accent fw-bold">Tambah Alamat</p>
@@ -148,10 +151,10 @@
                         </div>
                     </div>
 
-                    <button class="w-100 h-50px bg-transparent flex-shrink-0 cursor-default" onclick="closePopUp()"></button>
+                    <button type="reset" class="w-100 h-50px bg-transparent flex-shrink-0 cursor-default" onclick="closePopUp()"></button>
                     
                 </div>
-                <button class="d-none d-md-flex w-100 h-100 bg-transparent cursor-default" onclick="closePopUp()"></button>
+                <button type="reset" class="d-none d-md-flex w-100 h-100 bg-transparent cursor-default" onclick="closePopUp()"></button>
              </form>
             <!-- end::pop up add address -->
 
@@ -220,8 +223,8 @@
                                 marker = L.marker(userLocation).addTo(map)
                             }
 
-                            document.getElementById('lat-display').innerText = 'lat: ' + lat.toFixed(4)
-                            document.getElementById('lng-display').innerText = 'lng: ' + lng.toFixed(4)
+                            document.getElementById('latInput').value = lat
+                            document.getElementById('lngInput').value = lng
                         },
                         function(error) {
                             console.warn("Location access denied.")

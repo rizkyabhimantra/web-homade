@@ -84,6 +84,11 @@ body
     min-height: 100dvh;
 }
 
+.text-default
+{
+    color: $color-text;
+}
+
 .text-accent
 {
     color: $color-accent;

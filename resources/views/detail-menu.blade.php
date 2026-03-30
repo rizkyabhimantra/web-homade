@@ -19,8 +19,8 @@
                 <div class="d-flex w-100 flex-md-row flex-column h-100 h-md-250px">
 
                     <div class="d-flex w-100 overflow-hidden position-relative">
-                        <img src="{{ $placeImg }}" alt="" class="w-100 h-100 object-fit-cover">
-                        <span class="position-absolute px-10 py-1 bg-accent rounded-3 theme-position text-white fsc-2 fw-bold">Sunda</span>
+                        <img src="{{ $response['data']['image_url'] }}" alt="" class="w-100 h-100 object-fit-cover">
+                        <span class="position-absolute px-10 py-1 bg-accent rounded-3 theme-position text-white fsc-2 fw-bold">{{ $response['data']['theme'] }}</span>
                     </div>
 
                     <!--  -->
@@ -30,8 +30,8 @@
                     <!--  -->
 
                     <div class="d-flex align-items-center overflow-hidden pt-3 w-101 w-md-55 h-100 flex-column flex-md-shrink-0">
-                        <p class="fsc-4 mb-0 w-100 h-max flex-shrink-0 overflow-hidden text-nowrap text-overflow">Ayam</p>
-                        <p class="fsc-2 mb-0 w-100 h-30 flex-shrink-0 overflow-scroll ps-1">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                        <p class="fsc-4 mb-0 w-100 h-max flex-shrink-0 overflow-hidden text-nowrap text-overflow">{{$response['data']['name']}}</p>
+                        <p class="fsc-2 mb-0 w-100 h-30 flex-shrink-0 overflow-scroll ps-1">{{ $response['data']['description'] }}</p>
 
                         <span class="h-100 "></span>
 
@@ -40,21 +40,21 @@
                             <div class="d-flex w-100 h-100 bg-beige justify-content-center align-items-center rounded-4 flex-column">
                                 <div class="d-flex p-7 p-md-0 w-101 w-md-80 h-80 flex-column justify-content-center">
                                     <p class="fsc-2 fsc-md-1 fsc-lg-2 w-100 fw-bold mb-1 text-nowrap">Lauk Pendamping</p>
-                                    <p class="fsc-2 fsc-md-1 fsc-lg-2 w-100 mb-0">Tahu & Tempe</p>
+                                    <p class="fsc-2 fsc-md-1 fsc-lg-2 w-100 mb-0">{{ $response['data']['addon']['side_dish'] }}</p>
                                 </div>
                             </div>
 
                             <div class="d-flex w-100 h-100 bg-beige justify-content-center align-items-center rounded-4 flex-column">
                                 <div class="d-flex p-7 p-md-0 w-101 w-md-80 h-80 flex-column justify-content-center">
                                     <p class="fsc-2 fsc-md-1 fsc-lg-2 w-100 fw-bold mb-1">Sayuran</p>
-                                    <p class="fsc-2 fsc-md-1 fsc-lg-2 w-100 mb-0">Brokoli</p>
+                                    <p class="fsc-2 fsc-md-1 fsc-lg-2 w-100 mb-0">{{ $response['data']['addon']['vegetable'] }}</p>
                                 </div>
                             </div>
 
                             <div class="d-flex w-100 h-100 bg-beige justify-content-center align-items-center rounded-4 flex-column">
                                 <div class="d-flex p-7 p-md-0 w-101 w-md-80 h-80 flex-column justify-content-center">
                                     <p class="fsc-2 fsc-md-1 fsc-lg-2 w-100 fw-bold mb-1">Sambal</p>
-                                    <p class="fsc-2 fsc-md-1 fsc-lg-2 w-100 mb-0">Geprek</p>
+                                    <p class="fsc-2 fsc-md-1 fsc-lg-2 w-100 mb-0">{{ $response['data']['addon']['sauce'] }}</p>
                                 </div>    
                             </div>    
 
@@ -73,15 +73,15 @@
 
                     <div class="d-flex w-100 h-100 flex-column gap-3">
 
-                        @foreach (range(1,3) as $i)
+                        @foreach ($response['data']['packages'] as $paket)
                             <div class="d-flex flex-column align-items-center justify-content-md-center justify-content-between py-8 py-md-0 bg-beige w-100 h-100px h-md-100 rounded-4 px-5">
 
                                 <div class="d-flex w-100 justify-content-between align-items-center">
-                                    <p class="fsc-3 mb-0 h-max">Bento Mealbox</p>
-                                    <p class="fsc-2 mb-0 h-max">Rp. 30.000 / Box</p>
+                                    <p class="fsc-3 mb-0 h-max">{{ $paket['name'] }}</p>
+                                    <p class="fsc-2 mb-0 h-max">Rp {{ Number::format($paket['price'], locale: 'id') }}</p>
                                 </div>
 
-                                <p class="fsc-1 mb-0 w-100">Paket Keluarga terdiri dari lauk utama dan sayuran pendamping (tanpa nasi),Porsi untuk 4 orang.</p>
+                                <p class="fsc-1 mb-0 w-100">{{ $paket['description'] }}</p>
 
                             </div>
                         @endforeach
@@ -96,8 +96,6 @@
 
                     <div class="d-flex align-items-center gap-4 bg-beige rounded-5 w-101 w-md-55 px-5 px-md-10 py-sm-10 py-5 h-100 flex-column justify-content-center flex-md-shrink-0">
                     
-                        @foreach (range(1,3) as $i)
-                        
                             <div class="d-flex w-100 h-30px flex-shrink-0 gap-7 align-items-center">
                                 <div class="d-flex h-100 ratio-1 align-items-center justify-content-center rounded-circle bg-white">
                                     <img src="{{ asset('icons/food.svg') }}" alt="" class="h-50 img-accent">
@@ -105,8 +103,22 @@
 
                                 <p class="fsc-2 mb-0">Lauk pendamping dapat berbeda pada setiap pesanan</p>
                             </div>
+                    
+                            <div class="d-flex w-100 h-30px flex-shrink-0 gap-7 align-items-center">
+                                <div class="d-flex h-100 ratio-1 align-items-center justify-content-center rounded-circle bg-white">
+                                    <img src="{{ asset('icons/bag.svg') }}" alt="" class="h-50 img-accent">
+                                </div>
 
-                        @endforeach
+                                <p class="fsc-2 mb-0">Minimum pemesanan 5 box untuk bento mealbox atau valuebox</p>
+                            </div>
+                    
+                            <div class="d-flex w-100 h-30px flex-shrink-0 gap-7 align-items-center">
+                                <div class="d-flex h-100 ratio-1 align-items-center justify-content-center rounded-circle bg-white">
+                                    <img src="{{ asset('icons/clock.svg') }}" alt="" class="h-50 img-accent">
+                                </div>
+
+                                <p class="fsc-2 mb-0">Maksimal pemesanan H-1.</p>
+                            </div>
 
                         <p class="fsc-2 mb-0 w-100 flex-shrink-0 mt-3">Pastikan menu yang Anda ingin pesan sesuai jadwal yang telah kami tetapkan.</p>
                         <p class="fsc-2 mb-0 w-100 flex-shrink-0">Untuk pertanyaan dan pemesanan silahkan hubungi Whatsapp Customer Care kami di 0857-1180-1336, Senin-Jumat 9:00-17:00 WIB</p>
@@ -130,7 +142,11 @@
         
         <div class="d-flex w-100 align-items-center justify-content-center flex-column">
             
-            <p class="fsc-5 fsc-md-3 text-black">Categori: Ayam</p>
+            <p class="fsc-5 fsc-md-3 text-black">Categori: 
+                @foreach($response['data']['categories'] as $kategori)
+                {{ $kategori }}{{ $loop->last ? '' : ',' }}
+                @endforeach
+            </p>
             
             <span class="h-30px flex-shrink-0"></span>
 
@@ -152,26 +168,26 @@
 
         <div class="d-flex w-100 flex-shrink-0 align-items-center justify-content-center">
                 
-                <div class="d-flex flex-column d-sm-grid grid-template-homade-menus w-90 align-items-center justify-content-center flex-shrink-0 gap-5">
+            <div class="d-flex flex-column d-sm-grid grid-template-homade-menus w-90 align-items-center justify-content-center flex-shrink-0 gap-5">
 
-                    @foreach (range(1, 4) as $i)
-                    <a href="menus/9" class="d-flex flex-column gap-5 w-100 h-500px">
+                @foreach ($response['data']['relevants'] as $menu)
+                <a href="{{ $menu['id'] }}" class="d-flex flex-column gap-5 w-100 h-500px">
 
-                        <div class="w-100 h-75 position-relative">
-                            <img src="{{ $placeImg }}" class="w-100 h-100 object-fit-cover">
-                            <span class="w-max py-2 px-10 fsc-2 fw-bold bg-accent rounded-3 text-white position-absolute theme-position">Sunda</span>
-                        </div>
+                    <div class="w-100 h-75 position-relative">
+                        <img src="{{ $menu['image_url'] }}" class="w-100 h-100 object-fit-cover">
+                        <span class="w-max py-2 px-10 fsc-2 fw-bold bg-accent rounded-3 text-white position-absolute theme-position">{{ $menu['theme']['name'] }}</span>
+                    </div>
 
-                        <div class="w-100 h-25">
-                            <p class="fs-1 fw-bold text-center">Ayam Geprek Wildan Maknyus Meletus</p>
-                        </div>
-                        
-                    </a>
-                    @endforeach
+                    <div class="w-100 h-25">
+                        <p class="fs-1 fw-bold text-center">{{ $menu['name'] }}</p>
+                    </div>
                     
-                </div>
-            
+                </a>
+                @endforeach
+                
             </div>
+        
+        </div>
 
         <span class="h-40px flex-shrink-0"></span>
                 

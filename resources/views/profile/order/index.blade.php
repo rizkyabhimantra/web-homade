@@ -69,13 +69,16 @@
                     <p class="fsc-4 fw-bold">Daftar Pesanan</p>
 
                     <div class="d-flex mb-5 w-100 align-items-center gap-3 overflow-scroll">
-                        <button class="text-accent fsc-3 fw-bold w-100">All</button>
-                        @foreach (range(1,15) as $i)
-                        <button class="fsc-3 px-2 position-relative">Test <img src="https://pbs.twimg.com/media/GvF8AkFXwAAA2Ai.jpg" alt="" class="sonic"></button>
-                        @endforeach
+                        <a href="/me/orders"                            class="fsc-3 px-2 text-default w-max text-nowrap {{ request('status') == '' ? 'text-accent fw-bold' : '' }}">All</a>
+                        <a href="/me/orders?status=pending"             class="fsc-3 px-2 text-default w-max text-nowrap {{ request('status') == 'pending' ? 'text-accent fw-bold' : '' }}">Pending</a>
+                        <a href="/me/orders?status=paid"                class="fsc-3 px-2 text-default w-max text-nowrap {{ request('status') == 'paid' ? 'text-accent fw-bold' : '' }}">Paid</a>
+                        <a href="/me/orders?status=success"             class="fsc-3 px-2 text-default w-max text-nowrap {{ request('status') == 'success' ? 'text-accent fw-bold' : '' }}">Success</a>
+                        <a href="/me/orders?status=cancelled_by_admin"  class="fsc-3 px-2 text-default w-max text-nowrap {{ request('status') == 'cancelled_by_admin' ? 'text-accent fw-bold' : '' }}">Cancelled By Admin</a>
+                        <a href="/me/orders?status=cancelled_user"      class="fsc-3 px-2 text-default w-max text-nowrap {{ request('status') == 'cancelled_customer' ? 'text-accent fw-bold' : '' }}">Cancelled By Customer</a>
+                        <a href="/me/orders?status=failed"              class="fsc-3 px-2 text-default w-max text-nowrap {{ request('status') == 'failed' ? 'text-accent fw-bold' : '' }}">Failed</a>
                     </div> 
-                    @dd($response)
-                    @foreach ($response['data']['orders'] as $pesanan)
+                    
+                    @foreach ($response['data']['orders'] ?? [] as $pesanan)
 
                     <div class="d-flex w-100 rounded-3 flex-column-reverse flex-lg-row mb-5 p-5 px-7 border-grey-1 overflow-hidden">
                         <div class="d-flex w-100 flex-column overflow-hidden">
@@ -86,25 +89,91 @@
 
                             <div class="d-flex w-100 h-50px h-lg-75px mt-5 gap-5 mb-5">
                                 <div class="d-flex h-100 ratio-1">
-                                    <img src="https://pbs.twimg.com/media/GvF8AkFXwAAA2Ai.jpg" alt="" class="w-100 h-100">
+                                    <img src="{{ $pesanan['items'][0]['image_url'] }}" alt="" class="w-100 h-100">
                                 </div>
                                 <div class="d-flex flex-column overflow-hidden justify-content-center">
-                                    <p class="fsc-2 fw-bolder mb-0">Paket A - Bento Mealbox</p>
-                                    <p class="fsc-2 mb-0 w-100 w-lg-25 overflow-hidden text-nowrap text-overflow">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</p>
+                                    <p class="fsc-2 fw-bolder mb-0">{{ $pesanan['items'][0]['package'] }}</p>
+                                    <p class="fsc-2 mb-0 w-100 w-lg-50 overflow-hidden text-nowrap text-overflow">{{ $pesanan['items'][0]['name'] }}</p>
                                 </div>
                             </div>
 
-                            <a href="/select-menu" class="text-black fsc-2 border-grey-1 d-flex d-lg-none p-1 py-3 px-4 fw-bold w-max rounded-3">Detail Pesanan</a>
+                            <a href="/me/orders/{{ $pesanan['id'] }}" class="text-black fsc-2 border-grey-1 d-flex d-lg-none p-1 py-3 px-4 fw-bold w-max rounded-3">Detail Pesanan</a>
                         </div>
 
                         <div class="d-flex justify-content-between align-items-center align-items-sm-end mb-5 mb-lg-0 flex-column w-100 w-lg-auto flex-shrink-0">
-                            <p class="fsc-2 fw-bold bg-light-accent p-1 px-4 py-3 text-accent w-max rounded-3">Waiting Review</p>
-                            <a href="/select-menu" class="text-black fsc-2 border-grey-1 d-none d-lg-flex p-1 py-3 px-4 fw-bold w-max rounded-3">Detail Pesanan</a>
+                            <p class="fsc-2 fw-bold bg-light-accent p-1 px-4 py-3 text-accent w-max rounded-3">{{$pesanan['status']}}</p>
+                            <a href="/me/orders/{{ $pesanan['id'] }}" class="text-black fsc-2 border-grey-1 d-none d-lg-flex p-1 py-3 px-4 fw-bold w-max rounded-3">Detail Pesanan</a>
                         </div>
 
                     </div>
                         
                     @endforeach
+
+                    <div class="d-flex align-items-center justify-content-between w-100 h-40px">
+                        <select name="limit" onchange="window.location.href='?limit=' + this.value" class="h-100 border-grey-1 outline-0 bg-transparent fs-4 py-2 px-2 rounded-2">
+                            @foreach ([3, 6, 9, 12] as $limit)
+                                <option value="{{ $limit }}" {{ request('limit') == $limit ? 'selected' : '' }}>
+                                    {{ $limit }}
+                                </option>
+                            @endforeach
+                        </select>
+
+                        @php
+                            $pagination = $response['data']['pagination'] ?? null;
+                            $currentPage = $pagination['current_page'] ?? 1;
+                            $lastPage = $pagination['last_page'] ?? 1;
+
+                            $window = 1;
+                            $start = max(2, $currentPage - $window);
+                            $end = min($lastPage - 1, $currentPage + $window);
+                        @endphp
+
+                        @if($pagination && $lastPage > 1)
+                        <div class="d-flex h-100 gap-2">
+                            
+                            <a href="{{ $currentPage > 1 ? request()->fullUrlWithQuery(['page' => $currentPage - 1]) : '#' }}" 
+                            class="text-decoration-none text-dark h-100 ratio-1 rounded-2 d-flex align-items-center justify-content-center {{ $currentPage <= 1 ? 'opacity-50 pe-none' : '' }}">
+                                <img src="{{ asset('icons/caret-arrow-left.svg') }}" alt="Prev" class="h-90">
+                            </a>
+
+                            <a href="{{ request()->fullUrlWithQuery(['page' => 1]) }}" 
+                            class="text-decoration-none h-100 ratio-1 rounded-2 d-flex align-items-center justify-content-center fw-bold {{ $currentPage == 1 ? 'bg-accent text-white' : 'text-dark' }}">
+                                1
+                            </a>
+
+                            @if($start > 2)
+                                <div class="h-100 ratio-1 rounded-2 d-flex align-items-center justify-content-center fw-bold text-secondary cursor-default">
+                                    ...
+                                </div>
+                            @endif
+
+                            @for ($i = $start; $i <= $end; $i++)
+                                <a href="{{ request()->fullUrlWithQuery(['page' => $i]) }}" 
+                                class="text-decoration-none h-100 ratio-1 rounded-2 d-flex align-items-center justify-content-center fw-bold {{ $currentPage == $i ? 'bg-accent text-white' : 'text-dark' }}">
+                                    {{ $i }}
+                                </a>
+                            @endfor
+
+                            @if($end < $lastPage - 1)
+                                <div class="h-100 ratio-1 rounded-2 d-flex align-items-center justify-content-center fw-bold text-secondary cursor-default">
+                                    ...
+                                </div>
+                            @endif
+
+                            <a href="{{ request()->fullUrlWithQuery(['page' => $lastPage]) }}" 
+                            class="text-decoration-none h-100 ratio-1 rounded-2 d-flex align-items-center justify-content-center fw-bold {{ $currentPage == $lastPage ? 'bg-accent text-white' : 'text-dark' }}">
+                                {{ $lastPage }}
+                            </a>
+
+                            <a href="{{ $currentPage < $lastPage ? request()->fullUrlWithQuery(['page' => $currentPage + 1]) : '#' }}" 
+                            class="text-decoration-none text-dark h-100 ratio-1 rounded-2 d-flex align-items-center justify-content-center {{ $currentPage >= $lastPage ? 'opacity-50 pe-none' : '' }}">
+                                <img src="{{ asset('icons/caret-arrow-right.svg') }}" alt="Next" class="h-90">
+                            </a>
+
+                        </div>
+                        @endif
+
+                    </div>
 
                 </div>
             <!-- end::Right Side -->
@@ -130,68 +199,3 @@
 
 
 </html>
-
-<div>
-    <!-- Live as if you were to die tomorrow. Learn as if you were to live forever. - Mahatma Gandhi -->
-    @if ($response['status'] == 'success')
-        <h2>Data Berhasil</h2>
-        <h2>akun {{ auth()->user()->first_name }}</h2>
-        @foreach ($response['data'] as $key => $address)
-            <a href="{{ route('user.detail-user-address', ['id' => $address->id]) }}">
-                Alamat ke - {{ $key + 1 }}
-                <br>
-            </a>
-            <span>Alamat : {{ $address->address }}</span>
-            <br>
-        @endforeach
-    @endif
-    @if(session()->has('response'))
-        @if(isset(session()->get('response')['data']['show_form']) && session()->get('response')['data']['show_form'])
-            <h2>Tampilkan detail alamat</h2>
-            <form action="{{ route('user.edit-user-address', ['id' => session()->get('response')['data']['address']->id]) }}" method="POST">
-                @csrf
-                @method("PUT")
-                <span>Nama Penerima</span>
-                <input type="text" name="fullname" value="{{ session()->get('response')['data']['address']->received_name }}">
-                <br>
-                 <span>Nomor Telepon Penerima</span>
-                <input type="text" name="phone" value="{{ session()->get('response')['data']['address']->phone }}">
-                <br>
-                 <span>Label Alamat</span>
-                <input type="text" name="label" value="{{ session()->get('response')['data']['address']->label }}">
-                <br>
-                 <span>Alamat Rumah</span>
-                <input type="text" name="address" value="{{ session()->get('response')['data']['address']->address }}">
-                <br>
-                <span>Catatan</span>
-                <textarea type="text" name="note">{{ session()->get('response')['data']['address']->note }}"></textarea>
-                <br>
-                <span>Pin Point</span>
-                <input type="text" name="longitude" value="{{ session()->get('response')['data']['address']->longitude }}">
-                <input type="text" name="latitude" value="{{ session()->get('response')['data']['address']->latitude }}">
-                <br>
-                <button class="">Ubah Data</button>
-            </form>
-            <br>
-            <h2>Hapus Data</h2>
-            <br>
-            <form action="{{ route('user.delete-user-address', [ 'id' => session()->get('response')['data']['address']->id ]) }}" method="post" id="kamu-yakin">
-                @csrf
-                @method('delete')
-                <button>Delete Alamat Ini</button>
-            </form>
-        @else 
-            <h2>Response (Alert)</h2>
-            {{ dd(session()->get('response')) }}
-        @endif      
-    @endif
-</div>
-
-<script>
-    document.getElementById('kamu-yakin').addEventListener('submit', (e) => {
-        e.preventDefault()
-        if(confirm('apakah kamu yakin ingin menhapus alamat ini?')){
-            e.target.submit()
-        }
-    })
-</script>
