@@ -39,7 +39,7 @@ class TransactionController extends Controller
             );
 
             if (!$transaction) {
-                return $ressponse = $this->responseData->create(
+                $ressponse = $this->responseData->create(
                     'Tidak dapat menemukan transaksi',
                     status: 'warning',
                     status_code: 404,

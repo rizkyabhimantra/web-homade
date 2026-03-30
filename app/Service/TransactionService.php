@@ -76,7 +76,10 @@ class TransactionService
         string|null $delivery_at
     ) {
         return Transaction::where('id_user', auth()->user()->id)
-            ->with('orders')
+            ->with([
+                'orders',
+                'address'
+            ])
 
             ->when($search, function ($query, $search) {
                 return $query->whereHas('orders.menu_price.menu', function ($q) use ($search) {

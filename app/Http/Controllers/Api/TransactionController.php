@@ -93,7 +93,6 @@ class TransactionController extends Controller
     {
         try {
             $transaction = $this->transactionService->detail($id);
-            ;
 
             if (!$transaction) {
                 return $this->responseData->create(
