@@ -27,7 +27,8 @@ class DetailTransactionResource extends JsonResource
             'category' => $this->category,
             'note' => $this->note,
             'cancelled_reason' => $this->cancelled_reason,
-            'status' => $this->status,
+            'status' => $this->currentStatus(),
+            'send_email_into' => $this->contact_email,
 
             'delivery_info' => [
                 'status' => $this->status_delivery,
@@ -39,8 +40,8 @@ class DetailTransactionResource extends JsonResource
                     'label' => $this->address->label,
                     'address' => $this->address->address,
                     'note' => $this->address->note,
-                     'longitude' => $this->address->longitude,
-                      'latitude' => $this->address->latitude,
+                    'longitude' => $this->address->longitude,
+                    'latitude' => $this->address->latitude,
                 ],
             ],
 
@@ -77,12 +78,12 @@ class DetailTransactionResource extends JsonResource
                 'status' => $this->payment_proof->status
             ] : null,
 
-            'status_information' => isset($this->needed_status_information) && $this->needed_status_information?   [
+            'status_information' => isset($this->needed_status_information) && $this->needed_status_information ? [
                 'refund' => [
                     'none' => RefundStatus::NONE,
                     'pending' => RefundStatus::PENDING,
                     'success' => RefundStatus::SUCCESS,
-                    ],
+                ],
                 'transaction' => [
                     'wait_for_invoice' => StatusTransaction::WAITING_FOR_INVOICE,
                     'pending' => StatusTransaction::PENDING,
@@ -111,5 +112,18 @@ class DetailTransactionResource extends JsonResource
     private function isRefund(string $status): bool
     {
         return $status == 'cancelled_by_customer' || $status == 'cancelled_by_admin';
+    }
+
+    private function currentStatus()
+    {
+        if ($this->status == 'pending') {
+            // lebih ngambil status dari payment_method ya..
+            if (isset($this->payment_method) && $this->payment_method) {
+                return $this->payment_method->status;
+            }
+        } else if ($this->status == 'paid') {
+            return $this->status_delivery;
+        }
+        return $this->status;
     }
 }

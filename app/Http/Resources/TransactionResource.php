@@ -18,17 +18,18 @@ class TransactionResource extends JsonResource
             'id' => $this->id,
             'total_price' => $this->total_price,
             'category' => $this->category,
-            'status' => $this->status,
+            'status' => $this->currentStatus(),
             'delivery_info' => [
                 'status' => $this->status_delivery,
-                'delivery_at' => $this->delivery_at
+                'delivery_at' => $this->delivery_at,
+                'address_info' => new UserAddressResource($this->address)
             ],
             'refund_info' => [
                 'status' => $this->refund_statis,
                 'reason' => $this->refund_reason,
                 'is_refund' => $this->isRefund($this->status),
             ],
-            'items' => $this->orders->map(function($order){
+            'items' => $this->orders->map(function ($order) {
                 return [
                     'name' => $order->menu_price->menu->name,
                     'vegetable' => $order->menu_price->menu->vegetable,
@@ -36,7 +37,7 @@ class TransactionResource extends JsonResource
                     'chili_sauce' => $order->menu_price->menu->chili_sauce,
                     'image_url' => $order->menu_price->menu->image_url,
                     'theme' => $order->menu_price->menu->theme->name,
-                    'categories' => $order->menu_price->menu->menu_categories->map(function($category){
+                    'categories' => $order->menu_price->menu->menu_categories->map(function ($category) {
                         return $category->categories->name;
                     }),
                     'package' => $order->menu_price->package->name,
@@ -46,8 +47,22 @@ class TransactionResource extends JsonResource
         ];
     }
 
-    private function isRefund(string $status) : bool{
+    private function isRefund(string $status): bool
+    {
         return $status == 'cancelled_by_customer' || $status == 'cancelled_by_admin';
+    }
+
+    private function currentStatus()
+    {
+        if ($this->status == 'pending') {
+            // lebih ngambil status dari payment_method ya..
+            if (isset($this->payment_method) && $this->payment_method) {
+                return $this->payment_method->status;
+            }
+        } else if ($this->status == 'paid') {
+            return $this->status_delivery;
+        }
+        return $this->status;
     }
 
 }
