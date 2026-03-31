@@ -23,6 +23,7 @@ class SelectMenuResource extends JsonResource
                 'vegetable' => $this->vegetable,
                 'side_dish' => $this->side_dish,
                 'sauce' => $this->chili_sauce,
+                'fruit' => $this->fruit,
             ],
             'image_url' => $this->image_url,
             'categories' => new MenuCategorieResource($this->menu_categories),

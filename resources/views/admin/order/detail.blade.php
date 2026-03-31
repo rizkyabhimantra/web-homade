@@ -108,8 +108,22 @@
                             <label for="shipping_cost">Ongkos Kirim</label>
                             <input type="number" name="shipping_cost" id="shipping_cost"
                                 value="{{ old('shipping_cost') ?? $response['data']['shipping_cost'] }}" required>
-                            {{-- <textarea name="reason" id="">Amnn</textarea> --}}
-                            <button>Tambahkan Invoice</button>
+
+                            <label for="delivery_at">Delivery At</label>
+                            <span>note: ketika kategori transaksi adalah order maka yang berubah hanya jamnya saja, namun ketika
+                                pre-order maka yang berubah bisa keseulurah tanggal dan jamnya</span>
+                            <span>kategori : {{ $response['data']['category'] }}</span>
+                            <input type="datetime-local" name="delivery_at" id=""
+                                value="{{ $response['data']['delivery_info']['delivery_at'] }}">
+                            <label for="received_transaction_information">Email Penerima</label>
+                            <input type="email" name="received_transaction_information" id=""
+                                value="{{ $response['data']['send_email_into'] }}">
+                            <div>
+                                <label for="notif_after_update_information_trigger">Beritahu Customer</label>
+                                <input type="checkbox" name="notif_after_update_information_trigger" checked id="notif_after_update_information_trigger">
+                                <input type="hidden" name="notif_after_update_information" id="notif_after_update_information" value="1">
+                            </div>
+                            <button>{{ !$response['data']['payment_proof'] ? 'Tambahkan Invoice' : 'Simpan Perubahan' }}</button>
                         </div>
                     </form>
                     <form action="{{ route('admin.reject-order', ['id' => $response['data']['id']]) }}" method="POST">
@@ -161,10 +175,16 @@
                 <button>Uploud Bukti Pembayaran</button>
             </form>
         @endif
+
+        <script>
+            document.getElementById('notif_after_update_information_trigger').addEventListener('change', function(e){
+                document.getElementById('notif_after_update_information').value = e.target.checked ? 1 : 0;
+            })
+        </script>
         </div>
     @else
-        {{ dd($response) }}
-    @endif
+    {{ dd($response) }}
+@endif
 
 <div style="margin-top: 200px;">
     @if (session()->has('response'))

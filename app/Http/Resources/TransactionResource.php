@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Utils\ConvertDateSafely;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -22,6 +23,8 @@ class TransactionResource extends JsonResource
             'delivery_info' => [
                 'status' => $this->status_delivery,
                 'delivery_at' => $this->delivery_at,
+                'shift' => $this->getDeliveryShift(),
+                'estimate_hour' => $this->estimateHour(),
                 'address_info' => new UserAddressResource($this->address)
             ],
             'refund_info' => [
@@ -47,22 +50,7 @@ class TransactionResource extends JsonResource
         ];
     }
 
-    private function isRefund(string $status): bool
-    {
-        return $status == 'cancelled_by_customer' || $status == 'cancelled_by_admin';
-    }
+   
 
-    private function currentStatus()
-    {
-        if ($this->status == 'pending') {
-            // lebih ngambil status dari payment_method ya..
-            if (isset($this->payment_method) && $this->payment_method) {
-                return $this->payment_method->status;
-            }
-        } else if ($this->status == 'paid') {
-            return $this->status_delivery;
-        }
-        return $this->status;
-    }
 
 }

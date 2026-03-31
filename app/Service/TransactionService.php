@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Mail\SuccessCreateTransactionEmail;
+use App\Mail\SuccessfullyCreatedNewInvoice;
 use App\Models\Transaction;
 use App\Models\TransactionAddress;
 use App\Models\TransactionOrder;
@@ -10,8 +11,10 @@ use App\Models\TransactionPaymentProof;
 use App\RefundStatus;
 use App\StatusDelivery;
 use App\StatusTransaction;
+use App\TransactionCategory;
 use App\TransactionPaymentProofStatus;
 use App\Utils\CloudinaryClient;
+use App\Utils\ConvertDateSafely;
 use Carbon\Carbon;
 use Cloudinary\Cloudinary;
 use ErrorException;
@@ -348,36 +351,80 @@ class TransactionService
         ];
 
     }
-    public function changeShippingCost(
+    public function changeInformationTransaction(
         Transaction $transaction,
-        int $shipping_cost
+        int $shipping_cost,
+        string|null $delivery_at,
+        string|null $received_email,
+        bool $notif_to_customer,
     ) {
         try {
-            $isAcceptableStatus = $this->isAcceptableStatusForChangingShippingCost($transaction->status);
-            // status_bukti_pembayaran yang aman itu => rejected,
-            if ($transaction->payment_proof && !$this->isPaymentProofRejected($transaction->payment_proof) || !$isAcceptableStatus) {
+
+            // apakah status transaksi itu sudah di batalkan atau sudah berhasil
+            $status_transaction = StatusTransaction::from((string) $transaction->status);
+            if (in_array($status_transaction, [StatusTransaction::SUCCESS, StatusTransaction::CANCELLED_BY_CUSTOMER, StatusTransaction::CANCELLED_BY_ADMIN, StatusTransaction::FAILED])) {
                 return [
                     'is_success' => false,
-                    'message' => 'Tidak bisa merubah ongkos kirim dikarenakan Status Transaksi Sudah Bukan Menunggu Invoice Dan Status Bukti Pembayaran Bukan Ditolak',
+                    'message' => 'Perubahan informasi pemesanaan tidak dapat dilakukan karena tidak memenuhi persyaratan yang dibutuhkan'
                 ];
             }
-            return DB::transaction(function () use ($transaction, $shipping_cost) {
-                // cek terlebih dahulu statusnya!
-                // waiting_for_invoice => aman
 
+            DB::beginTransaction();
+
+
+            $canChangeShippingCost = $this->isAcceptableStatusForChangingShippingCost($transaction->status);
+            // cek apakah bukti pembayaran itu di tolak dan status transaksi masih memungkinkan untuk merubah shipping cost...
+            if ($transaction->payment_proof && $this->isPaymentProofRejected($transaction->payment_proof) || $canChangeShippingCost) {
                 $transaction->shipping_cost = $shipping_cost;
                 $transaction->total_price = $transaction->subtotal + $shipping_cost;
                 $transaction->status = StatusTransaction::PENDING;
-                $transaction->save();
+            }
 
-                return [
-                    'is_success' => true,
-                    'message' => 'Berhasil Merubah Ongkos Kirim & Total Harga Transaksi'
-                ];
-            });
+            // cek apakah statusnya transaction masih bisa untuk merubah jadwal pengiriman
+            if (StatusDelivery::from((string) $transaction->status_delivery) !== StatusDelivery::DELIVERED && $delivery_at) {
+                $convert_date = new ConvertDateSafely();
+                $new_delivery_at = $convert_date->convert($delivery_at);
+                $old_delivery_at = $convert_date->convert($transaction->delivery_at);
+                
+                // kalo ada error, ya tinggal di throw aja kk
+                if (!$new_delivery_at) {
+                    throw new Exception('Tidak Berhasil Dalam Melakukan Merubah Tanggal');
+                }
+
+                // cek terlebih nich untukk kategori transaksi
+                if (TransactionCategory::from($transaction->category) == TransactionCategory::ORDER) {
+                    $new_delivery_at = $old_delivery_at->setTime(
+                        $new_delivery_at->hour,
+                        $new_delivery_at->minute,
+                        $new_delivery_at->second,
+                    );
+                }
+                $transaction->delivery_at = $new_delivery_at;
+            }
+
+            if ($received_email) {
+                $transaction->contact_email = $received_email;
+            }
+
+            $transaction->save();
+
+            DB::commit();
+
+            if ($notif_to_customer) {
+                // send mail disini....
+                Mail::to($transaction->user->email)->send(new SuccessfullyCreatedNewInvoice($transaction));
+            }
+
+            $message = $status_transaction === StatusTransaction::WAITING_FOR_INVOICE ? 'Berhasil Menambahkan Invoice Dan Menunggu Customer Membayar!' : 'Berhasil Merubah Ongkos Kirim & Total Harga Transaksi';
+
+            return [
+                'is_success' => true,
+                'message' => $message
+            ];
+        
         } catch (Exception $e) {
             DB::rollBack();
-            Log::error('Error When change the shipping cost : ' . $e->getMessage());
+            Log::error('Error When change the change the information transactio : ' . $e->getMessage());
             return [
                 'is_success' => false,
                 'message' => 'Telah terjadi kesalahan pada server saat ingin merubah ongkos kirim'

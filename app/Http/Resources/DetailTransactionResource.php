@@ -34,6 +34,8 @@ class DetailTransactionResource extends JsonResource
                 'status' => $this->status_delivery,
                 'delivery_at' => $this->delivery_at,
                 'distance' => $this->distance ?? 0,
+                'shift' => $this->getDeliveryShift(),
+                'estimate_hour' => $this->estimateHour(),
                 'address_info' => [
                     'received_name' => $this->address->received_name,
                     'phone' => $this->address->phone,
@@ -106,24 +108,5 @@ class DetailTransactionResource extends JsonResource
 
             'created_at' => $this->created_at,
         ];
-    }
-
-
-    private function isRefund(string $status): bool
-    {
-        return $status == 'cancelled_by_customer' || $status == 'cancelled_by_admin';
-    }
-
-    private function currentStatus()
-    {
-        if ($this->status == 'pending') {
-            // lebih ngambil status dari payment_method ya..
-            if (isset($this->payment_method) && $this->payment_method) {
-                return $this->payment_method->status;
-            }
-        } else if ($this->status == 'paid') {
-            return $this->status_delivery;
-        }
-        return $this->status;
     }
 }

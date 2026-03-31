@@ -11,6 +11,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\WebMiddleware;
 use App\Notifications\ResetPasswordNotification;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::name('user.')->group(function () {
@@ -69,7 +70,7 @@ Route::name('user.')->group(function () {
         Route::post('/transaction', [TransactionController::class, 'createTransaction'])->name('create-order');
         Route::get('/after-transaction', [TransactionController::class, 'afterTransactionHandler'])->name('after-transaction');
 
-        Route::get('/signout', [AuthController::class, 'signout'])->name('signout');
+        Route::post('/signout', [AuthController::class, 'signout'])->name('signout');
     });
 });
 
@@ -188,3 +189,15 @@ Route::get('/testing-notificiation', function () {
     return (new ResetPasswordNotification($token))
         ->toMail(auth()->user());
 })->middleware(WebMiddleware::class);
+
+Route::get('/testing-date-time', function() {
+
+    return view('testing');
+
+});
+
+Route::post('/testing-date-time', function(Request $request) {
+
+   return $request;
+
+});
