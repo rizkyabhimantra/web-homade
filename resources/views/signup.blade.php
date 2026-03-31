@@ -133,7 +133,7 @@ License: For each use you must have a valid license purchased only from above li
 										<!--begin::Submit-->
 										<button id="kt_sign_in_submit" class="btn-primary-homade align-items-center justify-content-center w-100 p-4 rounded">
 											<!--begin::Indicator label-->
-											<span class="indicator-label text-white fw-medium" data-kt-translate="sign-in-submit">Masuk</span>
+											<span class="indicator-label text-white fw-medium" data-kt-translate="sign-in-submit">Daftar</span>
 											<!--end::Indicator label-->
 											<!--begin::Indicator progress-->
 											<span class="indicator-progress">

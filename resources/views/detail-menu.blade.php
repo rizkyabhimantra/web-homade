@@ -135,7 +135,7 @@
         <span class="h-40px flex-shrink-0"></span>
 
         <div class="d-flex w-100 align-items-center justify-content-center">
-            <a href="/" class="btn-primary-homade fsc-2 rounded-2">Order Via Jadwal <img src="{{ asset('icons/arrow-right-c.svg') }}" alt="" class=" img-white h-12"></a>
+            <a href="/schedule" class="btn-primary-homade fsc-2 rounded-2">Order Via Jadwal <img src="{{ asset('icons/arrow-right-c.svg') }}" alt="" class=" img-white h-12"></a>
         </div>
 
         <span class="h-100px flex-shrink-0"></span>

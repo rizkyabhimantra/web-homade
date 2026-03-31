@@ -56,7 +56,10 @@
                     <!--end::Accordion-->
 
                     <a href="/me/orders" class="fs-2 fw-bolder px-3 mb-0 d-flex align-items-center text-black mb-3 gap-1"><img src="{{ asset('icons/document.svg')}}" class="h-15em" alt="">Pesanan Saya</a>
-                    <a href="/" class="fs-2 fw-bolder px-3 mb-0 d-flex align-items-center text-accent gap-1"><img src="{{asset('icons/log-out.svg')}}" class="h-15em img-accent" alt="">Log Out</a>
+                    <form method="get" action="{{ route('user.signout') }}">
+                        @csrf
+                        <button class="fs-2 fw-bolder px-3 mb-0 d-flex align-items-center text-accent gap-1"><img src="{{asset('icons/log-out.svg')}}" class="h-15em img-accent" alt="">Log Out</button>
+                    </form>
 
                 </div>
             <!-- end::Left Side -->
@@ -107,14 +110,14 @@
                 <div class="d-flex w-100 w-md-50 align-items-center flex-shrink-0 flex-column">
                     <button class="w-100 h-100 bg-transparent cursor-default" onclick="closePopUp()"></button>
 
-                    <div class="d-flex w-100 w-md-75 h-75 flex-shrink-0 p-10 px-20 flex-column bg-white justify-content-center align-content-center rounded-5 border-grey-1">
+                    <form action="{{ route('user.change-password') }}" class="d-flex w-100 w-md-75 h-75 flex-shrink-0 p-10 px-20 flex-column bg-white justify-content-center align-content-center rounded-5 border-grey-1">
                         <p class="w-100 text-center fs-2 text-accent fw-bold ">Ubah Password</p>
                         <input type="text" class="w-100 border-grey-1 h-50px ps-5 rounded-4 fs-4 mb-5 mt-5" placeholder="Password Lama">
                         <input type="text" class="w-100 border-grey-1 h-50px ps-5 rounded-4 fs-4" placeholder="Password Baru">
                         <p class="mb-0 mt-2 mb-1">Gunakan 8 karakter atau lebih dengan campuran huruf, angka, dan simbol.</p>
                         <input type="text" class="w-100 border-grey-1 h-50px ps-5 rounded-4 fs-4 mb-5" placeholder="Konfirmasi Password Baru">
                         <button class="btn-primary-homade rounded-4 w-100 align-content-center h-50px justify-content-center fs-3">Simpan</button>
-                    </div>
+                    </form>
                     
                     <button class="w-100 h-100 bg-transparent cursor-default" onclick="closePopUp()"></button>
                 </div>

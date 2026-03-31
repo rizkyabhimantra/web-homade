@@ -56,7 +56,6 @@
                 <!--  -->
                 
                 <div class="d-flex align-items-center flex-column flex-md-row justify-content-center gap-3 w-95 w-xl-80 h-md-500px">
-                
                     @foreach (range(0, 4) as $i)
                     @php
                         $day    = $startOfWeek->copy()->addDays($i);
@@ -64,7 +63,7 @@
                         $menus  = ($schedulesByDate->get($dayKey))['menus'] ?? [];
                     @endphp
 
-                    <a href="/select-menu-weekly?date={{ $day->format('Y-m-d') }}"
+                    <a href="/select-menu-weekly?date_at={{ $day->format('Y-m-d') }}"
                     class="d-flex align-items-center overflow-hidden justify-content-center w-200px w-md-100 h-100 flex-column rounded-3">
 
                         <div class="d-flex p-5 justify-content-center flex-column bg-accent rounded-top-3 h-20 w-100">
