@@ -1,5 +1,7 @@
 <?php
 
+use App\Exports\MenuExport;
+use App\Exports\MenuExport2;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HomeController;
@@ -13,6 +15,7 @@ use App\Http\Middleware\WebMiddleware;
 use App\Notifications\ResetPasswordNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Maatwebsite\Excel\Facades\Excel;
 
 Route::name('user.')->group(function () {
     Route::get('/', [HomeController::class, 'home'])->name('home');
@@ -127,6 +130,7 @@ Route::middleware([
     Route::put('/menus/{id}', [\App\Http\Controllers\Admin\MenuController::class, 'editHandler'])->name('edit-menu');
     Route::delete('/menus/{id}', [\App\Http\Controllers\Admin\MenuController::class, 'deleteHandler'])->name('delete-menu');
     Route::patch('/menus/{id}', [\App\Http\Controllers\Admin\MenuController::class, 'restoreHandler'])->name('restore-menu');
+    Route::post('/export-menus', [\App\Http\Controllers\Admin\MenuController::class, 'export'])->name('export-menus');
     // jadwal menu
     Route::get('/schedules', [\App\Http\Controllers\Admin\ScheduleController::class, 'index'])->name('schedules');
     // Route::get('/schedules/{id}', [\App\Http\Controllers\Admin\ScheduleController::class, 'detail'])->name('detail-schedule');
@@ -138,7 +142,7 @@ Route::middleware([
     Route::post('/order', [\App\Http\Controllers\Admin\TransactionController::class, 'storeHandler'])->name('add-order');
 
     // note: id yang diberikan adalah id transaksi
-    Route::put('/order/change-shipping-cost/{id}', [\App\Http\Controllers\Admin\TransactionController::class, 'changeShippingCostHandler'])->name('change-shipping-cost');
+    Route::put('/order/change-information/{id}', [\App\Http\Controllers\Admin\TransactionController::class, 'changeShippingCostHandler'])->name('change-shipping-cost');
     Route::post('/order/reject/{id}', [\App\Http\Controllers\Admin\TransactionController::class, 'rejectTheTransactionHandler'])->name('reject-order');
     // butki pembayaran handler
     Route::post('/order/create-payment-proof/{id}', [\App\Http\Controllers\Admin\TransactionController::class, 'uploudThePaymentProofHandler'])->name('uploud-payment-proof');
@@ -199,5 +203,13 @@ Route::get('/testing-date-time', function() {
 Route::post('/testing-date-time', function(Request $request) {
 
    return $request;
+
+});
+
+Route::get('/testing-export', function(Request $request) {
+
+    return (New MenuExport)->download('sample-export-menu.xlsx');
+
+    // return Excel::download(new MenuExport, 'menu-export.xlsx');
 
 });

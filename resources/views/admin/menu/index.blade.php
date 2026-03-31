@@ -254,11 +254,22 @@ License: For each use you must have a valid license purchased only from above li
 								<!--begin::Actions-->
 								<div class="d-flex align-items-center gap-2 gap-lg-3">
 									<!--begin::Primary button-->
-									<a href="{{ route('admin.add-menu-page') }}" class="btn btn-sm fw-bold btn-primary" data-bs-toggle="modal_hapus_ini_under_score"
-										data-bs-target="#kt_modal_new_target_hapus_ini_dan_under_score" style="background-color: #ce1a27;">Tambah
+									<a href="{{ route('admin.add-menu-page') }}" class="btn btn-sm fw-bold btn-primary"
+										data-bs-toggle="modal_hapus_ini_under_score"
+										data-bs-target="#kt_modal_new_target_hapus_ini_dan_under_score"
+										style="background-color: #ce1a27;">Tambah
 										Menu Baru</a>
 									<!--end::Primary button-->
 								</div>
+								<form class="d-flex align-items-center gap-2 gap-lg-3" action="{{route('admin.export-menus')}}" method="post">
+									@csrf
+									<!--begin::Primary button-->
+									<button href="{{ route('admin.add-menu-page') }}" class="btn btn-sm fw-bold btn-primary"
+										data-bs-toggle="modal_hapus_ini_under_score"
+										data-bs-target="#kt_modal_new_target_hapus_ini_dan_under_score"
+										style="background-color: #ce1a27;">Export Menu</button>
+									<!--end::Primary button-->
+								</form>
 								<!--end::Actions-->
 
 							</div>

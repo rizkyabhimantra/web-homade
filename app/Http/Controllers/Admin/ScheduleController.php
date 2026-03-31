@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\MenuSchedule;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\MenuResource;
 use App\Http\Resources\MenuScheduleResource;
@@ -35,7 +36,6 @@ class ScheduleController extends Controller
             $currentDayOfWeek = $currentDate->dayOfWeekIso; //4
             $startOfWeek = $currentDate->subDays($currentDayOfWeek - 1);
             $endOfWeek = $startOfWeek->clone()->addDays(4);
-            $currentDateFormatIndonesian = $currentDate->format('d-m-Y');
 
             $response = $this->responseData->create(
                 'Berhasil Mendapatkan Data',
@@ -131,4 +131,27 @@ class ScheduleController extends Controller
             return redirect()->back()->withInput()->with(compact('response'));
         }
     }
+
+    public function export(Request $request)
+    {
+        $currentDate = now()->setTime(0, 0, 0);
+        $week = (int) $request->query('week', $currentDate->weekOfMonth);
+
+        $currentDate->weekOfMonth($week);
+        $currentDayOfWeek = $currentDate->dayOfWeekIso; //4
+        $startOfWeek = $currentDate->subDays($currentDayOfWeek - 1);
+        $endOfWeek = $startOfWeek->clone()->addDays(4);
+
+        (new MenuSchedule(
+            [
+                'start_of_week' => $startOfWeek,
+                'end_of_week' => $endOfWeek,
+                'current_week' => $currentDate->weekOfMonth,
+                'current_month' => $currentDate->monthName,
+                'current_date' => $currentDate->format('d-m-Y'),
+            ],
+        ))->download();
+       
+    }
+
 }

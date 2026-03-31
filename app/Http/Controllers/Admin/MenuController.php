@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\MenuExport;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Admin\DetailMenuResource;
 use App\Http\Resources\Admin\PackageResource;
@@ -348,7 +349,7 @@ class MenuController extends Controller
         }
     }
 
-     public function deleteHandler(Request $request, string $id)
+    public function deleteHandler(Request $request, string $id)
     {
         try {
 
@@ -368,14 +369,14 @@ class MenuController extends Controller
 
             $response = $this->responseData->create(
                 'Berhasil dalam menghapus menu',
-                isJson:false
+                isJson: false
             );
 
             return redirect()->route('admin.menus')->with(compact('response'));
 
         } catch (Exception $e) {
             Log::error('There Something Error When Handling Delete The Menu :' . $e->getMessage());
-            $resposne = $this->responseData->create(
+            $response = $this->responseData->create(
                 'Telah Terjadi Kesalahan Pada Server',
                 status: 'error',
                 status_code: 500,
@@ -406,14 +407,14 @@ class MenuController extends Controller
 
             $response = $this->responseData->create(
                 'Berhasil dalam mengembalikan menu',
-                isJson:false
+                isJson: false
             );
 
             return redirect()->route('admin.menus')->with(compact('response'));
 
         } catch (Exception $e) {
             Log::error('There Something Error When Restoring The Deleted Menu :' . $e->getMessage());
-            $resposne = $this->responseData->create(
+            $response = $this->responseData->create(
                 'Telah Terjadi Kesalahan Pada Server',
                 status: 'error',
                 status_code: 500,
@@ -422,7 +423,16 @@ class MenuController extends Controller
 
             return redirect()->back()->withInput()->with(compact('response'));
         }
+    }
 
+    public function export(Request $request)
+    {
+        $status_active = $request->query('status_active', 'all');
+        $status = $request->query('status', 'available');
+        return (new MenuExport(
+            $status,
+            $status_active
+        ))->download('menu-export.xlsx');
     }
 
 }
