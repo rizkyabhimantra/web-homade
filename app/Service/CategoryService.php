@@ -10,6 +10,7 @@ class CategoryService{
         $limit = 3,
         bool $is_has_limit = true,
         string|null $status = 'active',
+        bool $is_query = false,
     ){
         $categories = Category::query();
 
@@ -26,6 +27,11 @@ class CategoryService{
         if($is_has_limit){
             return $categories->paginate($limit);
         }
+
+        if($is_query){
+            return $categories;
+        }
+
         return $categories->get();
     }
 

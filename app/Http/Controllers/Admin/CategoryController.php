@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\CategoryExport;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PaginationResource;
 use App\ResponseData;
@@ -297,7 +298,10 @@ class CategoryController extends Controller
 
             return redirect()->back()->withInput()->with(compact('response'));
         }
+    }
 
+    public function export(){
+        return (New CategoryExport)->download('Kategori Menu Homade.xlsx');
     }
 
 }

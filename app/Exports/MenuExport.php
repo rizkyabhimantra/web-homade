@@ -29,7 +29,7 @@ class MenuExport implements FromQuery, ShouldAutoSize, ShouldQueue, WithCustomSt
 {
     use Exportable;
 
-    private $title = 'Menu - Menu Homade';
+    private $title = 'List Menu - Menu Homade';
 
     private Collection $packages;
 
@@ -46,6 +46,7 @@ class MenuExport implements FromQuery, ShouldAutoSize, ShouldQueue, WithCustomSt
         $this->packages = $packageService->all();
 
         $this->total_data = (new MenuService)->all(is_has_limit: false, is_query: true)->count();
+        $this->title = $this->title . ' ('. $this->total_data .')';
 
         $this->status = $status;
         $this->status_active = $status_active;

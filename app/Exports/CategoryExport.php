@@ -2,9 +2,7 @@
 
 namespace App\Exports;
 
-use App\Http\Resources\MenuScheduleResource;
-use App\Service\MenuService;
-use App\Service\PackageService;
+use App\Service\CategoryService;
 use App\Service\ThemeService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Collection;
@@ -27,34 +25,34 @@ use PhpOffice\PhpSpreadsheet\Style\Font;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class ThemeExport implements FromQuery, ShouldAutoSize, ShouldQueue, WithCustomStartCell, WithDefaultStyles, WithHeadings, WithMapping, WithStyles
+class CategoryExport implements FromQuery, ShouldAutoSize, ShouldQueue, WithCustomStartCell, WithDefaultStyles, WithHeadings, WithMapping, WithStyles
 {
     use Exportable;
 
-    private string $title = 'List Tema Menu Homade';
+    private string $title = 'List Kategori Menu Homade';
 
     private int $total_data = 0;
 
     public function __construct() {
-        $this->total_data = (new ThemeService())->all(is_has_limit:false)->count();
+        $this->total_data = (new CategoryService())->all(is_has_limit:false)->count();
         $this->title = $this->title . ' ('. $this->total_data .')';
     }
 
     public function query()
     {
-        return (new ThemeService())->all(
+        return (new CategoryService())->all(
             is_has_limit: false,
             is_query: true,
-        )->with('menus');
+        )->with('menu_categories');
     }
 
     public function headings(): array
     {
 
         $columns = [
-            'Tema ID',
+            'Kategori ID',
             'Nama',
-            'Total Menu Yang Menggunakan Tema',
+            'Total Menu Yang Menggunakan Kategori',
             'Dibuat Pada'
         ];
 
@@ -67,13 +65,13 @@ class ThemeExport implements FromQuery, ShouldAutoSize, ShouldQueue, WithCustomS
 
     }
 
-    public function map($theme): array
+    public function map($category): array
     {
         return [
-            $theme->id,
-            $theme->name,
-            count($theme->menus) . ' Menu',
-            $theme->created_at,
+            $category->id,
+            $category->name,
+            count($category->menu_categories) . ' Menu',
+            $category->created_at,
         ];
     }
 
