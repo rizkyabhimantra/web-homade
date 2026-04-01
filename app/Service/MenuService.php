@@ -134,15 +134,15 @@ class MenuService
         }
 
         $currentTime = now()->addDays($week * 7)->setTime(0, 0, 0);
-        $labubu = $currentTime->getDaysFromStartOfWeek();
-        $start_time = $currentTime->subDays($labubu);
+        $start_day_of_week = $currentTime->getDaysFromStartOfWeek();
+        $start_time = $currentTime->subDays($start_day_of_week);
         $end_time = $start_time->clone()->addDays(4);
 
         $schedules = MenuSchedule::whereBetween('date_at', [$start_time, $end_time])
             ->with('menu')
             ->when($is_with_price, function ($query) {
                 return $query->with('menu.prices');
-            })
+            })->orderBy('date_at', 'asc')
             ->get();
 
         $schedules = $schedules->groupBy(function ($item) {

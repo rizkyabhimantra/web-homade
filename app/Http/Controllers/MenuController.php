@@ -156,7 +156,7 @@ class MenuController extends Controller
                 return view('schedule', compact('response'));
             }
 
-            $response = $this->responseData->create(
+            return$response = $this->responseData->create(
                 'Berhasil mendapatkan menu mingguan',
                 MenuScheduleResource::collection($menus)->toArray($request),
                 isJson: false
