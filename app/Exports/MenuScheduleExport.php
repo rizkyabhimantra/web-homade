@@ -22,6 +22,7 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Color;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Style\Font;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
@@ -44,7 +45,7 @@ class MenuScheduleExport implements FromQuery, ShouldAutoSize, ShouldQueue, With
     private string $column_product_to_link;
     private string|null $previous_date_at = null;
 
-    private array $coordinateRowBlankSpaces  = [];
+    private array $coordinateRowBlankSpaces = [];
 
     private int $total_data = 0;
     private int $total_data_rows = 0;
@@ -118,7 +119,7 @@ class MenuScheduleExport implements FromQuery, ShouldAutoSize, ShouldQueue, With
             [$this->subtitle], // b6
             [], // blank space // b7
             [$this->information], // b8,
-            [$this->information], // b9,
+            ['Kunjungi Halaman Menu Mingguan'], // b9,
             [], // blank space // b10
             $columns, // b11
             $second_columns, // b12
@@ -189,10 +190,16 @@ class MenuScheduleExport implements FromQuery, ShouldAutoSize, ShouldQueue, With
         $sheet->mergeCells('B6:L6');
         $sheet->getStyle('B6')->applyFromArray([
             'font' => [
-                // 'size' => 11,
-                'bold' => true,
+                'size' => 14,
             ],
+            'fill' => [
+                'fillType' => Fill::FILL_SOLID,
+                'startColor' => [
+                    'rgb' => Color::COLOR_YELLOW
+                ]
+            ]
         ]);
+        $sheet->getRowDimension(6)->setRowHeight(25);
 
         // customize information cell 
         $sheet->mergeCells('B8:L8');
@@ -206,8 +213,11 @@ class MenuScheduleExport implements FromQuery, ShouldAutoSize, ShouldQueue, With
         $sheet->mergeCells('B9:L9');
         $sheet->getStyle('B9')->applyFromArray([
             'font' => [
-                // 'size' => 11,
                 'bold' => true,
+                'underline' => Font::UNDERLINE_SINGLE,
+                'color' => [
+                    'argb' => 'FF3B94F5',
+                ]
             ],
         ]);
         $sheet->getHyperlink('B9')->setUrl($this->schedulesPage);
@@ -287,6 +297,13 @@ class MenuScheduleExport implements FromQuery, ShouldAutoSize, ShouldQueue, With
                 for ($index = 0; $index < $this->total_data_rows; $index++) {
                     $cell_8 = $event->sheet->getCell($this->column_product_to_link . ($index + 13));
                     if ($cell_8->getValue()) {
+                        $cell_8->getStyle()->getFont()
+                            ->applyFromArray([
+                                'underline' => Font::UNDERLINE_SINGLE,
+                                'color' => [
+                                    'argb' => 'FF3B94F5',
+                                ]
+                            ]);
                         $cell_8->getHyperlink()->setUrl($cell_8->getValue());
                         $cell_8->setValue('Lihat Produk');
                     }
@@ -294,7 +311,7 @@ class MenuScheduleExport implements FromQuery, ShouldAutoSize, ShouldQueue, With
 
                 // giving color into row blank space
                 $ignoreCoordinateRows = [];
-                for($index =0; $index < count($this->coordinateRowBlankSpaces); $index++){
+                for ($index = 0; $index < count($this->coordinateRowBlankSpaces); $index++) {
                     $currentCoordinateIndex = $this->coordinateRowBlankSpaces[$index];
                     $event->sheet->getStyle('B' . $currentCoordinateIndex . ':' . $this->column_product_to_link . $currentCoordinateIndex)->applyFromArray([
                         'fill' => [
