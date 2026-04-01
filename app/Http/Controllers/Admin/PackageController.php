@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\PackageExport;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Admin\PackageResource;
 use App\Http\Resources\PaginationResource;
@@ -118,7 +119,7 @@ class PackageController extends Controller
     {
         try {
 
-            $validator = Validator::make($request->all(),[
+            $validator = Validator::make($request->all(), [
                 'name' => 'required|string|min:1',
                 'description' => 'required|string|min:10',
                 'image' => 'required|image|mimes:jpg,png,jpeg,webp|max:2048',
@@ -166,7 +167,7 @@ class PackageController extends Controller
 
             $response = $this->responseData->create(
                 $created_info['message'],
-                status_code:201,
+                status_code: 201,
                 isJson: false,
             );
 
@@ -189,7 +190,7 @@ class PackageController extends Controller
     {
         try {
 
-            $validator = Validator::make($request->all(),[
+            $validator = Validator::make($request->all(), [
                 'name' => 'required|string|min:1',
                 'description' => 'required|string|min:10',
                 'image' => 'image|mimes:jpg,png,jpeg,webp|max:2048',
@@ -288,7 +289,7 @@ class PackageController extends Controller
 
             $response = $this->responseData->create(
                 'Berhasil dalam menghapus paket menu',
-                isJson:false
+                isJson: false
             );
 
             return redirect()->route('admin.packages')->with(compact('response'));
@@ -326,7 +327,7 @@ class PackageController extends Controller
 
             $response = $this->responseData->create(
                 'Berhasil dalam mengembalikan paket menu',
-                isJson:false
+                isJson: false
             );
 
             return redirect()->route('admin.packages')->with(compact('response'));
@@ -342,6 +343,10 @@ class PackageController extends Controller
 
             return redirect()->back()->withInput()->with(compact('response'));
         }
+    }
 
+    public function export()
+    {
+        return (new PackageExport)->download('List Paket Menu Homade.xlsx');
     }
 }

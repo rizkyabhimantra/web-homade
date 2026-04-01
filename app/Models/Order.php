@@ -24,4 +24,8 @@ class Order extends Model
             ]);
     }
 
+    public function transaction(){
+        return $this->belongsTo(Transaction::class, 'id_transaction');
+    }
+
 }

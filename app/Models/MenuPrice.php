@@ -35,4 +35,9 @@ class MenuPrice extends Model
         ->select(['id', 'name', 'description', 'minimum_order', 'image_url']);
     }
 
+    public function order(){
+        return $this->hasMany(Order::class, 'id_menu_price')
+        ->with('transaction');
+    }
+
 }

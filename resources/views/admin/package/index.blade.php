@@ -51,40 +51,44 @@ License: For each use you must have a valid license purchased only from above li
 
 <body id="kt_app_body" data-kt-app-layout="dark-sidebar" data-kt-app-header-fixed="true">
 	<a href="{{ route('admin.add-package-page') }}">Tambahkan Paket</a>
+	<form action="{{ route('admin.export-packages') }}" method="post">
+		@csrf
+		<button>Export Data</button>
+	</form>
 	@if ($response['status'] === 'success')
 		<table class="table table-striped">
-		<thead>
-			<tr>
-				<th scope="col">ID Paket Menu</th>
-				<th scope="col">Nama Paket</th>
-				<th scope="col">Minimum Order</th>
-				<th scope="col">Tanggal Dibuatnya</th>
-				<th scope="col">Di hapus pada</th>
-				<th scope="col">Detail Pemesanan</th>
-			</tr>
-		</thead>
-		<tbody>
-			@foreach ($response['data']['packages'] as $package)
+			<thead>
 				<tr>
-					<td>{{ $package['id'] }}</td>
-					<td>{{ $package['name'] }}</td>
-					<td>{{ $package['minimum_order'] }}</td>
-					<td>{{ $package['created_at'] }}</td>
-					<td>{{ $package['deleted_at'] }}</td>
-					<td><a href="{{ route('admin.detail-package', ['id' => $package['id']]) }}">Detail</a></td>
+					<th scope="col">ID Paket Menu</th>
+					<th scope="col">Nama Paket</th>
+					<th scope="col">Minimum Order</th>
+					<th scope="col">Tanggal Dibuatnya</th>
+					<th scope="col">Di hapus pada</th>
+					<th scope="col">Detail Pemesanan</th>
 				</tr>
-			@endforeach
-		</tbody>
-	</table>
+			</thead>
+			<tbody>
+				@foreach ($response['data']['packages'] as $package)
+					<tr>
+						<td>{{ $package['id'] }}</td>
+						<td>{{ $package['name'] }}</td>
+						<td>{{ $package['minimum_order'] }}</td>
+						<td>{{ $package['created_at'] }}</td>
+						<td>{{ $package['deleted_at'] }}</td>
+						<td><a href="{{ route('admin.detail-package', ['id' => $package['id']]) }}">Detail</a></td>
+					</tr>
+				@endforeach
+			</tbody>
+		</table>
 	@else
 		{{ dd($response) }}
 	@endif
 
-    <div style="margin-top:200px">
-        @if (session()->has('response'))
-            {{ dd(session()->get('response')) }}
-        @endif
-    </div>
+	<div style="margin-top:200px">
+		@if (session()->has('response'))
+			{{ dd(session()->get('response')) }}
+		@endif
+	</div>
 
 </body>
 

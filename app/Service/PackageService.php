@@ -14,9 +14,12 @@ class PackageService{
         $limit= 3,
         string $status = 'active',
         bool $is_has_limit = false,
+        bool $is_query = false,
     ){
         $status = strtolower($status);
-        $packages = Package::withTrashed($status !== 'active')
+        $packages = Package::query();
+        
+        $packages->withTrashed($status !== 'active')
         ->when($search, function($query, $search){
             $search = strtolower($search);
             return $query->whereRAW('LOWER(name) LIKE ?', "%$search%");
@@ -30,6 +33,9 @@ class PackageService{
         });
         if($is_has_limit){
             return $packages->paginate($limit);
+        }
+        if($packages){
+            return $packages;
         }
         return $packages->get();
     }
