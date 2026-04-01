@@ -247,8 +247,6 @@ class TransactionHelper
                 $user['phone'] = $request['user_info']['phone'];
                 $is_changed = true;
             }
-        } else {
-            // disini ketika dibuat transaksinya sama admin
         }
 
         // return $request->items;

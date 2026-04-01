@@ -156,7 +156,7 @@ class TransactionService
                 'note' => $data['transaction']['note'],
                 'delivery_at' => $data['delivery_info']['delivery_at'],
                 'contact_email' => $data['user_info']['email'],
-                'created_at' => $data['transaction']['is_created'] ? $data['transaction']['created_at'] : now(),
+                'created_at' => isset($data['transaction']['is_created']) && $data['transaction']['is_created'] ? $data['transaction']['created_at'] : now(),
                 'updated_at' => now(),
             ]);
 

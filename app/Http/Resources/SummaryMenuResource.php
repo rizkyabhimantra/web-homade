@@ -23,6 +23,7 @@ class SummaryMenuResource extends JsonResource
                 'vegetable' => $this->vegetable,
                 'side_dish' => $this->side_dish,
                 'sauce' => $this->chili_sauce,
+                'fruit' => $this->fruit,
             ],
             'image_url' => $this->image_url,
             // 'category' => $this->category, perlu?
