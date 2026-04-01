@@ -99,7 +99,6 @@ class TransactionHelper
             // Validasi User Info
             $rules['user_info'] = 'required|array';
             $rules['user_info.first_name'] = 'required|string';
-            $rules['user_info.last_name'] = 'required|string';
             $rules['user_info.phone'] = 'required|string|min:8';
 
             $rules['note'] = 'nullable|string';
@@ -158,7 +157,6 @@ class TransactionHelper
             'delivery_info.new_user_address.latitude' => 'Latitude',
 
             'user_info.first_name' => 'Nama Depan Pemesan',
-            'user_info.last_name' => 'Nama Belakang Pemesan',
             'user_info.phone' => 'Nomor HP Pemesan',
         ]);
 
