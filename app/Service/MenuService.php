@@ -184,7 +184,7 @@ class MenuService
         ])->whereBetween('date_at', $date);
 
         if(!$is_query){
-            $schedules->get();
+            $schedules = $schedules->get();
             $schedules = $schedules->groupBy(function ($schedule) {
                 return $schedule->date_at;
             })->map(function ($schedule, $key) {

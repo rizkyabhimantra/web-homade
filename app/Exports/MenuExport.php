@@ -33,8 +33,6 @@ class MenuExport implements FromQuery, ShouldAutoSize, ShouldQueue, WithCustomSt
 
     private Collection $packages;
 
-    private Builder $raw_query;
-
     private int $total_data = 0;
 
     private string $product_to_link_column, $status, $status_active;

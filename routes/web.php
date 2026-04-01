@@ -135,6 +135,8 @@ Route::middleware([
     Route::get('/schedules', [\App\Http\Controllers\Admin\ScheduleController::class, 'index'])->name('schedules');
     // Route::get('/schedules/{id}', [\App\Http\Controllers\Admin\ScheduleController::class, 'detail'])->name('detail-schedule');
     Route::post('/schedules', [\App\Http\Controllers\Admin\ScheduleController::class, 'storeOrUpdateHandler'])->name('add-or-update-schedules');
+    Route::post('/export-schedules', [\App\Http\Controllers\Admin\ScheduleController::class, 'export'])->name('export-schedules');
+
     // pemesanan
     Route::get('/orders', [\App\Http\Controllers\Admin\TransactionController::class, 'index'])->name('orders');
     Route::get('/orders/{id}', [\App\Http\Controllers\Admin\TransactionController::class, 'detail'])->name('detail-order');

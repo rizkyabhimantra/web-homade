@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Exports\MenuSchedule;
+use App\Exports\MenuScheduleExport;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\MenuResource;
 use App\Http\Resources\MenuScheduleResource;
@@ -138,20 +138,16 @@ class ScheduleController extends Controller
         $week = (int) $request->query('week', $currentDate->weekOfMonth);
 
         $currentDate->weekOfMonth($week);
-        $currentDayOfWeek = $currentDate->dayOfWeekIso; //4
+        $currentDayOfWeek = $currentDate->dayOfWeekIso;
         $startOfWeek = $currentDate->subDays($currentDayOfWeek - 1);
         $endOfWeek = $startOfWeek->clone()->addDays(4);
 
-        (new MenuSchedule(
-            [
-                'start_of_week' => $startOfWeek,
-                'end_of_week' => $endOfWeek,
-                'current_week' => $currentDate->weekOfMonth,
-                'current_month' => $currentDate->monthName,
-                'current_date' => $currentDate->format('d-m-Y'),
-            ],
-        ))->download();
-       
+        $export = new MenuScheduleExport(
+            $startOfWeek,
+            $endOfWeek,
+        );
+
+        return $export->download('jadwal-menu-mingguan-homade.xlsx');
     }
 
 }
