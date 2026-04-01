@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\ThemeExport;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PaginationResource;
 use App\ResponseData;
@@ -300,7 +301,11 @@ class ThemeController extends Controller
 
             return redirect()->back()->withInput()->with(compact('response'));
         }
+    }
 
+
+    public function export (){
+        return (new ThemeExport)->download('Tema Menu Homade.xlsx');
     }
 
 }

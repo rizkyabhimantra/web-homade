@@ -102,6 +102,8 @@ Route::middleware([
     Route::put('/theme/{id}', [\App\Http\Controllers\Admin\ThemeController::class, 'editHandler'])->name('edit-theme');
     Route::delete('/themes/{id}', [\App\Http\Controllers\Admin\ThemeController::class, 'deleteHandler'])->name('delete-theme');
     Route::patch('/themes/{id}', [\App\Http\Controllers\Admin\ThemeController::class, 'restoreHandler'])->name('restore-theme');
+    Route::post('/export-themes', [\App\Http\Controllers\Admin\ThemeController::class, 'export'])->name('export-themes');
+
     
     // kategori
     Route::get('/categories', [\App\Http\Controllers\Admin\CategoryController::class, 'index'])->name('categories');
@@ -112,6 +114,8 @@ Route::middleware([
     Route::put('/categories/{id}', [\App\Http\Controllers\Admin\CategoryController::class, 'editHandler'])->name('edit-category');
     Route::delete('/categories/{id}', [\App\Http\Controllers\Admin\CategoryController::class, 'deleteHandler'])->name('delete-category');
     Route::patch('/categories/{id}', [\App\Http\Controllers\Admin\CategoryController::class, 'restoreHandler'])->name('restore-category');
+    Route::post('/export-categories', [\App\Http\Controllers\Admin\CategoryController::class, 'export'])->name('export-categories');
+
 
     // package
     Route::get('/packages', [\App\Http\Controllers\Admin\PackageController::class, 'index'])->name('packages');
@@ -121,6 +125,8 @@ Route::middleware([
     Route::put('/packages/{id}', [\App\Http\Controllers\Admin\PackageController::class, 'editHandler'])->name('edit-package');
     Route::delete('/packages/{id}', [\App\Http\Controllers\Admin\PackageController::class, 'deleteHandler'])->name('delete-package');
     Route::patch('/packages/{id}', [\App\Http\Controllers\Admin\PackageController::class, 'restoreHandler'])->name('restore-package');
+    Route::post('/export-packages', [\App\Http\Controllers\Admin\PackageController::class, 'export'])->name('export-packages');
+
 
     // menu
     Route::get('/menus', [\App\Http\Controllers\Admin\MenuController::class, 'index'])->name('menus');

@@ -20,4 +20,9 @@ class Theme extends Model
         'created_at',
         'updated_at',
     ];
+
+    public function menus(){
+        return $this->hasMany(Menu::class, 'id_theme');
+    }
+
 }
