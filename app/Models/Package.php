@@ -20,6 +20,7 @@ class Package extends Model
         'name',
         'description',
         'minimum_order',
+        'total_servings',
         'image_url',
         'image_public_id',
         'created_at',

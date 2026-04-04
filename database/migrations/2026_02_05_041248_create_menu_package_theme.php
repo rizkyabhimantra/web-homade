@@ -30,6 +30,7 @@ return new class extends Migration {
             $table->string("name", 60)->unique();
             $table->text("description");
             $table->integer("minimum_order");
+            $table->integer("total_servings");
             $table->string("image_url", 265);
             $table->string("image_public_id", 265)->nullable();
             $table->softDeletes();

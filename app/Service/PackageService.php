@@ -81,6 +81,7 @@ class PackageService{
                     'name' => $data['name'],
                     'description' => $data['description'],
                     'minimum_order' => $data['minimum_order'],
+                    'total_servings' => $data['total_servings'],
                     'image_url' => $uplouded['secure_url'],
                     'image_public_id' => $uplouded['public_id'],
                     'created_at' => now(),
@@ -135,6 +136,7 @@ class PackageService{
             $package->name = $data['name'];
             $package->description = $data['description'];
             $package->minimum_order = $data['minimum_order'];
+            $package->total_servings = $data['total_servings'];
             if($uplouded){
                 $package->image_url = $uplouded['secure_url'];
                 $package->image_public_id = $uplouded['public_id'];

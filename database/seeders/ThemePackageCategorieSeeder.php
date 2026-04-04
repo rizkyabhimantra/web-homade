@@ -67,6 +67,7 @@ class ThemePackageCategorieSeeder extends Seeder
                 "name" => "Family Pack",
                 "description" => "Paket keluarga terdiri dari lauk utama dan sayuran pendamping (tanpa nasi), porsi untuk 4 orang.",
                 "minimum_order" => 1,
+                'total_servings' => 4,
                 "image_url" => "https://res.cloudinary.com/ddiulakke/image/upload/v1773558701/kemasan-familypack_zpqpph.png",
             ]
         ];
