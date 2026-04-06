@@ -15,7 +15,7 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->uuid("id")->primary();
             $table->string('first_name', 120);
-            $table->string('last_name', 120);
+            $table->string('last_name', 120)->nullable();
             $table->string('email')->unique();
             $table->string('phone', 15)->nullable();
             $table->enum("role", UserRole::cases())->default(UserRole::CUSTOMER);
