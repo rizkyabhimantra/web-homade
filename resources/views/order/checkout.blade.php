@@ -8,18 +8,17 @@
 <html lang="en">
     @include('components.header' )
 
-@dd($response)
-
     <body class="d-flex flex-column">
 
+        @if (session('response'))
+            <script>
+                alert("{{ session('response')['message'] }}");
+            </script>
+        @endif
+        
     @if ($response['status_code'] === 200)
         @include('components.navbarHead',[ "page" => "schedule", "bg" => "grey"])
 
-        @if (session('response'))
-    <script>
-        alert("{{ session('response')['message'] }}");
-    </script>
-@endif
 
             <span class="h-40px flex-shrink-0"></span>
 
@@ -75,7 +74,7 @@
                             </div>
                             <!-- end::pick address -->
 
-                        <form class="d-flex align-items-center justify-content-center flex-column border-grey-1 p-5 rounded-4 mb-10 w-100">
+                        <form action="/checkout" method="post" class="d-flex align-items-center justify-content-center flex-column border-grey-1 p-5 rounded-4 mb-10 w-100">
                             @csrf
 
                             <div class="d-flex w-100 mb-5 flex-column">
@@ -96,8 +95,8 @@
 
                             </div>
 
-                            <input id="checkoutPayload" name="checkout_payload" value="">
-                            <input id="pickedAddressId" name="address_id" value="{{ $pickedAddress ?? '' }}">
+                            <input type="hidden" id="checkoutPayload" name="checkout_payload" value="">
+                            <input type="hidden" id="pickedAddressId" name="address_id" value="{{ $pickedAddress ?? '' }}">
 
                             <button type="button" onclick="submitOrder()" class="w-100 bg-accent rounded-3 align-items-center justify-content-center d-flex py-5 fsc-3 text-white fw-bold">Pesan</button>
 
@@ -184,7 +183,9 @@
                             </button>
                         </div>
 
-                        <div class="d-flex align-items-center flex-column gap-3 w-100 h-100 overflow-scroll">
+                        <div class="d-flex align-items-center flex-column {{ $response['data']['delivery_info']['user_address'] ? '' : 'justify-content-center' }} gap-3 w-100 h-100 overflow-scroll">
+
+                        @if ($response['data']['delivery_info']['user_address'])
 
                             @foreach ($response['data']['delivery_info']['user_address'] as $address)
                                 <button
@@ -201,6 +202,13 @@
                                     <p class="fsc-1 mb-0 w-100 text-start text-nowrap overflow-hidden text-overflow">{{ $address['address'] }}</p>
                                 </button>
                             @endforeach
+                            
+                        @else
+
+                            <p class="fsc-3">Anda Belum Memiliki Alamat</p>
+                            <a href="{{ route('user.user-address') }}" class="bg-accent py-2 px-5 fsc-2 fw-bold rounded-3 text-white d-flex align-items-center justify-content-center">Tambah Alamat</a>
+
+                        @endif
 
                         </div>
                     </div>
@@ -316,11 +324,7 @@
 
                 const payloadString = JSON.stringify(payload);
 
-                console.log('checkout_payload:', payloadString); // remove when working
-
                 document.getElementById('checkoutPayload').value = payloadString;
-                document.querySelector('form').action  = '/transaction';
-                document.querySelector('form').method  = 'POST';
                 document.querySelector('form').submit();
             }
             
