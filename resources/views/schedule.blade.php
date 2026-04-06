@@ -21,17 +21,21 @@
                     <p class="fsc-4 fsc-md-3 fsc-lg-4 mb-3 mb-md-3 mb-lg-0 fw-black">Jadwal Menu Harian Homade Catering</p>
 
                     @php
-                        $schedules   = collect($response['data'] ?? []);
-                        $appLaunch   = \Carbon\Carbon::createFromFormat('d-m-Y', '30-03-2026');
-                        $curWeek     = (int) request()->query('week', 1);
-                        $prevWeek    = $curWeek - 1;
-                        $nextWeek    = $curWeek + 1;
+                        $schedules = collect($response['data'] ?? []);
 
-                        $startOfWeek = $appLaunch->copy()->addWeeks($curWeek - 1);
-                        $endOfWeek   = $startOfWeek->copy()->addDays(4);
+                        $curWeek  = (int) request()->query('week', 1);
+                        $prevWeek = $curWeek === 1 ? -1 : $curWeek - 1;
+                        $nextWeek = $curWeek === -1 ? 1 : $curWeek + 1;
+
+                        $offset = $curWeek > 0 ? $curWeek - 1 : $curWeek;
+
+                        $currentMonday = \Carbon\Carbon::now()->startOfWeek(\Carbon\Carbon::MONDAY);
+                        $startOfWeek   = $currentMonday->copy()->addWeeks($offset);
+                        $endOfWeek     = $startOfWeek->copy()->addDays(4);
 
                         $schedulesByDate = $schedules->keyBy('date');
                     @endphp
+
                     <div class="d-flex w-99 w-md-60 w-lg-55 w-xl-40 h-50px border-grey-1 rounded-2">
 
                         <a href="?week={{ $prevWeek }}" class="flex-shrink-0 h-100 ratio-1 d-flex align-items-center justify-content-center">
@@ -121,7 +125,7 @@
                 </div>
 
                 <div class="d-flex w-95 w-xl-80 justify-content-center justify-content-lg-start">
-                    <a href="/" class="btn-primary-homade fsc-3 rounded-3 fw-bold">Order non-jadwal <img src="{{ asset('icons/arrow-right.svg') }}" class="img-white"></a>
+                    <a href="/select-menu" class="btn-primary-homade fsc-3 rounded-3 fw-bold">Order non-jadwal <img src="{{ asset('icons/arrow-right.svg') }}" class="img-white"></a>
                 </div>
 
             </div>

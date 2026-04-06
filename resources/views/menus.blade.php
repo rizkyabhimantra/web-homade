@@ -133,7 +133,7 @@
                         </a>
 
                         @if($start > 2)
-                            <div class="h-100 ratio-1 rounded-2 d-flex align-items-center justify-content-center fw-bold text-secondary cursor-default">
+                            <div class="h-100 ratio-1 rounded-2 d-flex align-items-center justify-content-center fw-bold cursor-default">
                                 ...
                             </div>
                         @endif
@@ -146,7 +146,7 @@
                         @endfor
 
                         @if($end < $lastPage - 1)
-                            <div class="h-100 ratio-1 rounded-2 d-flex align-items-center justify-content-center fw-bold text-secondary cursor-default">
+                            <div class="h-100 ratio-1 rounded-2 d-flex align-items-center justify-content-center fw-bold cursor-default">
                                 ...
                             </div>
                         @endif

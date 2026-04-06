@@ -49,10 +49,15 @@ $font-size-root: 40px;
     }
 }
 
+::selection {
+    color: #fff;
+    background: $color-accent;
+}
+
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 // input[type=number] {
@@ -61,11 +66,11 @@ input::-webkit-inner-spin-button {
 
 
 a, button, input, textarea {
-  -webkit-tap-highlight-color: transparent;
-  text-decoration: none;
-  border: none;
-  background-color: transparent;
-  outline: none;
+    -webkit-tap-highlight-color: transparent;
+    text-decoration: none;
+    border: none;
+    background-color: transparent;
+    outline: none;
 }
 
 img
@@ -488,6 +493,11 @@ body
 .left-0 {left: 0;}
 .right-0 {right: 0;}
 
+.top-20px {top: 20px;}
+.bottom-20px {bottom: 20px;}
+.left-20px {left: 20px;}
+.right-20px {right: 20px;}
+
 .fw-black {font-weight: 800;}
 
 .d-none2 {display: none;}
@@ -501,6 +511,7 @@ body
 .h-2em {height: 2em;}
 .h-3em {height: 3em;}
 
+.max-h-300px {max-height: 300px;}
 
 $fsc-map: (
   1: $font-size-s,
