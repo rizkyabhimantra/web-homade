@@ -11,8 +11,13 @@
     <body class="d-flex flex-column">
 
     @if ($response['status_code'] === 200)
-
         @include('components.navbarHead',[ "page" => "schedule", "bg" => "grey"])
+
+        @if (session('response'))
+    <script>
+        alert("{{ session('response')['message'] }}");
+    </script>
+@endif
         
             <span class="h-40px flex-shrink-0"></span>
 
@@ -253,7 +258,7 @@
             }
 
             function selectAddress(btn) {
-                const id      = btn.dataset.id;  // keep as string — it's a UUID
+                const id      = btn.dataset.id;
                 const name    = btn.dataset.name;
                 const address = btn.dataset.address;
 
@@ -301,7 +306,7 @@
                     note: note
                 };
 
-                const payloadString = JSON.stringify(payload).replace(/"/g, "'");
+                const payloadString = JSON.stringify(payload);
 
                 console.log('checkout_payload:', payloadString); // remove when working
 
