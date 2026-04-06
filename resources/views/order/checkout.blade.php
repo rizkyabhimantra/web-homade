@@ -8,6 +8,8 @@
 <html lang="en">
     @include('components.header' )
 
+@dd($response)
+
     <body class="d-flex flex-column">
 
     @if ($response['status_code'] === 200)
@@ -18,7 +20,7 @@
         alert("{{ session('response')['message'] }}");
     </script>
 @endif
-        
+
             <span class="h-40px flex-shrink-0"></span>
 
             <div class="d-flex align-items-center justify-content-center flex-column gap-5 w-100">
@@ -276,6 +278,12 @@
             }
 
             function submitOrder() {
+                if (!userInfo.phone) {
+                    alert('Nomor HP kamu belum diisi. Lengkapi profil kamu terlebih dahulu.');
+                    window.location.href = '/me';
+                    return;
+                }
+
                 const note      = document.querySelector('textarea[name="note"]').value;
                 const addressId = document.getElementById('pickedAddressId').value;
 
