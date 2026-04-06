@@ -1,6 +1,7 @@
 <?php
 namespace App\Service;
 
+use App\Mail\CreatedAccountMail;
 use App\Models\User;
 use App\Models\UserAddress;
 use App\UserRole;
@@ -8,6 +9,7 @@ use Auth;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Log;
+use Mail;
 
 class UserService
 {
@@ -54,12 +56,15 @@ class UserService
         return $user;
     }
 
-    public function save(array $data)
+    public function save(array $data, bool $send_email = false)
     {
         $user = new User();
         $user->fill($data);
         $user->password = $data['password'];
         $user->save();
+        if($send_email){
+            Mail::to($user)->send(new CreatedAccountMail($user));
+        }
         return $user;
     }
 
