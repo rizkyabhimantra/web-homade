@@ -301,7 +301,7 @@
                     note: note
                 };
 
-                const payloadString = JSON.stringify(payload).replace(/"/g, "'");
+                const payloadString = JSON.stringify(payload);
 
                 console.log('checkout_payload:', payloadString); // remove when working
 
