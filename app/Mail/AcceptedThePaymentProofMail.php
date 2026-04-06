@@ -2,6 +2,8 @@
 
 namespace App\Mail;
 
+use App\Models\Transaction;
+use App\Service\ContactService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -13,12 +15,14 @@ class AcceptedThePaymentProofMail extends Mailable
 {
     use Queueable, SerializesModels;
 
+    private Transaction $transaction;
+
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public function __construct(Transaction $transaction)
     {
-        //
+        $this->transaction = $transaction;
     }
 
     /**
@@ -27,7 +31,7 @@ class AcceptedThePaymentProofMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Accepted The Payment Proof Mail',
+            subject: '[Homade] Bukti Pembayaran Pemesanan Anda Di Terima!',
         );
     }
 
@@ -38,6 +42,10 @@ class AcceptedThePaymentProofMail extends Mailable
     {
         return new Content(
             view: 'mail.accepted-the-payment-proof-mail',
+            with : [
+                'transaction' => $this->transaction,
+                'contact' => (new ContactService())->contact(),
+            ]
         );
     }
 
