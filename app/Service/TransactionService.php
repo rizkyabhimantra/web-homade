@@ -9,6 +9,9 @@ use App\Mail\CreatedTransactionMail;
 use App\Mail\RejectedTransactionMail;
 use App\Mail\SuccessCreateTransactionEmail;
 use App\Mail\SuccessfullyCreatedNewInvoice;
+use App\Mail\TransactionCompletedMail;
+use App\Mail\TransactionDeliveredMail;
+use App\Mail\TransactionOnDeliveryMail;
 use App\Models\Transaction;
 use App\Models\TransactionAddress;
 use App\Models\TransactionOrder;
@@ -648,8 +651,23 @@ class TransactionService
                 'message' => 'Status Delivery Yang DIberikan Tidak Valid',
             ];
         }
-        // di proses => menunggu_diambil => dianterin => sampai tujuan
-        // saat diantarkan & sampai tujuan kirimkan email?
+
+        // apakah memenuhi persyaratan untuk merubah status delivery
+        if($this->isAcceptableStatusForChangingShippingCost($transaction->status)){
+             return [
+                'is_success' => false,
+                'message' => 'Tidak Dapat Merubah Status Pemesanan, Syarat Tidak Terpenuhi',
+            ];
+        }
+
+        // kalo sama jangan dirubah
+        if($isValidStatusDelivery === StatusDelivery::from((string) $transaction->status_delivery)){
+            return [
+                'is_success' => false,
+                'message' => 'Tidak Ada Perubahan...'
+            ];
+        }
+
         if (StatusTransaction::from((string) $transaction->status) === StatusTransaction::SUCCESS) {
             return [
                 'is_success' => false,
@@ -658,6 +676,13 @@ class TransactionService
         }
         $transaction->status_delivery = $isValidStatusDelivery;
         $transaction->save();
+
+        if($isValidStatusDelivery === StatusDelivery::DELIVERED){
+            Mail::to($transaction->contact_email)->send(new TransactionDeliveredMail($transaction));
+        }else if($isValidStatusDelivery === StatusDelivery::ON_THE_WAY){
+            Mail::to($transaction->contact_email)->send(new TransactionOnDeliveryMail($transaction));
+        }
+
         return [
             'is_success' => true,
             'message' => 'Berhasil merubah Status Pengiriman Menjadi ' . $status
@@ -683,6 +708,9 @@ class TransactionService
         }
         $transaction->status = StatusTransaction::SUCCESS;
         $transaction->save();
+
+        Mail::to($transaction->contact_email)->send(new TransactionCompletedMail($transaction));
+
         return [
             'is_success' => true,
             'message' => 'Berhasil Merubah Status Transaksi Menjadi Success'
