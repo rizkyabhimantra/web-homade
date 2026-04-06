@@ -122,9 +122,9 @@ class TransactionController extends Controller
 
             $payment_methods = [];
 
-            if(StatusTransaction::tryFrom($transaction->status) === StatusTransaction::PENDING && !$transaction->payment_proof || $transaction->payment_proof && TransactionPaymentProofStatus::tryFrom($transaction->payment_proof->status) === TransactionPaymentProofStatus::REJECTED){
+            if (StatusTransaction::tryFrom($transaction->status) === StatusTransaction::PENDING && !$transaction->payment_proof || $transaction->payment_proof && TransactionPaymentProofStatus::tryFrom($transaction->payment_proof->status) === TransactionPaymentProofStatus::REJECTED) {
                 $payment_methods = $this->paymentMethodeService->all();
-            } 
+            }
 
             $response = $this->responseData->create(
                 'Berhasil menemukan transaksi!',
@@ -154,11 +154,11 @@ class TransactionController extends Controller
     {
         $response = session()->get('session_pre_check_out_summary_data');
         if (!$response || $response['status'] !== 'success') {
-            $response = $response? $response : $this->responseData->create(
+            $response = $response ? $response : $this->responseData->create(
                 'Pastikan kamu sudah memilih menu yang ingin dipesan ya',
                 status: 'warning',
                 status_code: 400,
-                isJson:false,
+                isJson: false,
             );
             return redirect()->route('user.schedules')->with(compact('response'));
         }
@@ -192,7 +192,7 @@ class TransactionController extends Controller
                 'Telah Terjadi Kesalahan Pada Server',
                 status: 'error',
                 status_code: 500,
-                isJson:false
+                isJson: false
             );
             return redirect()->back()->withInput()->with(compact('response'));
         } finally {
@@ -215,7 +215,7 @@ class TransactionController extends Controller
             }
 
             // create transaction disini?
-            $created_transaction_info = $this->transactionService->create($response);
+            $created_transaction_info = $this->transactionService->create($response['data']);
 
             if (!$created_transaction_info['is_success']) {
                 throw new ErrorException($created_transaction_info['message']);
@@ -223,7 +223,7 @@ class TransactionController extends Controller
 
             $response = $this->responseData->create(
                 'Berhasil membuat transaksi pemesanan',
-                $created_transaction_info['transaction'],
+                (new DetailTransactionResource($created_transaction_info['transaction']))->toArray($request),
                 status_code: 201,
                 isJson: false
             );
@@ -231,7 +231,6 @@ class TransactionController extends Controller
             // hapus data checkout_disini..
             session()->forget('session_pre_check_out_summary_data');
             session()->put('session_after_transaction_result', $response);
-            // Mail::to($created_transaction_info['user']['email'])->send(new SuccessCreateTransactionEmail($created_transaction_info['transaction']));
             // redirect ke transaction berhasil di buat apa ke order transaction?
             return redirect()->route('user.after-transaction');
         } catch (Exception $e) {
@@ -240,7 +239,7 @@ class TransactionController extends Controller
                 'Telah Terjadi Kesalahan Pada Server',
                 status: 'error',
                 status_code: 500,
-                isJson:false,
+                isJson: false,
             );
             return redirect()->back()->withInput()->with(compact('response'));
         }
@@ -272,7 +271,7 @@ class TransactionController extends Controller
                 'uplouded_file' => 'Buki Pembayaran',
             ]);
 
-            
+
             if ($validator->fails()) {
                 $response = $this->responseData->create(
                     'Data yang diberikan belum valid!',
@@ -280,14 +279,14 @@ class TransactionController extends Controller
                     status: 'warning',
                     status_code: 422,
                     isJson: false
-                    );
-                    
-                    return redirect()->back()->withInput()->with(compact('response'));
-                    }
-                    
-                    $transaction = $this->transactionService->detail($id);
-                    
-                    if (!$transaction) {
+                );
+
+                return redirect()->back()->withInput()->with(compact('response'));
+            }
+
+            $transaction = $this->transactionService->detail($id);
+
+            if (!$transaction) {
                 $response = $this->responseData->create(
                     'Tidak Dapat Menemukan Transaksi',
                     status: 'warning',

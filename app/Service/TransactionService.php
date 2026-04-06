@@ -2,6 +2,8 @@
 
 namespace App\Service;
 
+use App\Http\Resources\Admin\DetailMenuResource;
+use App\Mail\CreatedTransactionMail;
 use App\Mail\SuccessCreateTransactionEmail;
 use App\Mail\SuccessfullyCreatedNewInvoice;
 use App\Models\Transaction;
@@ -262,13 +264,17 @@ class TransactionService
 
             // send email disini?
 
-            Mail::to($createdTransaciton->contact_email)->send(new SuccessCreateTransactionEmail($createdTransaciton));
+            $transaction = $this->detail($createdTransaciton->id, false);
+
+            Mail::to($createdTransaciton->contact_email)->send(new CreatedTransactionMail($transaction));
+            // kirim ke email admin?
+            $contact = (new ContactService())->contact();
+            Mail::to($contact->email)->send(new CreatedTransactionMail($transaction, true));
 
             return [
                 'is_success' => true,
                 'message' => 'Berhasil dalam membuat transaksi!',
-                'user' => $data['user_info'],
-                'transaction' => $createdTransaciton,
+                'transaction' => $transaction,
             ];
         } catch (Exception $e) {
             DB::rollBack();

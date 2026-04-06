@@ -161,9 +161,6 @@ class TransactionController extends Controller
                 throw new ErrorException($created_transaction_info['message']);
             }
 
-            // pake que que?
-            // Mail::to($created_transaction_info['user']['email'])->send(new SuccessCreateTransactionEmail($created_transaction_info['transaction']));
-
             return $this->responseData->create(
                 'Berhasil membuat transaksi pemesanan',
                 $created_transaction_info['transaction'],
