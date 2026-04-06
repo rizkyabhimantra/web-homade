@@ -151,7 +151,7 @@ Route::middleware([
     Route::post('/export-orders', [\App\Http\Controllers\Admin\TransactionController::class, 'export'])->name('export-orders');
 
     // note: id yang diberikan adalah id transaksi
-    Route::put('/order/change-information/{id}', [\App\Http\Controllers\Admin\TransactionController::class, 'changeShippingCostHandler'])->name('change-shipping-cost');
+    Route::put('/order/change-information/{id}', [\App\Http\Controllers\Admin\TransactionController::class, 'changeTransactionInformation'])->name('change-transaction-information');
     Route::post('/order/reject/{id}', [\App\Http\Controllers\Admin\TransactionController::class, 'rejectTheTransactionHandler'])->name('reject-order');
     // butki pembayaran handler
     Route::post('/order/create-payment-proof/{id}', [\App\Http\Controllers\Admin\TransactionController::class, 'uploudThePaymentProofHandler'])->name('uploud-payment-proof');

@@ -178,7 +178,7 @@ class AuthController extends Controller
                 'last_name' => $request->last_name ?? '',
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
-            ]);
+            ], true);
 
             $response = $this->responseData->create(
                 'Berhasil Membuat Akun!',
@@ -192,8 +192,6 @@ class AuthController extends Controller
                 status_code: 201,
                 isJson: false,
             );
-
-            Mail::to($user->email)->send(new SuccessfullyRegistered($user));
 
             $this->userService->login($user);
             session()->regenerate();
@@ -358,9 +356,7 @@ class AuthController extends Controller
                 return redirect()->back()->withInput()->with(compact('response'));
             }
 
-            $this->userService->changePassword($user, Hash::make($request->password));
-
-            Mail::to($user->email)->send(new SuccessfullyChangedPassword($user));
+            $this->userService->changePassword($user, Hash::make($request->password),);
 
             $response = $this->responseData->create(
                 'Berhasil Mengganti Kata Sandi Lama Dengan Kata Sandi Baru',

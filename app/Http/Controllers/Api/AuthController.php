@@ -140,9 +140,7 @@ class AuthController extends Controller
                 'last_name' => $request->last_name ?? '',
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
-            ]);
-
-            Mail::to($user->email)->send(new SuccessfullyRegistered($user));
+            ], true);
 
             return $this->responseData->create(
                 'Berhasil Membuat Akun!',
@@ -158,9 +156,9 @@ class AuthController extends Controller
             );
 
         } catch (Exception $e) {
-            Log::error($e->getMessage());
+            Log::error('Telah Terjadi Kesalahan Pada Server Saat Signup (Mobile)' . $e->getMessage());
             return $this->responseData->create(
-                $e->getMessage(),
+                'Telah Terjadi Kesalahan Pada Server',
                 status: 'error',
                 status_code: 500,
             );
@@ -303,9 +301,7 @@ class AuthController extends Controller
             }
 
             $this->userService->changePassword($user, Hash::make($request->password));
-
-            Mail::to($user->email)->send(new SuccessfullyChangedPassword($user));
-
+            
             return $this->responseData->create(
                 'Berhasil Mengganti Kata Sandi Lama Dengan Kata Sandi Baru'
             );
