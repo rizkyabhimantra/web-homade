@@ -753,14 +753,16 @@ class TransactionController extends Controller
         $is_order = strtolower($category) == 'orders';
         $final_date = $is_order ? $this->dateByFilterTransaction($filter_by) : $this->dateByFilterKitchen($filter_by);
 
-        $is_custom = true;
+        $is_custom = false;
         if ($start_date && $end_date) {
             $start_date = Carbon::parse($start_date)->setTime(0, 0, 0);
             $end_date = Carbon::parse($end_date)->setTime(0, 0, 0);
             $final_date = [$start_date, $end_date];
+            $is_custom = true;
         } else if ($start_date) {
             $start_date = Carbon::parse($start_date)->setTime(0, 0, 0);
             $final_date = [$start_date, null];
+            $is_custom = true;
         }
 
         $category = $this->getCategoryExport($final_date[0], $final_date[1], $is_custom);

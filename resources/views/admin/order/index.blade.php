@@ -51,7 +51,7 @@ License: For each use you must have a valid license purchased only from above li
 
 <body id="kt_app_body" data-kt-app-layout="dark-sidebar" data-kt-app-header-fixed="true">
 	<a href="{{ route('admin.add-order-page') }}">Tambahkan Transaksi</a>
-	<form action="{{ route('admin.export-orders', [ 'filter_by' => 'yearly', 'category' => 'orders', 'start_date' => '2024-03-10', 'status' => 'all']) }}" method="post">
+	<form action="{{ route('admin.export-orders', [ 'filter_by' => 'yearly', 'category' => 'kitchen']) }}" method="post">
 		@csrf
 		<button>Data Export</button>
 	</form>

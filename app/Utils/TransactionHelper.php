@@ -211,7 +211,7 @@ class TransactionHelper
             // jika masih di pre checkout cek harga dan dapat
             // kan data lainnya
             $address = $this->userAddressService->all();
-            $address = UserAddressResource::collection($address);
+            $address = UserAddressResource::collection($address)->toArray($request);
         } elseif (!$is_pre_checkout && $is_created_by_customer) {
             $user_address_id = $request->delivery_info['user_address_id'] ?? null;
             if ($user_address_id) {
@@ -381,7 +381,6 @@ class TransactionHelper
 
         // 5. Eksekusi Validator
         $validator = Validator::make($request->all(), $rules, $messages, $attributes);
-
 
         if ($validator->fails()) {
             return $this->responseData->create(
