@@ -301,9 +301,7 @@ class AuthController extends Controller
             }
 
             $this->userService->changePassword($user, Hash::make($request->password));
-
-            Mail::to($user->email)->send(new SuccessfullyChangedPassword($user));
-
+            
             return $this->responseData->create(
                 'Berhasil Mengganti Kata Sandi Lama Dengan Kata Sandi Baru'
             );

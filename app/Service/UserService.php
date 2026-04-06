@@ -1,6 +1,7 @@
 <?php
 namespace App\Service;
 
+use App\Mail\ChangedPasswordMail;
 use App\Mail\CreatedAccountMail;
 use App\Models\User;
 use App\Models\UserAddress;
@@ -20,18 +21,18 @@ class UserService
         bool $is_has_limit = true,
         bool $with_address = false,
         string|null $role = null
-    ){
-        $users = User::when($role, function($query, $role){
+    ) {
+        $users = User::when($role, function ($query, $role) {
             return $query->where('role', $role);
         })
-        ->when($with_address, function($query){
-            return $query->with('address');
-        })
-        ->when($search, function($query, $search){
-            $search = strtolower($search);
-            return $query->whereRaw('LOWER(name) LIKE' , ["%$search%"]);
-        });
-        if($is_has_limit){
+            ->when($with_address, function ($query) {
+                return $query->with('address');
+            })
+            ->when($search, function ($query, $search) {
+                $search = strtolower($search);
+                return $query->whereRaw('LOWER(name) LIKE', ["%$search%"]);
+            });
+        if ($is_has_limit) {
             return $users->paginate($limit);
         }
         return $users->get();
@@ -42,43 +43,53 @@ class UserService
         return auth()->user();
     }
 
-    public function getByID(string $id){
+    public function getByID(string $id)
+    {
         return User::where('id', $id)->first();
     }
 
     public function getByEmail(
         string $email,
-        ?bool $isManagement = false, 
+        ?bool $isManagement = false,
     ) {
         $user = User::where('email', $email)->first();
-        if ($isManagement && $user && !in_array($user->role, [ UserRole::ADMIN, UserRole::CUSTOMER ])) return null;
+        if ($isManagement && $user && !in_array($user->role, [UserRole::ADMIN, UserRole::CUSTOMER]))
+            return null;
 
         return $user;
     }
 
-    public function save(array $data, bool $send_email = false)
+    public function save(array $data, bool $send_email = true)
     {
         $user = new User();
         $user->fill($data);
         $user->password = $data['password'];
         $user->save();
-        if($send_email){
+        if ($send_email) {
             Mail::to($user)->send(new CreatedAccountMail($user));
         }
         return $user;
     }
 
-    public function edit(User $user, array $data){
+    public function edit(User $user, array $data)
+    {
         return $user->update($data);
     }
 
-    public function remove(User $user){
-        return $user->delete();;
+    public function remove(User $user)
+    {
+        return $user->delete();
     }
 
-    public function changePassword(User $user, string $hashedPassword){
+    public function changePassword(User $user, string $hashedPassword, bool $send_mail = true)
+    {
         $user->password = $hashedPassword;
         $user->save();
+
+        if ($send_mail) {
+            Mail::to($user)->send(new ChangedPasswordMail($user));
+        }
+
         return $user;
     }
 
