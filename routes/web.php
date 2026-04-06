@@ -148,6 +148,7 @@ Route::middleware([
     Route::get('/orders/{id}', [\App\Http\Controllers\Admin\TransactionController::class, 'detail'])->name('detail-order');
     Route::get('/create-order', [\App\Http\Controllers\Admin\TransactionController::class, 'store'])->name('add-order-page');
     Route::post('/order', [\App\Http\Controllers\Admin\TransactionController::class, 'storeHandler'])->name('add-order');
+    Route::post('/export-orders', [\App\Http\Controllers\Admin\TransactionController::class, 'export'])->name('export-orders');
 
     // note: id yang diberikan adalah id transaksi
     Route::put('/order/change-information/{id}', [\App\Http\Controllers\Admin\TransactionController::class, 'changeShippingCostHandler'])->name('change-shipping-cost');

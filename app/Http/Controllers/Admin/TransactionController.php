@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\TransactionExport;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\DetailTransactionResource;
 use App\Http\Resources\MenuScheduleResource;
@@ -20,6 +21,7 @@ use App\StatusTransaction;
 use App\UserRole;
 use App\Utils\CalculateDistance;
 use App\Utils\TransactionHelper;
+use Carbon\Carbon;
 use ErrorException;
 use Exception;
 use Illuminate\Http\Request;
@@ -70,7 +72,7 @@ class TransactionController extends Controller
                 return view('admin.order.index', compact('response'));
             }
 
-           $response = $this->responseData->create(
+            $response = $this->responseData->create(
                 'Berhasil Mendapatkan Transaksi',
                 [
                     'pagination' => (new PaginationResource($transactions))->toArray($request),
@@ -187,11 +189,12 @@ class TransactionController extends Controller
                 return redirect()->back()->withInput()->with(compact('response'));
             }
 
-            $updated_info = $this->transactionService->changeInformationTransaction($transaction,
+            $updated_info = $this->transactionService->changeInformationTransaction(
+                $transaction,
                 $request->shipping_cost,
                 $request->delivery_at,
                 $request->received_transaction_information,
-                (bool)  $request->notif_after_update_information ?? true,
+                (bool) $request->notif_after_update_information ?? true,
             );
 
             if (!$updated_info['is_success']) {
@@ -735,7 +738,131 @@ class TransactionController extends Controller
             );
             return redirect()->back()->withInput()->with(compact('response'));
         }
+    }
 
+    public function export(Request $request)
+    {
+
+        $status = $request->query('status', 'success');
+        $category = $request->query('category', 'orders');
+        $filter_by = $request->query('filter_by', 'tomorrow');
+
+        $start_date = $request->query('start_date');
+        $end_date = $request->query('end_date');
+
+        $is_order = strtolower($category) == 'orders';
+        $final_date = $is_order ? $this->dateByFilterTransaction($filter_by) : $this->dateByFilterKitchen($filter_by);
+
+        $is_custom = true;
+        if ($start_date && $end_date) {
+            $start_date = Carbon::parse($start_date)->setTime(0, 0, 0);
+            $end_date = Carbon::parse($end_date)->setTime(0, 0, 0);
+            $final_date = [$start_date, $end_date];
+        } else if ($start_date) {
+            $start_date = Carbon::parse($start_date)->setTime(0, 0, 0);
+            $final_date = [$start_date, null];
+        }
+
+        $category = $this->getCategoryExport($final_date[0], $final_date[1], $is_custom);
+
+        $filename = $is_order ? "Data Pemesanan Homade Periode $category" : "Data Persiapan Dapur Homade Periode $category Kedepan";
+
+        return (new TransactionExport(
+            $status,
+            $final_date,
+            $filename,
+            $is_order,
+        ))->download($filename . '.xlsx');
+
+        return $this->transactionService->all(
+            null,
+            null,
+            null,
+            null,
+            1,
+            null,
+            is_query: true
+        )
+            ->with([
+                'address',
+                'orders'
+            ])->orderBy('delivery_at')
+            ->get();
+    }
+
+    private function dateByFilterTransaction(string $filter_by)
+    {
+        $current_date = now()->setTime(0, 0, 0);
+        switch ($filter_by) {
+            case 'today':
+                return [$current_date, $current_date];
+            case 'tomorrow':
+                return [$current_date, $current_date->clone()->addDays(1)];
+            case 'weekly':
+                return [$current_date->clone()->subDays(7), $current_date];
+            case 'monthly':
+                return [$current_date->clone()->subDays(30), $current_date];
+            case 'yearly':
+                return [$current_date->clone()->subDays(365), $current_date];
+            default:
+                return [$current_date, $current_date->clone()->addDays(1)];
+        }
+    }
+
+    private function dateByFilterKitchen(string $filter_by)
+    {
+        $current_date = now()->setTime(0, 0, 0);
+        switch ($filter_by) {
+            case 'today':
+                return [$current_date, $current_date];
+            case 'tomorrow':
+                return [$current_date, $current_date->clone()->addDays(1)];
+            case 'weekly':
+                return [$current_date, $current_date->clone()->addDays(7)];
+            case 'monthly':
+                return [$current_date, $current_date->clone()->addDays(30)];
+            case 'yearly':
+                return [$current_date, $current_date->clone()->addDays(365)];
+            default:
+                return [$current_date, $current_date->clone()->addDays(1)];
+        }
+    }
+
+    private function getCategoryExport(Carbon $start_date, null|Carbon $end_date, bool $is_custom = false)
+    {
+
+        if (!$is_custom) {
+            // Hitung selisih hari
+            $diffInDays = $start_date->diffInDays($end_date);
+
+            // Pastikan start_date adalah hari ini untuk kategori 'Hari Ini' & 'Besok'
+            $isToday = $start_date->isToday();
+            if ($diffInDays == 0 && $isToday) {
+                return 'Hari Ini';
+            }
+
+            if ($diffInDays == 1 && $isToday) {
+                return 'Besok';
+            }
+
+            if ($diffInDays <= 7) {
+                return 'Satu Minggu Terakhir'; // Atau 'Seminggu ke Depan' tergantung tipe
+            }
+
+            if ($diffInDays <= 31) {
+                return 'Satu Bulan';
+            }
+
+            if ($diffInDays <= 181) {
+                return 'Satu Bulan';
+            }
+
+            if ($diffInDays <= 366) {
+                return 'Satu Tahun';
+            }
+        }
+
+        return "Custom Periode ($start_date - $end_date)"; // Jika rentangnya aneh/sangat jauh
     }
 
 }

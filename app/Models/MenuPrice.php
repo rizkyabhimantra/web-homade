@@ -32,7 +32,7 @@ class MenuPrice extends Model
 
     public function package(){
         return $this->belongsTo(Package::class, 'id_package')
-        ->select(['id', 'name', 'description', 'minimum_order', 'image_url']);
+        ->select(['id', 'name', 'description', 'minimum_order', 'image_url', 'total_servings']);
     }
 
     public function order(){

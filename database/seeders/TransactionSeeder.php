@@ -36,7 +36,7 @@ class TransactionSeeder extends Seeder
             [
                 'status' => StatusTransaction::WAITING_FOR_INVOICE,
                 'status_delivery' => StatusDelivery::WAIT_FOR_CONFIRMATION,
-                'delivery_at' => now()->addDays(5),
+                'delivery_at' => now()->addDays(5)->setTime(16,0,0),
                 'notes' => [
                     'Bang gw pesan buat besok ya, tolong buatkan invoicenya',
                 ],
@@ -45,7 +45,7 @@ class TransactionSeeder extends Seeder
                 'shipping_cost' => 5000,
                 'status' => StatusTransaction::PENDING,
                 'status_delivery' => StatusDelivery::WAIT_FOR_CONFIRMATION,
-                'delivery_at' => now()->addDays(1),
+                'delivery_at' => now()->addDays(1)->setTime(13,0,0),
                 'notes' => [
                     'Bang ini jangan pake nasi ya!',
                 ],
@@ -57,7 +57,7 @@ class TransactionSeeder extends Seeder
                 'status' => StatusTransaction::PAID,
                 'status_delivery' => StatusDelivery::PROCESS,
                 'shipping_cost' => 10000,
-                'delivery_at' => now()->addDays(2),
+                'delivery_at' => now()->addDays(2)->setTime(12,0,0),
                 'notes' => [
                     'Bang ini jangan pake nasi ya!',
                     'tolong sambelnya yang sasetan aja ya bang',
@@ -71,7 +71,7 @@ class TransactionSeeder extends Seeder
             [
                 'status' => StatusTransaction::SUCCESS,
                 'status_delivery' => StatusDelivery::DELIVERED,
-                'delivery_at' => now()->addDays(1),
+                'delivery_at' => now()->addDays(1)->setTime(11,21,0),
                 'notes' => [
                     'Bang ini jangan pake ikan ya!',
                 ],
@@ -90,7 +90,7 @@ class TransactionSeeder extends Seeder
                 'refund_status' => RefundStatus::SUCCESS,
                 'category' => TransactionCategory::PRE_ORDER,
                 'refund_notes' => 'maaf jarak tempuhnya jauh dan kondisi tidak memungkinkan 🙏',
-                'delivery_at' => now()->addDays(1),
+                'delivery_at' => now()->addDays(1)->setTime(11,30,0),
                 'notes' => [
                     'Bang ini jangan pake sambel ya!',
                 ],
@@ -101,7 +101,7 @@ class TransactionSeeder extends Seeder
                 'refund_status' => RefundStatus::PENDING,
                 'shipping_cost' => 15000,
                 'refund_notes' => 'maaf saya tidak setuju dengan ongkir yang saya mahal....',
-                'delivery_at' => now()->addDays(1),
+                'delivery_at' => now()->addDays(1)->setTime(10,30,0),
                 'notes' => [
                     'Bang ini jangan pake nasi ya!',
                 ]

@@ -38,9 +38,11 @@ class TransactionService
         string|null $status,
         string|null $status_delivery,
         int $limit = 8,
-        string|null $delivery_at
+        array|string|null $delivery_at,
+        bool $is_query = false,
     ) {
-        return Transaction::with('user')
+        $transaction = Transaction::query();
+        $transaction->with('user')
             ->when($search, function ($query, $search) {
                 return $query->whereHas('orders.menu_price.menu', function ($q) use ($search) {
                     $search = strtolower("%$search%");
@@ -49,7 +51,11 @@ class TransactionService
                 // satu lagi, check kalo dia berdasarkan id
             })
             ->when($status, function ($query, $status) {
-                return $query->where('status', $status);
+                if (strtolower($status) === 'success') {
+                    return $query->whereIn('status', [StatusTransaction::SUCCESS, StatusTransaction::PAID]);
+                } else if (strtolower($status) != 'all') {
+                    return $query->where('status', $status);
+                }
             })
 
             ->when($status_delivery, function ($query, $status) {
@@ -57,7 +63,17 @@ class TransactionService
             })
 
             ->when($delivery_at, function ($query, $delivery_at) {
-                return $query->where('delivery_at', 'LIKE', "%$delivery_at%");
+                if (is_array($delivery_at)) {
+                    $start = $delivery_at[0];
+                    if ($delivery_at[1]) {
+                        $end = Carbon::parse($delivery_at[1])->endOfDay();
+                        return $query->whereBetween('delivery_at', [$start, $end]);
+                    } else {
+                        return $query->whereDate('delivery_at', '>=', $start);
+                    }
+                }
+
+                return $query->whereDate('delivery_at', $delivery_at);
             })
 
             // ->when($sort_by, function ($query, $sort_by) {
@@ -66,7 +82,13 @@ class TransactionService
 
             ->when($category, function ($query, $category) {
                 return $query->where('category', $category);
-            })->paginate($limit);
+            });
+
+        if ($is_query) {
+            return $transaction;
+        }
+
+        return $transaction->paginate($limit);
     }
 
     public function byCustomer(
@@ -385,7 +407,7 @@ class TransactionService
                 $convert_date = new ConvertDateSafely();
                 $new_delivery_at = $convert_date->convert($delivery_at);
                 $old_delivery_at = $convert_date->convert($transaction->delivery_at);
-                
+
                 // kalo ada error, ya tinggal di throw aja kk
                 if (!$new_delivery_at) {
                     throw new Exception('Tidak Berhasil Dalam Melakukan Merubah Tanggal');
@@ -421,7 +443,7 @@ class TransactionService
                 'is_success' => true,
                 'message' => $message
             ];
-        
+
         } catch (Exception $e) {
             DB::rollBack();
             Log::error('Error When change the change the information transactio : ' . $e->getMessage());
