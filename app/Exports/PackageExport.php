@@ -54,6 +54,8 @@ class PackageExport implements FromQuery, ShouldAutoSize, ShouldQueue, WithCusto
         $columns = [
             'Kategori ID',
             'Nama',
+            'Minumum Pemesanan',
+            'Konversi Porsi',
             'Total Menu Yang Memiliki Paket',
             'Total Pemesanan Berhasil',
             'Dibuat Pada'
@@ -83,7 +85,7 @@ class PackageExport implements FromQuery, ShouldAutoSize, ShouldQueue, WithCusto
     {
 
         // customize cell title, custom color, tinggi, dll disini.
-        $sheet->mergeCells('B4:F4');
+        $sheet->mergeCells('B4:H4');
         $sheet->getStyle('B4')->applyFromArray([
             'font' => [
                 'size' => 16,
@@ -104,7 +106,7 @@ class PackageExport implements FromQuery, ShouldAutoSize, ShouldQueue, WithCusto
         $sheet->getRowDimension(4)->setRowHeight(40);
 
         // custom the column cells
-        $sheet->getStyle('B6:F6')->applyFromArray([
+        $sheet->getStyle('B6:H6')->applyFromArray([
             'fill' => [
                 'fillType' => FILL::FILL_SOLID,
                 'startColor' => [
@@ -114,7 +116,7 @@ class PackageExport implements FromQuery, ShouldAutoSize, ShouldQueue, WithCusto
         ]);
 
         // custom the column row + data row 
-        $sheet->getStyle('B6:' .'F' .($this->total_data + 6)  )->applyFromArray([
+        $sheet->getStyle('B6:' .'H' .($this->total_data + 6)  )->applyFromArray([
             'borders' => [
                 'allBorders' => [
                     'borderStyle' => Border::BORDER_THIN

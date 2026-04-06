@@ -34,7 +34,7 @@ class PackageService{
         if($is_has_limit){
             return $packages->paginate($limit);
         }
-        if($packages){
+        if($is_query){
             return $packages;
         }
         return $packages->get();

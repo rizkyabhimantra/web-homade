@@ -6,7 +6,6 @@ use App\Http\Resources\MenuScheduleResource;
 use App\Service\MenuService;
 use App\Service\PackageService;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
@@ -50,7 +49,7 @@ class MenuScheduleExport implements FromQuery, ShouldAutoSize, ShouldQueue, With
     private int $total_data = 0;
     private int $total_data_rows = 0;
 
-    private Collection $packages;
+    private $packages;
 
     public function __construct(
         string $start_of_week,
@@ -60,8 +59,8 @@ class MenuScheduleExport implements FromQuery, ShouldAutoSize, ShouldQueue, With
         $this->end_of_week = $end_of_week;
         $this->schedulesPage = route('user.schedules');
 
-        $this->packages = (new PackageService)->all();
-        $this->total_data = (new MenuService)->getByMultipleDay([$this->start_of_week, $this->end_of_week], true)->count();
+        $this->packages = (new PackageService())->all();
+        $this->total_data = (new MenuService())->getByMultipleDay([$this->start_of_week, $this->end_of_week], true)->count();
     }
 
     public function query()
@@ -73,8 +72,8 @@ class MenuScheduleExport implements FromQuery, ShouldAutoSize, ShouldQueue, With
             ],
             true
         )->with([
-                    'menu.prices',
-                ]);
+            'menu.prices',
+        ]);
     }
 
     public function headings(): array
@@ -108,6 +107,7 @@ class MenuScheduleExport implements FromQuery, ShouldAutoSize, ShouldQueue, With
         $second_columns[5] = 'Sambal';
         $second_columns[6] = 'Buah';
 
+        
         foreach ($this->packages as $index => $package) {
             $second_columns[$index + 7] = $package->name;
         }
