@@ -76,7 +76,7 @@ class TransactionHelper
         if ($is_from_website) {
             $response = $this->convertPayloadDataIntoArray($request, $is_json);
             if ($response['status'] !== 'success') {
-                return redirect()->back()->withInput()->with(compact('response'));
+                return $response;
             }
             // Pastikan merge hasil array-nya ke request
             $request->merge($response['data']);
