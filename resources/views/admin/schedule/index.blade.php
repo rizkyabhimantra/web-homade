@@ -213,6 +213,12 @@
             @endforeach
         </div>
     </form>
+    <form action="{{ route('admin.export-schedules') }}" method="post">
+        @csrf
+        <button type="submit" class="btn btn-dark shadow-sm px-4">
+                    <i class="bi bi-save me-1"></i> Export Data
+                </button>
+    </form>
 </div>
 
 <div class="modal fade" id="menuSelectionModal" tabindex="-1" aria-hidden="true">

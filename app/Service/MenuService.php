@@ -24,6 +24,7 @@ class MenuService
         string $status = 'available',
         bool $is_has_limit = true,
         bool $is_with_price = false,
+        bool $is_query = false,
     ) {
         $status = strtolower($status);
         $menus = Menu::query();
@@ -60,6 +61,10 @@ class MenuService
 
         if ($is_has_limit) {
             return $menus->paginate($limit);
+        }
+
+        if($is_query){
+            return $menus;
         }
 
         return $menus->get();
@@ -129,15 +134,15 @@ class MenuService
         }
 
         $currentTime = now()->addDays($week * 7)->setTime(0, 0, 0);
-        $labubu = $currentTime->getDaysFromStartOfWeek();
-        $start_time = $currentTime->subDays($labubu);
+        $start_day_of_week = $currentTime->getDaysFromStartOfWeek();
+        $start_time = $currentTime->subDays($start_day_of_week);
         $end_time = $start_time->clone()->addDays(4);
 
         $schedules = MenuSchedule::whereBetween('date_at', [$start_time, $end_time])
             ->with('menu')
             ->when($is_with_price, function ($query) {
                 return $query->with('menu.prices');
-            })
+            })->orderBy('date_at', 'asc')
             ->get();
 
         $schedules = $schedules->groupBy(function ($item) {
@@ -167,22 +172,33 @@ class MenuService
             })->get();
     }
 
-    public function getByMultipleDay(array $date)
+    public function getByMultipleDay(
+        array $date,
+        bool $is_query = false,
+    )
     {
-        $schedules = MenuSchedule::with([
+        $schedules = MenuSchedule::query();
+        
+        $schedules->with([
             'menu',
-        ])->whereBetween('date_at', $date)->get();
-        $schedules = $schedules->groupBy(function ($schedule) {
-            return $schedule->date_at;
-        })->map(function ($schedule, $key) {
-            return [
-                'date' => Carbon::parse($key)->format('d-m-Y'),
-                'menus' => $schedule->map(function ($s) {
-                    return $s->menu;
-                }),
-            ];
-        });
+        ])->whereBetween('date_at', $date);
+
+        if(!$is_query){
+            $schedules = $schedules->get();
+            $schedules = $schedules->groupBy(function ($schedule) {
+                return $schedule->date_at;
+            })->map(function ($schedule, $key) {
+                return [
+                    'date' => Carbon::parse($key)->format('d-m-Y'),
+                    'menus' => $schedule->map(function ($s) {
+                        return $s->menu;
+                    }),
+                ];
+            });
+        }
+
         return $schedules;
+        
     }
 
     public function menuNonWeekly(

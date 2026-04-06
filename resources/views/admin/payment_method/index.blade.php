@@ -4,6 +4,10 @@
         <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
             <h5 class="fw-bold mb-0">Metode Pembayaran <span class="badge bg-light text-dark ms-2">Total ({{ count($response['data']['payments']) }})</span></h5>
             <a href="{{ route('admin.create-payment-method-page') }}" class="btn btn-primary btn-sm fw-bold"><i class="bi bi-plus"></i> Tambahkan Metode</a>
+            <form action="{{ route('admin.export-payment-methods') }}" method="post">
+                @csrf
+                <button class="btn btn-primary btn-sm fw-bold"><i class="bi bi-plus"></i> Export Data</button>
+            </form>
         </div>
         <div class="card-body">
             @foreach($response['data']['payments'] as $payment)

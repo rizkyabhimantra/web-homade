@@ -51,6 +51,10 @@ License: For each use you must have a valid license purchased only from above li
 
 <body id="kt_app_body" data-kt-app-layout="dark-sidebar" data-kt-app-header-fixed="true">
 	<a href="{{ route('admin.add-order-page') }}">Tambahkan Transaksi</a>
+	<form action="{{ route('admin.export-orders', [ 'filter_by' => 'yearly', 'category' => 'kitchen']) }}" method="post">
+		@csrf
+		<button>Data Export</button>
+	</form>
 	@if ($response['status'] === 'success')
 		<table class="table table-striped">
 		<thead>

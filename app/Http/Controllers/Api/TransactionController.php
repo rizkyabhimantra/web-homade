@@ -155,7 +155,7 @@ class TransactionController extends Controller
                 );
             }
 
-            $created_transaction_info = $this->transactionService->create($pre_transction_data);
+            $created_transaction_info = $this->transactionService->create($pre_transction_data['data']);
 
             if (!$created_transaction_info['is_success']) {
                 throw new ErrorException($created_transaction_info['message']);

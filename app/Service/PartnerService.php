@@ -18,15 +18,24 @@ class PartnerService
         string|null $search = null,
         int|null $limit = 30,
         bool $is_has_limit = true,
+        bool $is_query = false,
     ) {
-        $partners = Partner::when($search, function ($query, $search) {
+        $partners =  Partner::query();
+        
+        $partners->when($search, function ($query, $search) {
             $search = strtolower($search);
             return $query->whereRaw('LOWER(name) LIKE ?', ["%$search%"]);
         });
+
         if($is_has_limit){
             return $partners->paginate($limit);
         }
-        return $partners->get();
+
+        if($is_query){
+            return $partners;
+        }
+
+        return $partners->get($columns);
     }
 
     public function detail(string $id)
@@ -62,6 +71,7 @@ class PartnerService
 
             Partner::create([
                 'name' => $data['name'],
+                'join_at' => $data['join_at'] ?? null,
                 'image_url' => $uplouded['secure_url'],
                 'image_public_id' => $uplouded['public_id'],
                 'created_now' => now(),
@@ -111,6 +121,7 @@ class PartnerService
             }
 
             $partner->name = $data['name'];
+            $partner->join_at = $data['join_at'] ?? $partner->join_at;
             $partner->setUpdatedAt(now());
 
 

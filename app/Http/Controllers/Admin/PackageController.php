@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\PackageExport;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Admin\PackageResource;
 use App\Http\Resources\PaginationResource;
 use App\ResponseData;
 use App\Service\PackageService;
@@ -47,7 +47,7 @@ class PackageController extends Controller
                 return view('admin.package.index', compact('response'));
             }
 
-            $response = $this->responseData->create(
+           $response = $this->responseData->create(
                 'Berhasil Mendapatkan Paket - Paket Menu!',
                 [
                     'pagination' => (new PaginationResource($packages))->toArray($request),
@@ -90,7 +90,7 @@ class PackageController extends Controller
             }
 
             $response = $this->responseData->create(
-                'Berhasil Mendapatkan Paket - Paket Menu!',
+                'Berhasil Mendapatkan Paket Menu!',
                 $package,
                 isJson: false,
             );
@@ -118,11 +118,12 @@ class PackageController extends Controller
     {
         try {
 
-            $validator = Validator::make($request->all(),[
+            $validator = Validator::make($request->all(), [
                 'name' => 'required|string|min:1',
                 'description' => 'required|string|min:10',
                 'image' => 'required|image|mimes:jpg,png,jpeg,webp|max:2048',
-                'minimum_order' => 'required|int|min:1'
+                'minimum_order' => 'required|int|min:1',
+                'total_servings' => 'required|int|min:1'
             ], [
                 'required' => ':attribute diperlukan',
                 'string' => ':attribute harus berupa string atau text',
@@ -135,7 +136,8 @@ class PackageController extends Controller
                 'name' => 'Nam Paket',
                 'description' => 'Deskripsi',
                 'image' => 'Gambar Paket',
-                'minimum_order' => 'Minimal Pemesanan'
+                'minimum_order' => 'Minimal Pemesanan',
+                'total_servings' => 'Banyaknya Porsi Yang Didapatkan'
             ]);
 
             if ($validator->fails()) {
@@ -166,7 +168,7 @@ class PackageController extends Controller
 
             $response = $this->responseData->create(
                 $created_info['message'],
-                status_code:201,
+                status_code: 201,
                 isJson: false,
             );
 
@@ -189,11 +191,12 @@ class PackageController extends Controller
     {
         try {
 
-            $validator = Validator::make($request->all(),[
+            $validator = Validator::make($request->all(), [
                 'name' => 'required|string|min:1',
                 'description' => 'required|string|min:10',
                 'image' => 'image|mimes:jpg,png,jpeg,webp|max:2048',
-                'minimum_order' => 'required|int|min:1'
+                'minimum_order' => 'required|int|min:1',
+                'total_servings' => 'required|int|min:1'
             ], [
                 'required' => ':attribute diperlukan',
                 'string' => ':attribute harus berupa string atau text',
@@ -206,7 +209,8 @@ class PackageController extends Controller
                 'name' => 'Nam Paket',
                 'description' => 'Deskripsi',
                 'image' => 'Gambar Paket',
-                'minimum_order' => 'Minimal Pemesanan'
+                'minimum_order' => 'Minimal Pemesanan',
+                'total_servings' => 'Banyaknya Porsi Yang Didapatkan'
             ]);
 
             if ($validator->fails()) {
@@ -288,7 +292,7 @@ class PackageController extends Controller
 
             $response = $this->responseData->create(
                 'Berhasil dalam menghapus paket menu',
-                isJson:false
+                isJson: false
             );
 
             return redirect()->route('admin.packages')->with(compact('response'));
@@ -326,7 +330,7 @@ class PackageController extends Controller
 
             $response = $this->responseData->create(
                 'Berhasil dalam mengembalikan paket menu',
-                isJson:false
+                isJson: false
             );
 
             return redirect()->route('admin.packages')->with(compact('response'));
@@ -342,6 +346,10 @@ class PackageController extends Controller
 
             return redirect()->back()->withInput()->with(compact('response'));
         }
+    }
 
+    public function export()
+    {
+        return (new PackageExport)->download('List Paket Menu Homade.xlsx');
     }
 }

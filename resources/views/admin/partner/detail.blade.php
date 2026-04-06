@@ -12,6 +12,7 @@
     @method('put')
     <span>name</span>
     <input type="text" name="name" value="{{ old('name') ?? $partner['name'] }}">
+    <input type="text" name="join_at" value="2026-08-12">
     <span>image</span>
     <img src="{{ $partner['image_url'] }}" alt="image_gambar_partner">
     <input type="file" name="image" accept="">

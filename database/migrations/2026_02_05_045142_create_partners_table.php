@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('partners', function (Blueprint $table) {
             $table->uuid("id")->primary();
             $table->string("name", 120);
+            $table->timestamp('join_at')->nullable();
             $table->string("image_url", 265);
             $table->string('image_public_id', 265)->nullable();
             $table->timestamps();

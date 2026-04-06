@@ -52,6 +52,10 @@ License: For each use you must have a valid license purchased only from above li
 
 <body id="kt_app_body" data-kt-app-layout="dark-sidebar" data-kt-app-header-fixed="true">
     <a href="{{ route('admin.add-category-page') }}">Tambahkan Kategori Disini</a>
+	<form action="{{ route('admin.export-categories') }}" method="post">
+		@csrf
+		<button>Export Data</button>
+	</form>
 	@if ($response['status'] === 'success')
 		<table class="table table-striped">
 		<thead>

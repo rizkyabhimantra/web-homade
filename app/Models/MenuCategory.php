@@ -26,4 +26,8 @@ class MenuCategory extends Model
         ->select(['id' , 'name']);
     }
 
+    public function menu(){
+        return $this->belongsTo(Menu::class, 'id_menu');
+    }
+
 }

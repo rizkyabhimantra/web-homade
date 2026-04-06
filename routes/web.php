@@ -1,5 +1,7 @@
 <?php
 
+use App\Exports\MenuExport;
+use App\Exports\MenuExport2;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HomeController;
@@ -13,6 +15,7 @@ use App\Http\Middleware\WebMiddleware;
 use App\Notifications\ResetPasswordNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Maatwebsite\Excel\Facades\Excel;
 
 Route::name('user.')->group(function () {
     Route::get('/', [HomeController::class, 'home'])->name('home');
@@ -99,6 +102,8 @@ Route::middleware([
     Route::put('/theme/{id}', [\App\Http\Controllers\Admin\ThemeController::class, 'editHandler'])->name('edit-theme');
     Route::delete('/themes/{id}', [\App\Http\Controllers\Admin\ThemeController::class, 'deleteHandler'])->name('delete-theme');
     Route::patch('/themes/{id}', [\App\Http\Controllers\Admin\ThemeController::class, 'restoreHandler'])->name('restore-theme');
+    Route::post('/export-themes', [\App\Http\Controllers\Admin\ThemeController::class, 'export'])->name('export-themes');
+
     
     // kategori
     Route::get('/categories', [\App\Http\Controllers\Admin\CategoryController::class, 'index'])->name('categories');
@@ -109,6 +114,8 @@ Route::middleware([
     Route::put('/categories/{id}', [\App\Http\Controllers\Admin\CategoryController::class, 'editHandler'])->name('edit-category');
     Route::delete('/categories/{id}', [\App\Http\Controllers\Admin\CategoryController::class, 'deleteHandler'])->name('delete-category');
     Route::patch('/categories/{id}', [\App\Http\Controllers\Admin\CategoryController::class, 'restoreHandler'])->name('restore-category');
+    Route::post('/export-categories', [\App\Http\Controllers\Admin\CategoryController::class, 'export'])->name('export-categories');
+
 
     // package
     Route::get('/packages', [\App\Http\Controllers\Admin\PackageController::class, 'index'])->name('packages');
@@ -118,6 +125,8 @@ Route::middleware([
     Route::put('/packages/{id}', [\App\Http\Controllers\Admin\PackageController::class, 'editHandler'])->name('edit-package');
     Route::delete('/packages/{id}', [\App\Http\Controllers\Admin\PackageController::class, 'deleteHandler'])->name('delete-package');
     Route::patch('/packages/{id}', [\App\Http\Controllers\Admin\PackageController::class, 'restoreHandler'])->name('restore-package');
+    Route::post('/export-packages', [\App\Http\Controllers\Admin\PackageController::class, 'export'])->name('export-packages');
+
 
     // menu
     Route::get('/menus', [\App\Http\Controllers\Admin\MenuController::class, 'index'])->name('menus');
@@ -127,18 +136,22 @@ Route::middleware([
     Route::put('/menus/{id}', [\App\Http\Controllers\Admin\MenuController::class, 'editHandler'])->name('edit-menu');
     Route::delete('/menus/{id}', [\App\Http\Controllers\Admin\MenuController::class, 'deleteHandler'])->name('delete-menu');
     Route::patch('/menus/{id}', [\App\Http\Controllers\Admin\MenuController::class, 'restoreHandler'])->name('restore-menu');
+    Route::post('/export-menus', [\App\Http\Controllers\Admin\MenuController::class, 'export'])->name('export-menus');
     // jadwal menu
     Route::get('/schedules', [\App\Http\Controllers\Admin\ScheduleController::class, 'index'])->name('schedules');
     // Route::get('/schedules/{id}', [\App\Http\Controllers\Admin\ScheduleController::class, 'detail'])->name('detail-schedule');
     Route::post('/schedules', [\App\Http\Controllers\Admin\ScheduleController::class, 'storeOrUpdateHandler'])->name('add-or-update-schedules');
+    Route::post('/export-schedules', [\App\Http\Controllers\Admin\ScheduleController::class, 'export'])->name('export-schedules');
+
     // pemesanan
     Route::get('/orders', [\App\Http\Controllers\Admin\TransactionController::class, 'index'])->name('orders');
     Route::get('/orders/{id}', [\App\Http\Controllers\Admin\TransactionController::class, 'detail'])->name('detail-order');
     Route::get('/create-order', [\App\Http\Controllers\Admin\TransactionController::class, 'store'])->name('add-order-page');
     Route::post('/order', [\App\Http\Controllers\Admin\TransactionController::class, 'storeHandler'])->name('add-order');
+    Route::post('/export-orders', [\App\Http\Controllers\Admin\TransactionController::class, 'export'])->name('export-orders');
 
     // note: id yang diberikan adalah id transaksi
-    Route::put('/order/change-shipping-cost/{id}', [\App\Http\Controllers\Admin\TransactionController::class, 'changeShippingCostHandler'])->name('change-shipping-cost');
+    Route::put('/order/change-information/{id}', [\App\Http\Controllers\Admin\TransactionController::class, 'changeShippingCostHandler'])->name('change-shipping-cost');
     Route::post('/order/reject/{id}', [\App\Http\Controllers\Admin\TransactionController::class, 'rejectTheTransactionHandler'])->name('reject-order');
     // butki pembayaran handler
     Route::post('/order/create-payment-proof/{id}', [\App\Http\Controllers\Admin\TransactionController::class, 'uploudThePaymentProofHandler'])->name('uploud-payment-proof');
@@ -160,6 +173,8 @@ Route::middleware([
     Route::post('/partner-create', [\App\Http\Controllers\Admin\PartnerController::class, 'storeHandler'])->name('add-partner');
     Route::put('/partners/{id}', [\App\Http\Controllers\Admin\PartnerController::class, 'editHandler'])->name('edit-partner');
     Route::delete('/partners/{id}', [\App\Http\Controllers\Admin\PartnerController::class, 'deleteHandler'])->name('delete-partner');
+    Route::post('/export-partners', [\App\Http\Controllers\Admin\PartnerController::class, 'export'])->name('export-partners');
+
     // Achivement / Prestasi
     Route::get('/achievements', [\App\Http\Controllers\Admin\AchievementController::class, 'index'])->name('achievements');
     Route::get('/achievements/{id}', [\App\Http\Controllers\Admin\AchievementController::class, 'detail'])->name('detail-achievement');
@@ -167,6 +182,7 @@ Route::middleware([
     Route::post('/achievement-create', [\App\Http\Controllers\Admin\AchievementController::class, 'storeHandler'])->name('add-achievement');
     Route::put('/achievements/{id}', [\App\Http\Controllers\Admin\AchievementController::class, 'editHandler'])->name('edit-achievement');
     Route::delete('/achievements/{id}', [\App\Http\Controllers\Admin\AchievementController::class, 'deleteHandler'])->name('delete-achievement');
+    Route::post('/export-achievements', [\App\Http\Controllers\Admin\AchievementController::class, 'export'])->name('export-achievements');
     // account
     Route::get('/accounts', [\App\Http\Controllers\Admin\AccountController::class, 'index'])->name('accounts');
     Route::get('/accounts/{id}', [\App\Http\Controllers\Admin\AccountController::class, 'detail'])->name('detail-account');
@@ -178,6 +194,8 @@ Route::middleware([
     Route::post('/create-payment-method', [\App\Http\Controllers\Admin\PaymentMethodController::class, 'storeHandler'])->name('create-payment-method');
     Route::put('/payment-methods/{id}', [\App\Http\Controllers\Admin\PaymentMethodController::class, 'editHandler'])->name('edit-payment-method');
     Route::delete('/payment-methods/{id}', [\App\Http\Controllers\Admin\PaymentMethodController::class, 'deleteHandler'])->name('delete-payment-method');
+    Route::post('/export-payment-methods', [\App\Http\Controllers\Admin\PaymentMethodController::class, 'export'])->name('export-payment-methods');
+
     // setting
     Route::get('/setting', [\App\Http\Controllers\Admin\SettingController::class, 'index'])->name('setting');
     Route::put('/setting', [\App\Http\Controllers\Admin\SettingController::class, 'editHandler'])->name('edit-setting');
@@ -199,5 +217,13 @@ Route::get('/testing-date-time', function() {
 Route::post('/testing-date-time', function(Request $request) {
 
    return $request;
+
+});
+
+Route::get('/testing-export', function(Request $request) {
+
+    return (New MenuExport)->download('sample-export-menu.xlsx');
+
+    // return Excel::download(new MenuExport, 'menu-export.xlsx');
 
 });

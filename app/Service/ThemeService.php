@@ -19,6 +19,7 @@ class ThemeService
         $limit = 5,
         bool $is_has_limit = true,
         string|null $status = 'active',
+        bool $is_query = false,
     ) {
         $themes = Theme::query();
 
@@ -35,6 +36,11 @@ class ThemeService
         if($is_has_limit){
             return $themes->paginate($limit);
         }
+
+        if($is_query){
+            return $themes;
+        }
+
         return $themes->get();
     }
 

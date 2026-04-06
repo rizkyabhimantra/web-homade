@@ -99,7 +99,6 @@ class TransactionHelper
             // Validasi User Info
             $rules['user_info'] = 'required|array';
             $rules['user_info.first_name'] = 'required|string';
-            $rules['user_info.last_name'] = 'required|string';
             $rules['user_info.phone'] = 'required|string|min:8';
 
             $rules['note'] = 'nullable|string';
@@ -158,7 +157,6 @@ class TransactionHelper
             'delivery_info.new_user_address.latitude' => 'Latitude',
 
             'user_info.first_name' => 'Nama Depan Pemesan',
-            'user_info.last_name' => 'Nama Belakang Pemesan',
             'user_info.phone' => 'Nomor HP Pemesan',
         ]);
 
@@ -213,7 +211,7 @@ class TransactionHelper
             // jika masih di pre checkout cek harga dan dapat
             // kan data lainnya
             $address = $this->userAddressService->all();
-            $address = UserAddressResource::collection($address);
+            $address = UserAddressResource::collection($address)->toArray($request);
         } elseif (!$is_pre_checkout && $is_created_by_customer) {
             $user_address_id = $request->delivery_info['user_address_id'] ?? null;
             if ($user_address_id) {
@@ -247,8 +245,6 @@ class TransactionHelper
                 $user['phone'] = $request['user_info']['phone'];
                 $is_changed = true;
             }
-        } else {
-            // disini ketika dibuat transaksinya sama admin
         }
 
         // return $request->items;
@@ -385,7 +381,6 @@ class TransactionHelper
 
         // 5. Eksekusi Validator
         $validator = Validator::make($request->all(), $rules, $messages, $attributes);
-
 
         if ($validator->fails()) {
             return $this->responseData->create(
