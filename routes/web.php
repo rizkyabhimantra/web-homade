@@ -173,6 +173,8 @@ Route::middleware([
     Route::post('/partner-create', [\App\Http\Controllers\Admin\PartnerController::class, 'storeHandler'])->name('add-partner');
     Route::put('/partners/{id}', [\App\Http\Controllers\Admin\PartnerController::class, 'editHandler'])->name('edit-partner');
     Route::delete('/partners/{id}', [\App\Http\Controllers\Admin\PartnerController::class, 'deleteHandler'])->name('delete-partner');
+    Route::post('/export-partners', [\App\Http\Controllers\Admin\PartnerController::class, 'export'])->name('export-partners');
+
     // Achivement / Prestasi
     Route::get('/achievements', [\App\Http\Controllers\Admin\AchievementController::class, 'index'])->name('achievements');
     Route::get('/achievements/{id}', [\App\Http\Controllers\Admin\AchievementController::class, 'detail'])->name('detail-achievement');
@@ -180,6 +182,7 @@ Route::middleware([
     Route::post('/achievement-create', [\App\Http\Controllers\Admin\AchievementController::class, 'storeHandler'])->name('add-achievement');
     Route::put('/achievements/{id}', [\App\Http\Controllers\Admin\AchievementController::class, 'editHandler'])->name('edit-achievement');
     Route::delete('/achievements/{id}', [\App\Http\Controllers\Admin\AchievementController::class, 'deleteHandler'])->name('delete-achievement');
+    Route::post('/export-achievements', [\App\Http\Controllers\Admin\AchievementController::class, 'export'])->name('export-achievements');
     // account
     Route::get('/accounts', [\App\Http\Controllers\Admin\AccountController::class, 'index'])->name('accounts');
     Route::get('/accounts/{id}', [\App\Http\Controllers\Admin\AccountController::class, 'detail'])->name('detail-account');
@@ -191,6 +194,8 @@ Route::middleware([
     Route::post('/create-payment-method', [\App\Http\Controllers\Admin\PaymentMethodController::class, 'storeHandler'])->name('create-payment-method');
     Route::put('/payment-methods/{id}', [\App\Http\Controllers\Admin\PaymentMethodController::class, 'editHandler'])->name('edit-payment-method');
     Route::delete('/payment-methods/{id}', [\App\Http\Controllers\Admin\PaymentMethodController::class, 'deleteHandler'])->name('delete-payment-method');
+    Route::post('/export-payment-methods', [\App\Http\Controllers\Admin\PaymentMethodController::class, 'export'])->name('export-payment-methods');
+
     // setting
     Route::get('/setting', [\App\Http\Controllers\Admin\SettingController::class, 'index'])->name('setting');
     Route::put('/setting', [\App\Http\Controllers\Admin\SettingController::class, 'editHandler'])->name('edit-setting');

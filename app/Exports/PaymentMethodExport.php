@@ -3,61 +3,51 @@
 namespace App\Exports;
 
 use App\Service\CategoryService;
-use App\Service\PackageService;
+use App\Service\PaymentMethodService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithCustomStartCell;
 use Maatwebsite\Excel\Concerns\WithDefaultStyles;
-use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithStyles;
-use Maatwebsite\Excel\Events\AfterSheet;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
-use PhpOffice\PhpSpreadsheet\Style\Color;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
-use PhpOffice\PhpSpreadsheet\Style\Font;
-use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class PackageExport implements FromQuery, ShouldAutoSize, ShouldQueue, WithCustomStartCell, WithDefaultStyles, WithHeadings, WithMapping, WithStyles
+class PaymentMethodExport implements FromQuery, ShouldAutoSize, ShouldQueue, WithCustomStartCell, WithDefaultStyles, WithHeadings, WithMapping, WithStyles
 {
     use Exportable;
 
-    private string $title = 'List Paket Menu Homade';
+    private string $title = 'List Jenis Pembayaran Homade';
 
     private int $total_data = 0;
 
     public function __construct() {
-        $this->total_data = (new PackageService())->all(is_has_limit:false)->count();
+        $this->total_data = (new PaymentMethodService())->all(is_has_limit:false)->count();
         $this->title = $this->title . ' ('. $this->total_data .')';
     }
 
     public function query()
     {
-        return (new PackageService())->all(
+        return (new PaymentMethodService())->all(
             is_has_limit: false,
             is_query: true,
-        )->with([
-            'success_transactions',
-            'menus'
-        ]);
+        );
     }
 
     public function headings(): array
     {
 
         $columns = [
-            'Kategori ID',
+            'No',
             'Nama',
-            'Minumum Pemesanan',
-            'Konversi Porsi',
-            'Total Menu Yang Memiliki Paket',
-            'Total Pemesanan Berhasil',
+            'Nomor Rekenking',
+            'Pemiliki Rekening',
+            'Jenis Pembayaran Aktif',
             'Dibuat Pada'
         ];
 
@@ -70,16 +60,15 @@ class PackageExport implements FromQuery, ShouldAutoSize, ShouldQueue, WithCusto
 
     }
 
-    public function map($package): array
+    public function map($payment): array
     {
         return [
-            $package->id,
-            $package->name,
-            $package->minimum_order,
-            $package->total_servings,
-            count($package->menus) . ' Menu',
-            count($package->success_transactions) . ' Pemesanan',
-            $package->created_at,
+            $payment->no,
+            $payment->bank_name,
+            $payment->account_number,
+            $payment->account_owner,
+            $payment->is_active ? 'Ya' : 'Tidak',
+            $payment->created_at,
         ];
     }
 
@@ -87,7 +76,7 @@ class PackageExport implements FromQuery, ShouldAutoSize, ShouldQueue, WithCusto
     {
 
         // customize cell title, custom color, tinggi, dll disini.
-        $sheet->mergeCells('B4:H4');
+        $sheet->mergeCells('B4:G4');
         $sheet->getStyle('B4')->applyFromArray([
             'font' => [
                 'size' => 16,
@@ -108,7 +97,7 @@ class PackageExport implements FromQuery, ShouldAutoSize, ShouldQueue, WithCusto
         $sheet->getRowDimension(4)->setRowHeight(40);
 
         // custom the column cells
-        $sheet->getStyle('B6:H6')->applyFromArray([
+        $sheet->getStyle('B6:G6')->applyFromArray([
             'fill' => [
                 'fillType' => FILL::FILL_SOLID,
                 'startColor' => [
@@ -118,7 +107,7 @@ class PackageExport implements FromQuery, ShouldAutoSize, ShouldQueue, WithCusto
         ]);
 
         // custom the column row + data row 
-        $sheet->getStyle('B6:' .'H' .($this->total_data + 6)  )->applyFromArray([
+        $sheet->getStyle('B6:' .'G' .($this->total_data + 6)  )->applyFromArray([
             'borders' => [
                 'allBorders' => [
                     'borderStyle' => Border::BORDER_THIN
@@ -144,6 +133,13 @@ class PackageExport implements FromQuery, ShouldAutoSize, ShouldQueue, WithCusto
                 // 'wrapText' => true,
             ],
         ];
+    }
+
+    public function prepareRows($rows){
+        return $rows->map(function($row, $index){
+            $row->no = $index + 1;
+            return $row;
+        });
     }
 
 

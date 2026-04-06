@@ -16,7 +16,7 @@ class PaymentMethodService
         $this->cloudinaryClient = new CloudinaryClient();
     }
 
-    public function all(string|null $search = null, $limit = 8, bool $is_has_limit = false)
+    public function all(string|null $search = null, $limit = 8, bool $is_has_limit = false, bool $is_query = false)
     {
         $query = PaymentMethod::query();
 
@@ -24,6 +24,10 @@ class PaymentMethodService
             $query->where('bank_name', 'LIKE', "%{$search}%")
                 ->orWhere('account_owner', 'LIKE', "%{$search}%")
                 ->orWhere('account_number', 'LIKE', "%{$search}%");
+        }
+
+        if($is_query){
+            return $query;
         }
 
         if ($is_has_limit) {

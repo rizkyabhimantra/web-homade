@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\PaymentMethodExport;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PaginationResource;
 use App\ResponseData;
@@ -174,4 +175,9 @@ class PaymentMethodController extends Controller
             return redirect()->back()->with(compact('response'));
         }
     }
+
+    function export(){
+        return (new PaymentMethodExport())->download('List Jenis Pemabayaran Homade.xlsx');
+    }
+
 }
