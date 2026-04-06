@@ -314,6 +314,13 @@
 
         </script>
         
+        @if (session()->has('response'))
+            <script>
+                const response  = @json(session()->get('response'));
+                console.log(response)
+            </script>
+        @endif
+        
     @else
 
         <div class="d-flex align-items-center justify-content-center w-100 h-100 flex-column">
