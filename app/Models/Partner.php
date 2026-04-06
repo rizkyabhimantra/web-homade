@@ -17,6 +17,7 @@ class Partner extends Model
      */
     protected $fillable = [
         'name',
+        'join_at',
         'image_url',
         'image_public_id',
         'created_at',

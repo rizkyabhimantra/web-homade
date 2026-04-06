@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\AchievementExport;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Admin\DetailAchievement;
 use App\Http\Resources\PaginationResource;
@@ -129,7 +130,7 @@ class AchievementController extends Controller
             ]);
 
             if ($validator->fails()) {
-               $response = $this->responseData->create(
+                $response = $this->responseData->create(
                     'Data yang diberikan belum valid!',
                     errors: $validator->errors()->toArray(),
                     status: 'warning',
@@ -143,9 +144,9 @@ class AchievementController extends Controller
                 $request->only('name', 'description', 'date_at'),
             );
 
-           $response = $this->responseData->create(
+            $response = $this->responseData->create(
                 'Berhasil menambahkan prestasi',
-                status_code:201,
+                status_code: 201,
                 isJson: false,
             );
 
@@ -182,7 +183,7 @@ class AchievementController extends Controller
                 'date_at' => 'Tanggal Mendapatkan Prestasi'
             ]);
 
-            
+
             if ($validator->fails()) {
                 $response = $this->responseData->create(
                     'Data yang diberikan belum valid!',
@@ -266,5 +267,9 @@ class AchievementController extends Controller
             );
             return redirect()->back()->withInput()->with(compact('response'));
         }
+    }
+    public function export()
+    {
+        return (new AchievementExport())->download('List Prestasi Homade.xlsx');
     }
 }

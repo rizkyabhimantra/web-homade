@@ -12,22 +12,29 @@ use Request;
 class AchievementService
 {
 
-    private $cloudinary_folder = 'achievements';
-
     public function all(
         array $columns = ['name', 'description', 'date_at'],
         string|null $search = null,
         int $limit = 8,
         bool $is_has_limit = false,
+        $is_query = false,
     ) {
-        if (!$is_has_limit) {
-            return Achievement::all($columns);
-        }
-        return Achievement::when($search, function ($query, $search) {
+
+        $achievements = Achievement::query();
+
+        $achievements->when($search, function ($query, $search) {
             $search = strtolower($search);
             return $query->whereRaw('LOWER(name) LIKE ?', ["%$search%"]);
-        })
-            ->paginate($limit);
+        });
+        
+        if($is_query){
+            return $achievements;
+        }
+
+        if($is_has_limit){
+            return $achievements->paginate($limit);
+        }
+        return $achievements->get($columns);
     }
 
     public function detail(string $id)

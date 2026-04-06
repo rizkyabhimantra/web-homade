@@ -5,6 +5,10 @@
     @endphp
 
     <a href="{{ route('admin.add-achievement-page') }}">Tambahkan Prestasi</a>
+    <form action="{{ route('admin.export-achievements') }}" method="post">
+        @csrf
+        <button>export data</button>
+    </form>
     <br>
 
     <table border="1">

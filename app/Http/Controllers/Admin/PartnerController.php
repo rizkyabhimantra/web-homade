@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\PartnerExport;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PaginationResource;
 use App\ResponseData;
@@ -84,7 +85,7 @@ class PartnerController extends Controller
                 return view('admin.partner.detail', compact('response'));
             }
 
-            $response = $this->responseData->create(
+           $response = $this->responseData->create(
                 'Berhasil mendapatkan data partner',
                 $partner,
                 isJson: false
@@ -118,13 +119,16 @@ class PartnerController extends Controller
 
             $validator = Validator::make($request->all(), [
                 'name' => 'required|string|min:1',
+                'join_at' => 'date',
                 'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048'
             ], [
                 'required' => 'Pastikan :attribute Sudah Dikirimkan!',
+                'date' => 'Pastikan :attribute adalah tanggal yang valid',
                 'image' => ':attribute harus berupa gambar'
             ], [
                 'name' => 'Nama Partner',
-                'image' => 'Gambar Atau Logo Partner'
+                'image' => 'Gambar Atau Logo Partner',
+                'join_at' => 'Tanggal Bekerja Sama',
             ]);
 
             if ($validator->fails()) {
@@ -139,7 +143,7 @@ class PartnerController extends Controller
                 return redirect()->back()->withInput()->with(compact('response'));
             }
 
-            $created_info = $this->partnerService->save($request->only('name'), $request->file('image'));
+            $created_info = $this->partnerService->save($request->only('name', 'join_at'), $request->file('image'));
 
             if (!$created_info['is_success']) {
                 $response = $this->responseData->create(
@@ -178,13 +182,16 @@ class PartnerController extends Controller
 
             $validator = Validator::make($request->all(), [
                 'name' => 'required|string|min:1',
+                'join_at' => 'date',
                 'image' => 'image|mimes:jpeg,png,jpg,webp|max:2048'
             ], [
                 'required' => 'Pastikan :attribute Sudah Dikirimkan!',
+                'date' => 'Pastikan :attribute adalah tanggal yang valid',
                 'image' => ':attribute harus berupa gambar dengan dengan extension jpeg, png, jpg, webp dan maksimal 2mb'
             ], [
                 'name' => 'Nama Partner',
-                'image' => 'Gambar Atau Logo Partner'
+                'image' => 'Gambar Atau Logo Partner',
+                'join_at' => 'Tanggal Bekerja Sama',
             ]);
 
             if ($validator->fails()) {
@@ -212,7 +219,7 @@ class PartnerController extends Controller
 
             $updated_info = $this->partnerService->edit(
                 $partner,
-                $request->only('name'),
+                $request->only('name', 'join_at'),
                 $request->file('image')
             );
 
@@ -282,6 +289,11 @@ class PartnerController extends Controller
 
             return redirect()->back()->withInput()->with(compact('response'));
         }
+    }
+
+    public function export()
+    {
+        return (new PartnerExport())->download('List Partner Homade.xlsx');
     }
 
 }
