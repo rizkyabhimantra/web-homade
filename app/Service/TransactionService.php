@@ -3,7 +3,10 @@
 namespace App\Service;
 
 use App\Http\Resources\Admin\DetailMenuResource;
+use App\Mail\AcceptedTransactionMail;
+use App\Mail\ChangedTransactionInformationMail;
 use App\Mail\CreatedTransactionMail;
+use App\Mail\RejectedTransactionMail;
 use App\Mail\SuccessCreateTransactionEmail;
 use App\Mail\SuccessfullyCreatedNewInvoice;
 use App\Models\Transaction;
@@ -438,12 +441,18 @@ class TransactionService
 
             DB::commit();
 
-            if ($notif_to_customer) {
+            $is_waiting_for_invoice = $status_transaction === StatusTransaction::WAITING_FOR_INVOICE;
+
+            if ($notif_to_customer || $is_waiting_for_invoice) {
                 // send mail disini....
-                Mail::to($transaction->user->email)->send(new SuccessfullyCreatedNewInvoice($transaction));
+                if ($is_waiting_for_invoice) {
+                    Mail::to($transaction->user->email)->send(new AcceptedTransactionMail($transaction));
+                } else {
+                    Mail::to($transaction->user->email)->send(new ChangedTransactionInformationMail($transaction));
+                }
             }
 
-            $message = $status_transaction === StatusTransaction::WAITING_FOR_INVOICE ? 'Berhasil Menambahkan Invoice Dan Menunggu Customer Membayar!' : 'Berhasil Merubah Ongkos Kirim & Total Harga Transaksi';
+            $message = $is_waiting_for_invoice ? 'Berhasil Menambahkan Invoice Dan Menunggu Customer Membayar!' : 'Berhasil Merubah Ongkos Kirim & Total Harga Transaksi';
 
             return [
                 'is_success' => true,
@@ -463,7 +472,7 @@ class TransactionService
     public function rejectTransaction(
         Transaction $transaction,
         string $reason,
-        bool $isManagement = true,
+        bool $is_management = true,
     ) {
         try {
             // apakah status transaksi masih waiting_for_invoice?
@@ -473,15 +482,28 @@ class TransactionService
                     'message' => 'Tidak Bisa Membatalkan Transaksi Syarat & Ketentuan Tidak Terpenuhi'
                 ];
             }
-            return DB::transaction(function () use ($transaction, $reason, $isManagement) {
-                $transaction->status = $isManagement ? StatusTransaction::CANCELLED_BY_ADMIN : StatusTransaction::CANCELLED_BY_CUSTOMER;
-                $transaction->cancelled_reason = $reason;
-                $transaction->save();
-                return [
-                    'is_success' => true,
-                    'message' => 'Berhasil Membatalkan Transaksi!'
-                ];
-            });
+            DB::beginTransaction();
+            $transaction->status = $is_management ? StatusTransaction::CANCELLED_BY_ADMIN : StatusTransaction::CANCELLED_BY_CUSTOMER;
+            $transaction->cancelled_reason = $reason;
+            $transaction->save();
+
+            DB::commit();
+
+            if($is_management){
+                // cuman ke customer
+                Mail::to($transaction->contact_email)->send(new RejectedTransactionMail($transaction));
+            }else{
+                // untuk admin
+                $contact = (new ContactService())->contact();
+                Mail::to($contact->email)->send(new RejectedTransactionMail($transaction, true));
+                // untuk customer
+                Mail::to($transaction->contact_email)->send(new RejectedTransactionMail($transaction, false));
+            }
+            
+            return [
+                'is_success' => true,
+                'message' => 'Berhasil Membatalkan Transaksi!'
+            ];
         } catch (Exception $e) {
             DB::rollBack();
             Log::error('Error When tejecting the transaction : ' . $e->getMessage());

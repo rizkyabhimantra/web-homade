@@ -141,7 +141,7 @@ class TransactionController extends Controller
         }
     }
 
-    public function changeShippingCostHandler(Request $request, string $id)
+    public function changeTransactionInformation(Request $request, string $id)
     {
         try {
 
@@ -284,8 +284,6 @@ class TransactionController extends Controller
                 $rejected_info['message'],
                 isJson: false,
             );
-
-            Mail::to($transaction->user->email)->send(new RejectedTransaction($transaction));
 
             return redirect()->back()->with(compact('response'));
 
