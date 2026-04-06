@@ -12,6 +12,7 @@ use App\Mail\SuccessfullyCreatedNewInvoice;
 use App\Mail\TransactionCompletedMail;
 use App\Mail\TransactionDeliveredMail;
 use App\Mail\TransactionOnDeliveryMail;
+use App\Mail\UploudThePaymentProofMail;
 use App\Models\Transaction;
 use App\Models\TransactionAddress;
 use App\Models\TransactionOrder;
@@ -273,15 +274,21 @@ class TransactionService
             $transaction = $this->detail($createdTransaciton->id, false);
 
             Mail::to($createdTransaciton->contact_email)->send(new CreatedTransactionMail($transaction));
-            // kirim ke email admin?
-            $contact = (new ContactService())->contact();
-            Mail::to($contact->email)->send(new CreatedTransactionMail($transaction, true));
+
+            if (!$is_created_by_customer) {
+                // kirim ke email admin?
+                $contact = (new ContactService())->contact();
+                Mail::to($contact->email)->send(new CreatedTransactionMail($transaction, true));
+            }
+
+
 
             return [
                 'is_success' => true,
                 'message' => 'Berhasil dalam membuat transaksi!',
                 'transaction' => $transaction,
             ];
+
         } catch (Exception $e) {
             DB::rollBack();
             Log::error('Error when creating the transaction: ' . $e->getMessage());
@@ -358,6 +365,15 @@ class TransactionService
                 $transaction->save();
 
                 DB::commit();
+
+                // send ke dua email?
+                if (!auth()->user()->isAdminOrOwner()) {
+                    $contact = (new ContactService())->contact();
+                    Mail::to($contact->email)->send(new UploudThePaymentProofMail($transaction, true));
+                }
+
+                // send ke customer
+                Mail::to($transaction->contact_email)->send(new UploudThePaymentProofMail($transaction));
 
                 return [
                     'is_success' => true,
@@ -492,17 +508,17 @@ class TransactionService
 
             DB::commit();
 
-            if($is_management){
+            if ($is_management) {
                 // cuman ke customer
                 Mail::to($transaction->contact_email)->send(new RejectedTransactionMail($transaction));
-            }else{
+            } else {
                 // untuk admin
                 $contact = (new ContactService())->contact();
                 Mail::to($contact->email)->send(new RejectedTransactionMail($transaction, true));
                 // untuk customer
                 Mail::to($transaction->contact_email)->send(new RejectedTransactionMail($transaction, false));
             }
-            
+
             return [
                 'is_success' => true,
                 'message' => 'Berhasil Membatalkan Transaksi!'
@@ -653,15 +669,15 @@ class TransactionService
         }
 
         // apakah memenuhi persyaratan untuk merubah status delivery
-        if($this->isAcceptableStatusForChangingShippingCost($transaction->status)){
-             return [
+        if ($this->isAcceptableStatusForChangingShippingCost($transaction->status)) {
+            return [
                 'is_success' => false,
                 'message' => 'Tidak Dapat Merubah Status Pemesanan, Syarat Tidak Terpenuhi',
             ];
         }
 
         // kalo sama jangan dirubah
-        if($isValidStatusDelivery === StatusDelivery::from((string) $transaction->status_delivery)){
+        if ($isValidStatusDelivery === StatusDelivery::from((string) $transaction->status_delivery)) {
             return [
                 'is_success' => false,
                 'message' => 'Tidak Ada Perubahan...'
@@ -677,9 +693,9 @@ class TransactionService
         $transaction->status_delivery = $isValidStatusDelivery;
         $transaction->save();
 
-        if($isValidStatusDelivery === StatusDelivery::DELIVERED){
+        if ($isValidStatusDelivery === StatusDelivery::DELIVERED) {
             Mail::to($transaction->contact_email)->send(new TransactionDeliveredMail($transaction));
-        }else if($isValidStatusDelivery === StatusDelivery::ON_THE_WAY){
+        } else if ($isValidStatusDelivery === StatusDelivery::ON_THE_WAY) {
             Mail::to($transaction->contact_email)->send(new TransactionOnDeliveryMail($transaction));
         }
 
