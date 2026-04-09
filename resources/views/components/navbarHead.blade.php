@@ -155,11 +155,7 @@
                                     <div class="menu-item px-3">
                                         <a href="account/statements.html" class="menu-link d-flex flex-stack px-5">Statements 
                                         <span class="ms-2 lh-0" data-bs-toggle="tooltip" title="View your statements">
-                                            <i class="ki-duotone ki-information-5 fs-5">
-                                                <span class="path1"></span>
-                                                <span class="path2"></span>
-                                                <span class="path3"></span>
-                                            </i>
+                                            <img src="{{ asset('icons/menu.svg') }}" alt="" class="h-50px">
                                         </span></a>
                                     </div>
                                     <!--end::Menu item-->
@@ -337,10 +333,7 @@
                     <!--begin::Header menu toggle-->
                     <div class="app-navbar-item d-lg-none ms-2 me-n2" title="Show header menu">
                         <div class="btn btn-flex btn-icon btn-active-color-primary w-30px h-30px" id="kt_app_header_menu_toggle">
-                            <i class="ki-duotone ki-element-4 fs-1">
-                                <span class="path1"></span>
-                                <span class="path2"></span>
-                            </i>
+                            <img src="{{ asset('icons/menu.svg') }}" alt="" class="h-100 img-white">
                         </div>
                     </div>
                     <!--end::Header menu toggle-->

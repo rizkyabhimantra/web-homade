@@ -56,7 +56,7 @@
                     <!--end::Accordion-->
 
                     <a href="/me/orders" class="fs-2 fw-bolder px-3 mb-0 d-flex align-items-center text-black mb-3 gap-1"><img src="{{ asset('icons/document.svg')}}" class="h-15em" alt="">Pesanan Saya</a>
-                    <form method="get" action="{{ route('user.signout') }}">
+                    <form method="post" action="{{ route('user.signout') }}">
                         @csrf
                         <button class="fs-2 fw-bolder px-3 mb-0 d-flex align-items-center text-accent gap-1"><img src="{{asset('icons/log-out.svg')}}" class="h-15em img-accent" alt="">Log Out</button>
                     </form>

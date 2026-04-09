@@ -180,38 +180,38 @@
             }
 
             document.addEventListener('DOMContentLoaded', function() {
-            const themeSelect = document.getElementById('theme-select');
-            const urlParams = new URLSearchParams(window.location.search);
-            const currentTheme = urlParams.get('theme');
+                const themeSelect = document.getElementById('theme-select');
+                const urlParams = new URLSearchParams(window.location.search);
+                const currentTheme = urlParams.get('theme');
 
-            fetch('/api/themes')
-                .then(response => response.json())
-                .then(res => {
-                    const themes = res.data.themes; 
+                fetch('/api/themes')
+                    .then(response => response.json())
+                    .then(res => {
+                        const themes = res.data.themes; 
 
-                    themes.forEach(theme => {
-                        const option = document.createElement('option');
-                        option.value = theme.name;
-                        option.textContent = theme.name;
+                        themes.forEach(theme => {
+                            const option = document.createElement('option');
+                            option.value = theme.name;
+                            option.textContent = theme.name;
 
-                        if (currentTheme === theme.name) {
-                            option.selected = true;
-                        }
+                            if (currentTheme === theme.name) {
+                                option.selected = true;
+                            }
 
-                        themeSelect.appendChild(option);
-                    });
-                })
+                            themeSelect.appendChild(option);
+                        });
+                    })
 
-            themeSelect.addEventListener('change', function() {
-                if (this.value) {
-                    urlParams.set('theme', this.value);
-                } else {
-                    urlParams.delete('theme');
-                }
-                urlParams.set('page', 1);
-                window.location.search = urlParams.toString();
+                themeSelect.addEventListener('change', function() {
+                    if (this.value) {
+                        urlParams.set('theme', this.value);
+                    } else {
+                        urlParams.delete('theme');
+                    }
+                    urlParams.set('page', 1);
+                    window.location.search = urlParams.toString();
+                });
             });
-        });
 
             document.addEventListener('DOMContentLoaded', function() {
                 const searchInput = document.getElementById('searchInput');
@@ -237,8 +237,8 @@
                     }
                 });
             });
+
         </script>
-    {{  dd($response) }}
     </body>
 
 

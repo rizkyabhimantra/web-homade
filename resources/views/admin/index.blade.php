@@ -14,9 +14,7 @@ License: For each use you must have a valid license purchased only from above li
 	<!--begin::Head-->
 	@include('components.header')
 	<head>
-		<!--begin::Custom Stylesheets-->
 		<link href="{{ asset('assets/css/custom.css') }}" rel="stylesheet" type="text/css" />
-		<!--end::Custom Stylesheets-->
 	</head>
 	<!--end::Head-->
 
@@ -29,7 +27,7 @@ License: For each use you must have a valid license purchased only from above li
 		data-kt-app-header-fixed="true" 
 		data-kt-app-sidebar-enabled="true" 
 		data-kt-app-sidebar-fixed="true" 
-		data-kt-app-sidebar-hoverable="true" 
+		data-kt-app-sidebar-hoverable="false" 
 		data-kt-app-sidebar-push-header="true" 
 		data-kt-app-sidebar-push-toolbar="true" 
 		data-kt-app-sidebar-push-footer="true" 
@@ -47,7 +45,7 @@ License: For each use you must have a valid license purchased only from above li
 				<!--begin::Header-->
 				<div 
 					id="kt_app_header" 
-					class="app-header" 
+					class="app-header bg-transparent" 
 					data-kt-sticky="true" 
 					data-kt-sticky-activate="{default: true, lg: true}" 
 					data-kt-sticky-name="app-header-minimize" 
@@ -58,17 +56,14 @@ License: For each use you must have a valid license purchased only from above li
 						<!--begin::Sidebar mobile toggle-->
 						<div class="d-flex align-items-center d-lg-none ms-n3 me-1 me-md-2" title="Show sidebar menu">
 							<div class="btn btn-icon btn-active-color-primary w-35px h-35px" id="kt_app_sidebar_mobile_toggle">
-								<i class="ki-duotone ki-abstract-14 fs-2 fs-md-1">
-									<span class="path1"></span>
-									<span class="path2"></span>
-								</i>
+								<img src="{{ asset('icons/menu.svg') }}" alt="">
 							</div>
 						</div>
 						<!--end::Sidebar mobile toggle-->
 
 						<!--begin::Mobile logo-->
 						<div class="d-flex align-items-center flex-grow-1 flex-lg-grow-0">
-							<a href="index.html" class="d-lg-none">
+							<a href="{{route('admin.dashboard')}}" class="d-lg-none">
 								<img alt="Logo" src="{{asset('assets/media/logos/Logo-Primer.svg')}}" class="h-35px" />
 							</a>
 						</div>
@@ -85,7 +80,7 @@ License: For each use you must have a valid license purchased only from above li
 								data-kt-swapper-parent="{default: '#kt_app_content_container', lg: '#kt_app_header_wrapper'}"
 								class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
 								<h1 class="page-heading d-flex text-gray-900 fw-bold fs-3 flex-column justify-content-center my-0">
-									Kelola Menu
+									Dashboard
 								</h1>
 							</div>
 							<!--end::Title-->
@@ -286,11 +281,9 @@ License: For each use you must have a valid license purchased only from above li
 												<!--end::Items-->
 												<!--begin::View more-->
 												<div class="py-3 text-center border-top">
-													<a href="pages/user-profile/activity.html" class="btn btn-color-gray-600 btn-active-color-primary">Lihat Semua
-													<i class="ki-duotone ki-arrow-right fs-5">
-														<span class="path1"></span>
-														<span class="path2"></span>
-													</i></a>
+													<a href="{{ route('admin.categories') }}" class="btn btn-color-gray-600 btn-active-color-primary">Lihat Semua
+													<img src="{{ asset('icons/menu.svg') }}" alt="">
+													</a>
 												</div>
 												<!--end::View more-->
 											</div>
@@ -319,11 +312,12 @@ License: For each use you must have a valid license purchased only from above li
 												<!--end::Empty State-->
 												<!--begin::View more-->
 												<div class="py-3 text-center border-top">
-													<a href="pages/user-profile/activity.html" class="btn btn-color-gray-600 btn-active-color-primary">Lihat Semua
+													<a href="{{ route('admin.accounts') }}" class="btn btn-color-gray-600 btn-active-color-primary">Lihat Semua
 													<i class="ki-duotone ki-arrow-right fs-5">
 														<span class="path1"></span>
 														<span class="path2"></span>
-													</i></a>
+													</i>
+													</a>
 												</div>
 												<!--end::View more-->
 											</div>
@@ -559,17 +553,14 @@ License: For each use you must have a valid license purchased only from above li
 						<!--begin::Logo-->
 						<div class="app-sidebar-logo px-6 justify-content-center" id="kt_app_sidebar_logo">
 							<!--begin::Logo image-->
-							<a href="index.html">
+							<a href="{{route('admin.dashboard')}}">
 								<img alt="Logo" src="{{asset('assets/media/logos/Logo-Primer-White-Font.svg')}}" class="h-40px app-sidebar-logo-default pe-5" />
 								<img alt="Logo" src="{{asset('assets/media/logos/Logogram.svg')}}" class="h-30px app-sidebar-logo-minimize" />
 							</a>
 							<!--end::Logo image-->
 							<!--begin::Sidebar toggle-->
 							<div id="kt_app_sidebar_toggle" class="app-sidebar-toggle btn btn-icon btn-shadow btn-sm btn-color-muted btn-active-color-primary h-30px w-30px position-absolute top-50 start-100 translate-middle rotate" data-kt-toggle="true" data-kt-toggle-state="active" data-kt-toggle-target="body" data-kt-toggle-name="app-sidebar-minimize">
-								<i class="ki-duotone ki-black-left-line fs-3 rotate-180">
-									<span class="path1"></span>
-									<span class="path2"></span>
-								</i>
+								<img src="{{ asset('icons/menu.svg') }}" alt="">
 							</div>
 							<!--end::Sidebar toggle-->
 						</div>
@@ -590,7 +581,7 @@ License: For each use you must have a valid license purchased only from above li
 										<!--begin:Menu item-->
 										<div class="menu-item">
 											<!--begin:Menu link-->
-											<a class="menu-link" href="#">
+											<a class="menu-link active" href="{{ route('admin.dashboard') }}">
 												<span class="menu-icon">
 													<i class="bi bi-speedometer2 fs-2"></i>
 												</span>
@@ -611,22 +602,63 @@ License: For each use you must have a valid license purchased only from above li
 										<!--end:Menu item-->
 
 										<!--begin:Menu item-->
-										<div class="menu-item">
+										<div data-kt-menu-trigger="click" class="menu-item menu-accordion here show">
 											<!--begin:Menu link-->
-											<a class="menu-link active" href="index.html">
+											<span class="menu-link">
 												<span class="menu-icon">
 													<i class="bi bi-card-checklist fs-2"></i>
 												</span>
 												<span class="menu-title">Kelola Menu</span>
-											</a>
+												<span class="menu-arrow"></span>
+											</span>
 											<!--end:Menu link-->
+											<!--begin:Menu sub-->
+											<div class="menu-sub menu-sub-accordion">
+												<!--begin:Menu item-->
+												<div class="menu-item">
+													<!--begin:Menu link-->
+													<a class="menu-link" href="{{ route('admin.menus') }}">
+														<span class="menu-bullet">
+															<span class="bullet bullet-dot"></span>
+														</span>
+														<span class="menu-title">Menu</span>
+													</a>
+													<!--end:Menu link-->
+												</div>
+												<!--end:Menu item-->
+												<!--begin:Menu item-->
+												<div class="menu-item">
+													<!--begin:Menu link-->
+													<a class="menu-link" href="{{ route('admin.themes') }}">
+														<span class="menu-bullet">
+															<span class="bullet bullet-dot"></span>
+														</span>
+														<span class="menu-title">Tema</span>
+													</a>
+													<!--end:Menu link-->
+												</div>
+												<!--end:Menu item-->
+												<!--begin:Menu item-->
+												<div class="menu-item">
+													<!--begin:Menu link-->
+													<a class="menu-link" href="{{ route('admin.categories') }}">
+														<span class="menu-bullet">
+															<span class="bullet bullet-dot"></span>
+														</span>
+														<span class="menu-title">Kategori</span>
+													</a>
+													<!--end:Menu link-->
+												</div>
+												<!--end:Menu item-->
+											</div>
+											<!--end:Menu sub-->
 										</div>
 										<!--end:Menu item-->
 
 										<!--begin:Menu item-->
 										<div class="menu-item">
 											<!--begin:Menu link-->
-											<a class="menu-link" href="kelola-jadwal.html">
+											<a class="menu-link" href="{{ route('admin.schedules') }}">
 												<span class="menu-icon">
 													<i class="bi bi-calendar-week fs-2"></i>
 												</span>
@@ -639,7 +671,7 @@ License: For each use you must have a valid license purchased only from above li
 										<!--begin:Menu item-->
 										<div class="menu-item">
 											<!--begin:Menu link-->
-											<a class="menu-link" href="kelola-pesanan.html">
+											<a class="menu-link" href="{{ route('admin.orders') }}">
 												<span class="menu-icon">
 													<i class="bi bi-cart4 fs-2"></i>
 												</span>
@@ -648,108 +680,6 @@ License: For each use you must have a valid license purchased only from above li
 											<!--end:Menu link-->
 										</div>
 										<!--end:Menu item-->
-
-										<!--begin:Menu item-->
-										<div data-kt-menu-trigger="click" class="menu-item menu-accordion">
-											<!--begin:Menu link-->
-											<span class="menu-link">
-												<span class="menu-icon">
-													<i class="bi bi-gear fs-2"></i>
-												</span>
-												<span class="menu-title">Setting</span>
-												<span class="menu-arrow"></span>
-											</span>
-											<!--end:Menu link-->
-											<!--begin:Menu sub-->
-											<div class="menu-sub menu-sub-accordion">
-												<!--begin:Menu item-->
-												<div data-kt-menu-trigger="click" class="menu-item menu-accordion">
-													<!--begin:Menu link-->
-													<span class="menu-link">
-														<span class="menu-bullet">
-															<span class="bullet bullet-dot"></span>
-														</span>
-														<span class="menu-title">Organisasi</span>
-														<span class="menu-arrow"></span>
-													</span>
-													<!--end:Menu link-->
-													<!--begin:Menu sub-->
-													<div class="menu-sub menu-sub-accordion">
-														<!--begin:Menu item-->
-														<div class="menu-item">
-															<!--begin:Menu link-->
-															<a class="menu-link" href="#">
-																<span class="menu-bullet">
-																	<span class="bullet bullet-dot"></span>
-																</span>
-																<span class="menu-title">Unit Organisasi</span>
-															</a>
-															<!--end:Menu link-->
-															<!--begin:Menu link-->
-															<a class="menu-link" href="#">
-																<span class="menu-bullet">
-																	<span class="bullet bullet-dot"></span>
-																</span>
-																<span class="menu-title">Kontraktor</span>
-															</a>
-															<!--end:Menu link-->
-															<!--begin:Menu link-->
-															<a class="menu-link" href="#">
-																<span class="menu-bullet">
-																	<span class="bullet bullet-dot"></span>
-																</span>
-																<span class="menu-title">Peran dan Akses Pengguna</span>
-															</a>
-															<!--end:Menu link-->
-															<!--begin:Menu link-->
-															<a class="menu-link" href="#">
-																<span class="menu-bullet">
-																	<span class="bullet bullet-dot"></span>
-																</span>
-																<span class="menu-title">Manajemen Pengguna</span>
-															</a>
-															<!--end:Menu link-->
-														</div>
-														<!--end:Menu item-->
-													</div>
-													<!--end:Menu sub-->
-												</div>
-												<!--end:Menu item-->
-
-												<!--begin:Menu item-->
-												<div data-kt-menu-trigger="click" class="menu-item menu-accordion">
-													<!--begin:Menu link-->
-													<span class="menu-link">
-														<span class="menu-bullet">
-															<span class="bullet bullet-dot"></span>
-														</span>
-														<span class="menu-title">Manajemen Dokumen</span>
-														<span class="menu-arrow"></span>
-													</span>
-													<!--end:Menu link-->
-													<!--begin:Menu sub-->
-													<div class="menu-sub menu-sub-accordion">
-														<!--begin:Menu item-->
-														<div class="menu-item">
-															<!--begin:Menu link-->
-															<a class="menu-link" href="#">
-																<span class="menu-bullet">
-																	<span class="bullet bullet-dot"></span>
-																</span>
-																<span class="menu-title">Penomoran Dokumen</span>
-															</a>
-															<!--end:Menu link-->
-														</div>
-														<!--end:Menu item-->
-													</div>
-													<!--end:Menu sub-->
-												</div>
-												<!--end:Menu item-->
-											</div>
-											<!--end:Menu sub-->
-										</div>
-										<!--end:Menu item-->
-
 									</div>
 									<!--end::Menu-->
 									
@@ -824,16 +754,17 @@ License: For each use you must have a valid license purchased only from above li
 									<!--end::Menu separator-->
 									<!--begin::Menu item-->
 									<div class="menu-item px-5">
-										<a href="account/overview.html" class="menu-link px-5">My Profile</a>
+										<a href="{{ route('admin.accounts') }}" class="menu-link px-5">My Profile</a>
 									</div>
 									<!--end::Menu item-->
 									<!--begin::Menu separator-->
 									<div class="separator my-2"></div>
 									<!--end::Menu separator-->
 									<!--begin::Menu item-->
-									<div class="menu-item px-5">
-										<a href="authentication/layouts/corporate/sign-in.html" class="menu-link px-5">Sign Out</a>
-									</div>
+									<form method="post" action="{{ route('user.signout') }}" class="menu-item px-5">
+										@csrf
+										<button class="menu-link px-5">Sign Out</button>
+									</form>
 									<!--end::Menu item-->
 								</div>
 								<!--end::User account menu-->
@@ -851,311 +782,6 @@ License: For each use you must have a valid license purchased only from above li
 						<!--begin::Content wrapper-->
 						<div class="d-flex flex-column flex-column-fluid">
 
-
-
-
-
-							<!--begin::Toolbar-->
-							<div id="kt_app_toolbar" class="app-toolbar  py-3">
-								<!--begin::Toolbar container-->
-								<div id="kt_app_toolbar_container" class="app-container  container-fluid d-flex flex-stack ">
-
-									<!--begin::Title-->
-									<div 
-										data-kt-swapper="true" 
-										data-kt-swapper-mode="{default: 'prepend', lg: 'prepend'}"
-										data-kt-swapper-parent="{default: '#kt_app_content_container', lg: '#kt_app_toolbar_container'}"
-										class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
-							
-										<!--begin::Breadcrumb-->
-										<ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1 d-none d-md-flex">
-											<!--begin::Item-->
-											<li class="breadcrumb-item text-muted">
-												<a href="index.html" class="">Home</a>
-											</li>
-											<!--end::Item-->
-
-											<!--begin::Item-->
-											<li class="breadcrumb-item">
-												<span class="bullet bg-gray-500 w-5px h-2px"></span>
-											</li>
-											<!--end::Item-->
-							
-											<!--begin::Item-->
-											<li class="breadcrumb-item text-muted">Kelola Menu</li>
-											<!--end::Item-->
-										</ul>
-										<!--end::Breadcrumb-->
-
-									</div>
-									<!--end::Title-->
-							
-								</div>
-								<!--end::Toolbar container-->
-							</div>
-							<!--end::Toolbar-->
-
-
-							<!--begin::Content-->
-							<div id="kt_app_content" class="app-content flex-column-fluid">
-								<!--begin::Content container-->
-								<div id="kt_app_content_container" class="app-container container-fluid">
-
-									<!--begin::Row Breadcrumb for Mobile View-->
-									<div class="row mb-5 mb-xl-10 d-md-none">
-										<div class="col-12">
-
-											<!--begin::Breadcrumb-->
-											<ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1 d-md-none">
-												<!--begin::Item-->
-												<li class="breadcrumb-item text-muted">
-													<a href="index.html" class="">Home</a>
-												</li>
-												<!--end::Item-->
-
-												<!--begin::Item-->
-												<li class="breadcrumb-item">
-													<span class="bullet bg-gray-500 w-5px h-2px"></span>
-												</li>
-												<!--end::Item-->
-								
-												<!--begin::Item-->
-												<li class="breadcrumb-item text-muted">Kelola Menu</li>
-												<!--end::Item-->
-											</ul>
-											<!--end::Breadcrumb-->
-
-										</div>
-									</div>
-									<!--begin::Row Breadcrumb for Mobile View-->
-
-									<!--begin::Row-->
-									<div class="row g-5 g-xl-10 mb-5 mb-xl-10">
-										<!--begin::Col-->
-										<div class="col-12">
-
-											<!--begin::Card widget 7-->
-											<div class="card">
-												<!--begin::Header-->
-												<div class="card-header pt-5">
-													<!--begin::Title-->
-													<h3 class="card-title align-items-start flex-column">
-														<span class="card-label fw-bold text-gray-800">Daftar Menu</span>
-												
-														<!-- <span class="text-gray-500 mt-1 fw-semibold fs-6">Updated 37 minutes ago</span> -->
-													</h3>
-													<!--end::Title-->
-												
-													<!--begin::Toolbar-->
-													<div class="card-toolbar">
-														<a href="menu-create.html" class="btn btn-primary">
-															<i class="bi bi-plus-lg fs-4"></i>
-															Buat
-														</a>
-													</div>
-													<!--end::Toolbar-->
-												</div>
-												<!--end::Header-->
-
-												<!--begin::Card body-->
-												<div class="card-body">
-
-													<div class="d-flex flex-stack flex-wrap mb-5">
-														<!--begin::Search-->
-														<div class="d-flex align-items-center position-relative my-1">
-															<input type="text" data-kt-filter="search" data-table-target="#kt_datatable_example" class="form-control w-250px" placeholder="Cari" />
-														</div>
-														<!--end::Search-->
-
-														<!--begin::Action-->
-														<div class="d-flex align-items-center">
-															<button id="btnDelete" class="btn btn-outline btn-ghost-danger me-3" disabled>
-																<i class="bi bi-trash3 fs-4"></i>
-																Hapus Data Terpilih
-															</button>
-															<button 
-																id="toggleFilterData" 
-																class="btn btn-light-primary me-3"
-																onclick="toggleShowHide('filterData', 'toggleFilterData', 'Sembunyikan Filter', 'Tampilkan Filter')">
-																<i class="bi bi-funnel fs-4"></i>
-																<span>Tampilkan Filter</span>
-															</button>
-															<button class="btn btn-light-primary">
-																<i class="bi bi-download fs-4"></i>
-																Ekspor Semua Data
-															</button>
-														</div>
-														<!--end::Action-->
-													</div>
-
-													<!--begin::section Filter-->
-													<div class="row mb-10 d-none" id="filterData">
-														<div class="col">
-															<h3 class="fw-bold">Filter</h3>
-
-															<!--begin::Parent Field-->
-															<div class="row mb-5 row g-5 g-xl-10">
-																<div class="col-md-4">
-																	<select class="form-select form-select-sm" data-control="select2" data-placeholder="Parameter">
-																		<option></option>
-																		<option value="1">Nama Karyawan</option>
-																		<option value="2">Tanggal Bergabung</option>
-																		<option value="3">Umur</option>
-																		<option value="4">Nama Departemen</option>
-																		<option value="5">Nama Divisi</option>
-																		<option value="6">Jumlah Pelanggaran</option>
-																		<option value="7">Nama Jabatan</option>
-																		<option value="8">Nama Posisi</option>
-																	</select>
-																</div>
-
-																<div class="col-md-4">
-																	<select class="form-select form-select-sm" data-control="select2" data-hide-search="true" data-placeholder="Operator">
-																		<option></option>
-																		<option value="1">==</option>
-																		<option value="2">Contains</option>
-																		<option value="3"><</option>
-																		<option value="4"><=</option>
-																		<option value="5">></option>
-																		<option value="6">>=</option>
-																	</select>
-																</div>
-
-																<div class="col-md-4">
-																	<div class="input-group input-group-sm">
-																		<input type="text" class="form-control" placeholder="Value" aria-label="Value">
-																	</div>
-																</div>
-															</div>
-															<!--end::Parent Field-->
-
-															<!--begin::Repeater-->
-															<div id="kt_docs_repeater_filter">
-																<!--begin::Form group-->
-																<div class="form-group scroll" style="max-height: 225px;">
-																	<div data-repeater-list="kt_docs_repeater_filter">
-																		<div data-repeater-item class="mb-10">
-
-																			<div class="form-group row row g-5 g-xl-10">
-																				<div class="col-md-3">
-																					<div class="row">
-																						<div class="col-md-3">
-																							<button data-repeater-delete class="btn btn-icon btn-sm btn-light-danger" data-bs-toggle="tooltip" data-bs-custom-class="tooltip-inverse" data-bs-placement="top" aria-label="Delete" data-bs-original-title="Delete" data-kt-initialized="1">
-																								<i class="bi bi-trash fs-2"></i>
-																							</button>
-																						</div>
-																				
-																						<div class="col">
-																							<select 
-																								class="form-select form-select-sm" 
-																								data-control="select2" 
-																								data-hide-search="true" 
-																								data-placeholder="Join">
-																								<option></option>
-																								<option value="1">AND</option>
-																								<option value="2">OR</option>
-																							</select>
-																						</div>
-																					</div>
-																				
-																				</div>
-
-																				<div class="col-md-3">
-																					<select class="form-select form-select-sm" data-control="select2" data-placeholder="Parameter">
-																						<option></option>
-																						<option value="1">Nama Karyawan</option>
-																						<option value="2">Tanggal Bergabung</option>
-																						<option value="3">Umur</option>
-																						<option value="4">Nama Departemen</option>
-																						<option value="5">Nama Divisi</option>
-																						<option value="6">Jumlah Pelanggaran</option>
-																						<option value="7">Nama Jabatan</option>
-																						<option value="8">Nama Posisi</option>
-																					</select>
-																				</div>
-
-																				<div class="col-md-3">
-																					<select class="form-select form-select-sm" data-control="select2" data-hide-search="true" data-placeholder="Operator">
-																						<option></option>
-																						<option value="1">==</option>
-																						<option value="2">Contains</option>
-																						<option value="3"><</option>
-																						<option value="4"><=</option>
-																						<option value="5">></option>
-																						<option value="6">>=</option>
-																					</select>
-																				</div>
-
-																				<div class="col-md-3">
-																					<div class="input-group input-group-sm">
-																						<input type="text" class="form-control" placeholder="Value" aria-label="Value" value="">
-																					</div>
-																				</div>
-
-																			</div>
-																		</div>
-																	</div>
-																</div>
-																<!--end::Form group-->
-																<div class="d-flex flex-end gap-5 pt-5">
-																	<button id="deleteAllItemsFilter" class="btn btn-ghost">Atur Ulang Filter</button>
-																	<button class="btn btn-light-primary" data-repeater-create>Tambah Baris Filter</button>
-																	<button class="btn btn-primary">Terapkan Filter</button>
-																</div>
-															</div>
-															<!--end::Repeater-->
-
-														</div>
-													</div>
-													<!--end::section Filter-->
-
-													<div class="table-responsive">
-														<table class="table align-middle border rounded table-striped table-row-dashed fs-6 g-5 gs-5" id="kt_datatable_example">
-															<thead>
-																<tr class="text-start text-gray-800 fw-bold fs-7 text-capitalize">
-																	<th class="w-10px pe-2 align-items-center">
-																		<div class="form-check form-check-sm m-0">
-																			<input id="selectAll_kt_datatable_example" class="form-check-input" type="checkbox" data-kt-check="true"
-																				data-kt-check-target="#kt_datatable_example .form-check-input" value="1" />
-																		</div>
-																	</th>
-																	<th class="min-w-200px">ID Menu</th>
-																	<th class="min-w-100px">Tema</th>
-																	<th class="min-w-100px">Kategori</th>
-																	<th class="min-w-200px">Nama Menu</th>
-																	<th class="min-w-200px">Sayuran</th>
-																	<th class="min-w-200px">Side dish</th>
-																	<th class="min-w-150px">Sambal</th>
-																	<th class="min-w-100px pe-5">Gambar</th>
-																	<th class="min-w-100px pe-5">Status</th>
-																	<th class="text-end min-w-125px pe-5">Aksi</th>
-																</tr>
-															</thead>
-															<tbody class="text-gray-700"></tbody>
-														</table>
-													</div>
-
-												</div>
-												<!--end::Card body-->
-											</div>
-											<!--end::Card widget 7-->
-
-										</div>
-										<!--end::Col-->
-
-										
-									</div>
-									<!--end::Row-->
-
-								</div>
-								<!--end::Content container-->
-							</div>
-							<!--end::Content-->
-
-
-
-
-							
 						</div>
 						<!--end::Content wrapper-->
 						<!--begin::Footer-->
@@ -1203,21 +829,23 @@ License: For each use you must have a valid license purchased only from above li
 		<script>var hostUrl = "assets/";</script>
 
 		<!--begin::Global Javascript Bundle(mandatory for all pages)-->
-		<script src="{{ asset('assets/plugins/global/plugins.bundle.js') }}"></script>
-		<script src="{{ asset('assets/js/scripts.bundle.js')}}"></script>
+		<script src="{{asset('assets/plugins/global/plugins.bundle.js')}}"></script>
+		<script src="{{asset('assets/js/scripts.bundle.js')}}"></script>
 		<!--end::Global Javascript Bundle-->
 
 		<!--begin::Vendors Javascript(used for this page only)-->
-		<script src="{{ asset('assets/plugins/custom/datatables/datatables.bundle.js')}}"></script>
-		<script src="{{ asset('assets/plugins/custom/formrepeater/formrepeater.bundle.js')}}"></script>
-		<script src="{{ asset('assets/plugins/custom/jstree/jstree.bundle.js')}}"></script>
+		<script src="{{asset('assets/plugins/custom/datatables/datatables.bundle.js')}}"></script>
+		<script src="{{asset('assets/plugins/custom/formrepeater/formrepeater.bundle.js')}}"></script>
+		<script src="{{asset('assets/plugins/custom/jstree/jstree.bundle.js')}}"></script>
 		<!--end::Vendors Javascript-->
 
 		<!--begin::Custom Javascript(used for this page only)-->
 		<script>
 			"use strict";
 
-			function initCustomDatatable(tableId, deleteBtnId, columns, columnDefs, dataSource) {
+			let exportButton;
+
+			function initCustomDatatable(tableId, columns, columnDefs, dataSource) {
 
 				const tableElement = document.querySelector(tableId);
 				if (!tableElement) return;
@@ -1249,29 +877,6 @@ License: For each use you must have a valid license purchased only from above li
 				// ==========================
 
 				const table = $(tableElement);
-				const deleteBtn = document.getElementById(deleteBtnId);
-
-				function toggleDeleteButton() {
-					const checkedCount = table.find('tbody input[type="checkbox"]:checked').length;
-					deleteBtn.disabled = checkedCount === 0;
-				}
-
-				table.on('change', 'tbody input[type="checkbox"]', function () {
-					toggleDeleteButton();
-				});
-
-				// select all
-				table.closest('.card, body').find(`#selectAll_${tableId.replace('#', '')}`).on('change', function () {
-					const checked = this.checked;
-					table.find('tbody input[type="checkbox"]')
-						.prop('checked', checked)
-						.trigger('change');
-				});
-
-				// handle redraw (pagination/search)
-				datatable.on('draw', function () {
-					toggleDeleteButton();
-				});
 
 				// AUTO FOCUS SEARCH (tambahan)
 				setTimeout(() => {
@@ -1280,12 +885,42 @@ License: For each use you must have a valid license purchased only from above li
 				}, 100);
 			}
 
+			function exportDatatableToExcel(tableId, filename = 'Export Excel') {
+				const table = $(tableId).DataTable();
+
+				if (!exportButton) {
+					exportButton = new $.fn.dataTable.Buttons(table, {
+						buttons: [{
+							extend: 'excelHtml5',
+							title: filename,
+							exportOptions: {
+								// columns: ':not(:last-child)'
+								columns: [0,1,2,3,4,5,6,8]
+							}
+						}]
+					});
+				}
+
+				table.button(0).trigger();
+			}
+
 			KTUtil.onDOMContentLoaded(function () {
 
 				const data1 = [
 					{
-						idMenu: "MN-072025-0002",
+						idMenu: "MN-072025-0001",
 						tema: "Chinese",
+						kategori: "Ayam",
+						namaMenu: "Fuyunghai Ayam",
+						sayuran: "Cah Jamur",
+						sideDish: "Tahu Cabe Garam",
+						sambal: "Chili Oil",
+						gambar: "Foto",
+						status: 1,
+					},
+					{
+						idMenu: "MN-072025-0002",
+						tema: "Rusia",
 						kategori: "Ayam",
 						namaMenu: "Fuyunghai Ayam",
 						sayuran: "Cah Jamur",
@@ -1296,13 +931,6 @@ License: For each use you must have a valid license purchased only from above li
 					},
 				];
 				const columns1 = [
-					{ data: null,
-						render: function () {
-							return `<div class="form-check form-check-sm m-0">
-										<input class="form-check-input" type="checkbox" data-kt-check="true" value="1" />
-									</div>`;
-						}
-					},
 					{ data: "idMenu" },
 					{ data: "tema" },
 					{ data: "kategori" },
@@ -1320,10 +948,9 @@ License: For each use you must have a valid license purchased only from above li
 							}
 						}
 					},
-					{
-						data: null,
-						orderable: false,
-						className: 'text-end',
+					{ data: null, 
+					  orderable: false, 
+					  className: 'text-end',
 						render: function () {
 							return `<button
 										class="btn btn-secondary btn-active-light-primary btn-sm" 
@@ -1339,16 +966,8 @@ License: For each use you must have a valid license purchased only from above li
 										data-kt-menu="true">
 										<!--begin::Menu item-->
 										<div class="menu-item px-3">
-											<a href="#" class="menu-link px-3" data-kt-docs-table-filter="edit_row">
-												Ubah
-											</a>
-										</div>
-										<!--end::Menu item-->
-									
-										<!--begin::Menu item-->
-										<div class="menu-item px-3">
-											<a href="#" class="menu-link px-3" data-kt-docs-table-filter="delete_row">
-												Ekspor
+											<a href="#" class="menu-link px-3">
+												Lihat Detail
 											</a>
 										</div>
 										<!--end::Menu item-->
@@ -1357,7 +976,7 @@ License: For each use you must have a valid license purchased only from above li
 										
 										<!--begin::Menu item-->
 										<div class="menu-item px-3">
-											<a href="#" class="menu-link menu-link-delete px-3" data-kt-docs-table-filter="delete_row">
+											<a href="#" class="menu-link menu-link-delete px-3">
 												Hapus
 											</a>
 										</div>
@@ -1367,14 +986,14 @@ License: For each use you must have a valid license purchased only from above li
 						}
 					}
 				];
-				const columnDefs1 = [
-					{
-						targets: 0,
-						orderable: false
-					}
-				];
+				const columnDefs1 = [];
 
-				initCustomDatatable('#kt_datatable_example', 'btnDelete', columns1, columnDefs1, data1);
+				initCustomDatatable('#kt_datatable_example', columns1, columnDefs1, data1);
+
+				// handle export excel
+				document.getElementById('btnExportExcel')?.addEventListener('click', function () {
+					exportDatatableToExcel('#kt_datatable_example', 'Daftar Menu');
+				});
 
 				// handle Search Datatable
 				document.querySelectorAll('[data-kt-filter="search"]').forEach(function (searchInput) {
@@ -1393,58 +1012,7 @@ License: For each use you must have a valid license purchased only from above li
 
 				});
 			});
-			
-			// funct for toogle show hide element
-			function toggleShowHide(idTarget, idTrigger, textShow, textHide) {
-				const targetElement = document.getElementById(idTarget);
-				const toggleButton = document.getElementById(idTrigger);
-				const textSpan = toggleButton.querySelector("span");
-
-				if (targetElement.classList.contains("d-none")) {
-					targetElement.classList.remove("d-none");
-					toggleButton.classList.add("active");
-					textShow ? textSpan.innerText = textShow : '';
-				} else {
-					targetElement.classList.add("d-none");
-					toggleButton.classList.remove("active");
-					textHide ? textSpan.innerText = textHide : '';
-				}
-			};
-
-			// Script for Form repeater filter
-			$('#kt_docs_repeater_filter').repeater({
-				initEmpty: true,
-
-				show: function () {
-					$(this).slideDown();
-
-					// Re-init select2
-					$(this).find('.form-select[data-control="select2"]').select2({
-						minimumResultsForSearch: 8
-					});
-				},
-
-				hide: function (deleteElement) {
-					$(this).slideUp(deleteElement);
-				},
-
-				ready: function () {
-					// Init select2
-					$('.form-select[data-control="select2"]').select2({
-						minimumResultsForSearch: 8
-					});
-				}
-			});
-			// Script for delete all repeater items
-			$('#deleteAllItemsFilter').on('click', function () {
-				$('#kt_docs_repeater_filter').find('[data-repeater-item]').each(function () {
-					$(this).slideUp(function () {
-						$(this).remove();
-					});
-				});
-			});
 		</script>
-
 		<!--end::Custom Javascript-->
 		
 	</body>

@@ -42,7 +42,7 @@
 	data-kt-app-sidebar-enabled="true" data-kt-app-sidebar-fixed="true" data-kt-app-sidebar-hoverable="true"
 	data-kt-app-sidebar-push-header="true" data-kt-app-sidebar-push-toolbar="true"
 	data-kt-app-sidebar-push-footer="true" data-kt-app-toolbar-enabled="true" class="app-default">
-    @if(isset($response['status']) && $response['status'] === 'success')
+
     @php
         $data = $response['data'];
         $themes = $data['themes'];
@@ -184,7 +184,6 @@
         </form>
     </div>
 
-@else
     <div class="container py-5">
         <div class="alert alert-danger d-flex align-items-center shadow-sm" role="alert">
             <i class="bi bi-exclamation-octagon-fill fs-4 me-3"></i>
@@ -194,7 +193,6 @@
         </div>
     </div>
     {{ dd($response) }}
-@endif
 
 <script defer>
     function handler_status_active(e) {

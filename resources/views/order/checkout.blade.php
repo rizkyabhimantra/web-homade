@@ -74,7 +74,7 @@
                             </div>
                             <!-- end::pick address -->
 
-                        <form action="/checkout" method="post" class="d-flex align-items-center justify-content-center flex-column border-grey-1 p-5 rounded-4 mb-10 w-100">
+                        <form action="{{ route('user.create-order') }}" method="post" class="d-flex align-items-center justify-content-center flex-column border-grey-1 p-5 rounded-4 mb-10 w-100">
                             @csrf
 
                             <div class="d-flex w-100 mb-5 flex-column">
