@@ -784,7 +784,7 @@ License: For each use you must have a valid license purchased only from above li
 					<!--begin::Main-->
 					<div class="app-main flex-column flex-row-fluid" id="kt_app_main">
 						<!--begin::Content wrapper-->
-						<div class="d-flex flex-column flex-column-fluid p-10">
+						<div class="d-flex flex-column flex-column-fluid">
 
 							<!--begin::Toolbar-->
 							<div id="kt_app_toolbar" class="app-toolbar py-3">
@@ -811,51 +811,34 @@ License: For each use you must have a valid license purchased only from above li
 												<span class="bullet bg-gray-500 w-5px h-2px"></span>
 											</li>
 											<!--end::Item-->
+
+											<!--begin::Item-->
+											<li class="breadcrumb-item">
+												<a href="{{ route('admin.orders') }}" class="">Kelola Pesanan</a>
+											</li>
+											<!--end::Item-->
+
+											<!--begin::Item-->
+											<li class="breadcrumb-item">
+												<span class="bullet bg-gray-500 w-5px h-2px"></span>
+											</li>
+											<!--end::Item-->
 							
 											<!--begin::Item-->
-											<li class="breadcrumb-item text-muted">Kelola Jadwal</li>
+											<li class="breadcrumb-item text-muted">Detail Pesanan</li>
 											<!--end::Item-->
 										</ul>
 										<!--end::Breadcrumb-->
 
 									</div>
 									<!--end::Title & Breadcrumb-->
-
-									<!--begin::Action group-->
-									<div class="d-flex align-items-center ms-auto">
-										
-										<!--begin::Action wrapper-->
-										<form action="{{ route('admin.export-orders', [ 'filter_by' => 'yearly', 'category' => 'kitchen']) }}" method="post" class="d-flex align-items-center">
-											@csrf
-											<button id="btnExportExcel" class="btn btn-sm btn-light-primary">
-												<i class="bi bi-file-earmark-spreadsheet fs-4"></i>
-												Export (Excel)
-											</button>
-										</form>
-										<!--end::Action wrapper-->
-
-										<!--begin::Action wrapper-->
-										<div class="d-flex align-items-center">
-											<!--begin::Separartor-->
-											<div class="bullet bg-secondary h-35px w-1px mx-5"></div>
-											<!--end::Separartor-->
-
-											<button class="btn btn-sm btn-dark" id="kt_drawer_filter_global_button">
-												<i class="bi bi-funnel fs-4"></i>
-												Filter
-											</button>
-										</div>
-										<!--end::Action wrapper-->
-
-									</div>
-									<!--end::Action group-->
 							
 								</div>
 								<!--end::Toolbar container-->
 							</div>
 							<!--end::Toolbar-->
 
-                            <div class="d-flex align-items-center justify-content-center w-100">
+                            <div class="d-flex align-items-center justify-content-center w-100 p-10">
                                 <div class="d-flex flex-column w-95 bg-white border-grey-05 p-5 px-10 rounded-2">
 
                                     @if ($response['status'] === 'success')
@@ -879,7 +862,7 @@ License: For each use you must have a valid license purchased only from above li
                                             <span>Dikirimkan Pada: {{ $response['data']['delivery_info']['delivery_at'] }}</span>
                                             <span>Estimasi Jarak: {{ $response['data']['delivery_info']['distance'] }} Kilometer</span>
                                             <span>Status: {{ $response['data']['delivery_info']['status'] }}</span>
-                                            <div class="mb-5 d-flex gap-2 mt-2">
+                                            <div class="mb-5 d-flex gap-2 mt-2 flex-wrap">
                                                 @foreach ($response['data']['status_information']['delivery'] as $status_delivery)
                                                     @php
                                                         $isCurrentStatus = trim($status_delivery -> value) === $response['data']['delivery_info']['status'];
@@ -1015,7 +998,6 @@ License: For each use you must have a valid license purchased only from above li
                                                 </div>
                                                 </form>
                                             @endif
-                                        </div>
                                         </div>
                                         @if ($response['data']['payment_proof'])
                                             <div style="display:flex; flex-direction: column; gap:5px;"></div>
