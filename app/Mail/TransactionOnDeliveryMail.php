@@ -2,6 +2,8 @@
 
 namespace App\Mail;
 
+use App\Models\Transaction;
+use App\Service\ContactService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -9,18 +11,18 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class ContactSupport extends Mailable
+class TransactionOnDeliveryMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $mailData;
+    private Transaction $transaction;
 
     /**
      * Create a new message instance.
      */
-    public function __construct($mailData)
+    public function __construct(Transaction $transaction)
     {
-        $this->mailData = $mailData;
+        $this->transaction = $transaction;
     }
 
     /**
@@ -29,10 +31,7 @@ class ContactSupport extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Tiket Support: ' . $this->mailData['subject'],
-            // replyTo: [
-            //     $this->mailData['email'] => $this->mailData['fullname']
-            // ],
+            subject: '[Homade] Menu Pesanan Anda Sedang Dalam Perjalanan!',
         );
     }
 
@@ -42,15 +41,18 @@ class ContactSupport extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'mail.contact-support',
+            view: 'mail.transaction-on-delivery-mail',
             with: [
-                'mailData' => $this->mailData
+                'transaction' => $this->transaction,
+                'contact' => (new ContactService())->contact()
             ]
         );
     }
 
     /**
      * Get the attachments for the message.
+     *
+     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
      */
     public function attachments(): array
     {

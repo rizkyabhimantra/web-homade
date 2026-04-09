@@ -3,12 +3,18 @@
 namespace App\Service;
 
 use App\Http\Resources\Admin\DetailMenuResource;
+use App\Mail\AcceptedThePaymentProofMail;
 use App\Mail\AcceptedTransactionMail;
 use App\Mail\ChangedTransactionInformationMail;
 use App\Mail\CreatedTransactionMail;
+use App\Mail\RejectedPaymentProofMail;
 use App\Mail\RejectedTransactionMail;
 use App\Mail\SuccessCreateTransactionEmail;
 use App\Mail\SuccessfullyCreatedNewInvoice;
+use App\Mail\TransactionCompletedMail;
+use App\Mail\TransactionDeliveredMail;
+use App\Mail\TransactionOnDeliveryMail;
+use App\Mail\UploudThePaymentProofMail;
 use App\Models\Transaction;
 use App\Models\TransactionAddress;
 use App\Models\TransactionOrder;
@@ -270,15 +276,21 @@ class TransactionService
             $transaction = $this->detail($createdTransaciton->id, false);
 
             Mail::to($createdTransaciton->contact_email)->send(new CreatedTransactionMail($transaction));
-            // kirim ke email admin?
-            $contact = (new ContactService())->contact();
-            Mail::to($contact->email)->send(new CreatedTransactionMail($transaction, true));
+
+            if (!$is_created_by_customer) {
+                // kirim ke email admin?
+                $contact = (new ContactService())->contact();
+                Mail::to($contact->email)->send(new CreatedTransactionMail($transaction, true));
+            }
+
+
 
             return [
                 'is_success' => true,
                 'message' => 'Berhasil dalam membuat transaksi!',
                 'transaction' => $transaction,
             ];
+
         } catch (Exception $e) {
             DB::rollBack();
             Log::error('Error when creating the transaction: ' . $e->getMessage());
@@ -355,6 +367,15 @@ class TransactionService
                 $transaction->save();
 
                 DB::commit();
+
+                // send ke dua email?
+                if (!auth()->user()->isAdminOrOwner()) {
+                    $contact = (new ContactService())->contact();
+                    Mail::to($contact->email)->send(new UploudThePaymentProofMail($transaction, true));
+                }
+
+                // send ke customer
+                Mail::to($transaction->contact_email)->send(new UploudThePaymentProofMail($transaction));
 
                 return [
                     'is_success' => true,
@@ -489,17 +510,17 @@ class TransactionService
 
             DB::commit();
 
-            if($is_management){
+            if ($is_management) {
                 // cuman ke customer
                 Mail::to($transaction->contact_email)->send(new RejectedTransactionMail($transaction));
-            }else{
+            } else {
                 // untuk admin
                 $contact = (new ContactService())->contact();
                 Mail::to($contact->email)->send(new RejectedTransactionMail($transaction, true));
                 // untuk customer
                 Mail::to($transaction->contact_email)->send(new RejectedTransactionMail($transaction, false));
             }
-            
+
             return [
                 'is_success' => true,
                 'message' => 'Berhasil Membatalkan Transaksi!'
@@ -571,6 +592,9 @@ class TransactionService
 
                 // seharusnya perlu cek nih di satu stau setelah saving...
                 $message = $new_proof['is_success'] ? 'Berhasil Menyetujui Bukti Pembayaran Customer Dan Mengubah Photo Bukti Pembayaran!' : 'Berhasil Menyetujui Bukti Pembayaran Customer';
+
+                Mail::to($transaction->contact_email)->send(new AcceptedThePaymentProofMail($transaction));
+
                 return [
                     'is_success' => true,
                     'message' => $message,
@@ -594,39 +618,39 @@ class TransactionService
         string $reason
     ) {
         try {
-            return DB::transaction(function () use ($transaction, $reason) {
+            DB::beginTransaction();
 
-                // apakah status reject?
-                if ($this->isPaymentProofRejected($transaction->payment_proof)) {
-                    return [
-                        'is_success' => false,
-                        'message' => 'Status Bukti Pembayaran Sudah Di Tolak'
-                    ];
-                }
-                // apakah transaksi masih bisa menerima pergnatian harga? atau status transaksi sudah di byarkan namun masih di proses
-                if ($this->isAcceptableStatusForChangingShippingCost($transaction->status) || $this->isTransactionStillInProcess($transaction)) {
-                    $transaction->status = StatusTransaction::PENDING;
-                    $transaction->status_delivery = StatusDelivery::WAIT_FOR_CONFIRMATION;
-                    $transaction->save();
-                    $transaction->payment_proof->status = TransactionPaymentProofStatus::REJECTED;
-                    $transaction->payment_proof->reason = $reason;
-                    $transaction->payment_proof->save();
-
-                    // seharusnya perlu cek nih di satu stau setelah saving...
-
-                    return [
-                        'is_success' => true,
-                        'message' => 'Berhasil Menolak Bukti Pembayaran!'
-                    ];
-                }
-
-                // syarat tidak terpenuhi 
+            // apakah status reject?
+            if ($this->isPaymentProofRejected($transaction->payment_proof)) {
                 return [
                     'is_success' => false,
-                    'message' => 'Transaksi Sudah Tidak Dapat Menerima Pergantian Ongkos Kirim Atau Status Pengiriman Sudah Tidak Dalam Tahap Prosess Atau Dibawahnya'
+                    'message' => 'Status Bukti Pembayaran Sudah Di Tolak'
                 ];
+            }
+            // apakah transaksi masih bisa menerima pergnatian harga? atau status transaksi sudah di byarkan namun masih di proses
+            if ($this->isAcceptableStatusForChangingShippingCost($transaction->status) || $this->isTransactionStillInProcess($transaction)) {
+                $transaction->status = StatusTransaction::PENDING;
+                $transaction->status_delivery = StatusDelivery::WAIT_FOR_CONFIRMATION;
+                $transaction->save();
+                $transaction->payment_proof->status = TransactionPaymentProofStatus::REJECTED;
+                $transaction->payment_proof->reason = $reason;
+                $transaction->payment_proof->save();
 
-            });
+                // seharusnya perlu cek nih di satu stau setelah saving...
+
+                Mail::to($transaction->contact_email)->send(new RejectedPaymentProofMail($transaction));
+
+                return [
+                    'is_success' => true,
+                    'message' => 'Berhasil Menolak Bukti Pembayaran!'
+                ];
+            }
+
+            // syarat tidak terpenuhi 
+            return [
+                'is_success' => false,
+                'message' => 'Transaksi Sudah Tidak Dapat Menerima Pergantian Ongkos Kirim Atau Status Pengiriman Sudah Tidak Dalam Tahap Prosess Atau Dibawahnya'
+            ];
         } catch (Exception $e) {
             DB::rollBack();
             Log::error('Error When tejecting the payment proof : ' . $e->getMessage());
@@ -648,8 +672,23 @@ class TransactionService
                 'message' => 'Status Delivery Yang DIberikan Tidak Valid',
             ];
         }
-        // di proses => menunggu_diambil => dianterin => sampai tujuan
-        // saat diantarkan & sampai tujuan kirimkan email?
+
+        // apakah memenuhi persyaratan untuk merubah status delivery
+        if ($this->isAcceptableStatusForChangingShippingCost($transaction->status)) {
+            return [
+                'is_success' => false,
+                'message' => 'Tidak Dapat Merubah Status Pemesanan, Syarat Tidak Terpenuhi',
+            ];
+        }
+
+        // kalo sama jangan dirubah
+        if ($isValidStatusDelivery === StatusDelivery::from((string) $transaction->status_delivery)) {
+            return [
+                'is_success' => false,
+                'message' => 'Tidak Ada Perubahan...'
+            ];
+        }
+
         if (StatusTransaction::from((string) $transaction->status) === StatusTransaction::SUCCESS) {
             return [
                 'is_success' => false,
@@ -658,6 +697,13 @@ class TransactionService
         }
         $transaction->status_delivery = $isValidStatusDelivery;
         $transaction->save();
+
+        if ($isValidStatusDelivery === StatusDelivery::DELIVERED) {
+            Mail::to($transaction->contact_email)->send(new TransactionDeliveredMail($transaction));
+        } else if ($isValidStatusDelivery === StatusDelivery::ON_THE_WAY) {
+            Mail::to($transaction->contact_email)->send(new TransactionOnDeliveryMail($transaction));
+        }
+
         return [
             'is_success' => true,
             'message' => 'Berhasil merubah Status Pengiriman Menjadi ' . $status
@@ -683,6 +729,9 @@ class TransactionService
         }
         $transaction->status = StatusTransaction::SUCCESS;
         $transaction->save();
+
+        Mail::to($transaction->contact_email)->send(new TransactionCompletedMail($transaction));
+
         return [
             'is_success' => true,
             'message' => 'Berhasil Merubah Status Transaksi Menjadi Success'
