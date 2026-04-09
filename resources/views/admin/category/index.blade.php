@@ -45,7 +45,7 @@ License: For each use you must have a valid license purchased only from above li
 				<!--begin::Header-->
 				<div 
 					id="kt_app_header" 
-					class="app-header bg-transparent" 
+					class="app-header" 
 					data-kt-sticky="true" 
 					data-kt-sticky-activate="{default: true, lg: true}" 
 					data-kt-sticky-name="app-header-minimize" 
@@ -160,7 +160,7 @@ License: For each use you must have a valid license purchased only from above li
 															<!--end::Symbol-->
 															<!--begin::Title-->
 															<div class="mb-0 me-2 d-flex flex-column mw-150px mw-lg-200px">
-																<span href="#" class="fs-6 fw-bold text-elipsis">Kelola Menu</span>
+																<span href="#" class="fs-6 fw-bold text-elipsis">Kelola Kategori</span>
 																<div class="text-gray-600 fs-7">HO-INS-122025-0002</div>
 																<div class="text-gray-600 fs-7">Waiting for approval</div>
 															</div>
@@ -816,7 +816,7 @@ License: For each use you must have a valid license purchased only from above li
 											<!--end::Item-->
 							
 											<!--begin::Item-->
-											<li class="breadcrumb-item text-muted">Kelola Menu</li>
+											<li class="breadcrumb-item text-muted">Kelola Kategori</li>
 											<!--end::Item-->
 										</ul>
 										<!--end::Breadcrumb-->
@@ -828,12 +828,12 @@ License: For each use you must have a valid license purchased only from above li
 									<div class="d-flex align-items-center ms-auto">
 										
 										<!--begin::Action wrapper-->
-										<div class="d-flex align-items-center">
+										<form method="post" action="{{ route('admin.export-categories') }}" class="d-flex align-items-center">
 											<button id="btnExportExcel" class="btn btn-sm btn-light-primary">
 												<i class="bi bi-file-earmark-spreadsheet fs-4"></i>
 												Export (Excel)
 											</button>
-										</div>
+										</form>
 										<!--end::Action wrapper-->
 
 										<!--begin::Action wrapper-->
@@ -856,7 +856,6 @@ License: For each use you must have a valid license purchased only from above li
 								<!--end::Toolbar container-->
 							</div>
 							<!--end::Toolbar-->
-
 
 							<!--begin::Content-->
 							<div id="kt_app_content" class="app-content flex-column-fluid">
@@ -908,7 +907,7 @@ License: For each use you must have a valid license purchased only from above li
 												
 													<!--begin::Toolbar-->
 													<div class="card-toolbar">
-														<a href="kategori-create.html" class="btn btn-primary">
+														<a href="{{ route('admin.add-category-page') }}" class="btn btn-primary">
 															<i class="bi bi-plus-lg fs-4"></i>
 															Buat Kategori
 														</a>
@@ -1003,10 +1002,10 @@ License: For each use you must have a valid license purchased only from above li
 												<div class="col-12">
 													<!--begin::Input group-->
 													<label class="form-label">Kategori</label>
-													<select class="form-select" aria-label="Kategori" aria-placeholder="Kategori">
-														<option value="1">Semua</option>
-														<option value="2">Option 1</option>
-														<option value="3">Option 2</option>
+													<select class="form-select" name="status">
+														<option value="all">Semua</option>
+														<option value="active" selected>Aktif</option>
+														<option value="deleted">Dihapus</option>
 													</select>
 													<!--end::Input group-->
 												</div>
@@ -1015,9 +1014,9 @@ License: For each use you must have a valid license purchased only from above li
 										<!--end::Card body-->
 										<!--begin::Card footer-->
 										<div class="card-footer d-flex justify-content-between">
-											<button type="reset" class="btn btn-sm btn-secondary">
+											<a href="{{ route('admin.categories') }}" type="reset" class="btn btn-sm btn-secondary">
 												Atur Ulang
-											</button>
+											</a>
 											<button type="submit" class="btn btn-sm btn-dark">
 												Terapkan
 											</button>
@@ -1062,10 +1061,7 @@ License: For each use you must have a valid license purchased only from above li
 
 		<!--begin::Scrolltop-->
 		<div id="kt_scrolltop" class="scrolltop" data-kt-scrolltop="true">
-			<i class="ki-duotone ki-arrow-up">
-				<span class="path1"></span>
-				<span class="path2"></span>
-			</i>
+			<img src="{{ asset('icons/arrow-up.svg') }}" alt="" class="img-white">
 		</div>
 		<!--end::Scrolltop-->
 
@@ -1089,32 +1085,29 @@ License: For each use you must have a valid license purchased only from above li
 		<script src="{{asset('assets/plugins/custom/jstree/jstree.bundle.js')}}"></script>
 		<!--end::Vendors Javascript-->
 
+@if ($response['status_code'] === 200)
 		<!--begin::Custom Javascript(used for this page only)-->
 		<script>
+			const allData = @json($response['data']['categories']);
 			"use strict";
 
 			let exportButton;
+			let datatableInstance;
 
 			function initCustomDatatable(tableId, columns, columnDefs, dataSource) {
-
 				const tableElement = document.querySelector(tableId);
 				if (!tableElement) return;
 
-				const datatable = $(tableElement).DataTable({
+				if ($.fn.DataTable.isDataTable(tableElement)) {
+					$(tableElement).DataTable().destroy();
+				}
+
+				datatableInstance = $(tableElement).DataTable({
 					data: dataSource,
 					info: true,
 					order: [],
-					pageLength: 5,
-					lengthMenu: [
-						[5, 10, 25, 50, 100],
-						[5, 10, 25, 50, 100]
-					],
-					language: {
-						lengthMenu: "_MENU_",
-						info: "Showing _START_ to _END_ of _TOTAL_ entries",
-						infoEmpty: "No entries available",
-						infoFiltered: "(filtered from _MAX_ total entries)"
-					},
+					pageLength: 8,
+					lengthMenu: [[5, 8, 10, 25, 50], [5, 8, 10, 25, 50]],
 					columns: columns,
 					columnDefs: columnDefs,
 					drawCallback: function () {
@@ -1122,13 +1115,6 @@ License: For each use you must have a valid license purchased only from above li
 					}
 				});
 
-				// ==========================
-				// Checkbox Logic (Scoped)
-				// ==========================
-
-				const table = $(tableElement);
-
-				// AUTO FOCUS SEARCH (tambahan)
 				setTimeout(() => {
 					const searchInput = document.querySelector(`[data-kt-filter="search"][data-table-target="${tableId}"]`);
 					searchInput?.focus();
@@ -1137,105 +1123,88 @@ License: For each use you must have a valid license purchased only from above li
 
 			function exportDatatableToExcel(tableId, filename = 'Export Excel') {
 				const table = $(tableId).DataTable();
-
 				if (!exportButton) {
 					exportButton = new $.fn.dataTable.Buttons(table, {
 						buttons: [{
 							extend: 'excelHtml5',
 							title: filename,
-							exportOptions: {
-								// columns: ':not(:last-child)'
-								columns: [0,1]
-							}
+							exportOptions: { columns: [0, 1] }
 						}]
 					});
 				}
-
 				table.button(0).trigger();
 			}
 
+			function getFilteredData(status) {
+				if (status === 'active') return allData.filter(item => item.deleted_at === null);
+				if (status === 'deleted') return allData.filter(item => item.deleted_at !== null);
+				return allData;
+			}
+
+			const columns1 = [
+				{ data: 'id' },
+				{ data: 'name' },
+				{
+					data: null,
+					orderable: false,
+					className: 'text-end',
+					render: function (row) {
+						const routeDetailCategory = "{{ route('admin.detail-category', '_ID_') }}";
+						const routeDeleteCategory = "{{ route('admin.delete-category', '_ID_') }}";
+
+						return `
+							<button
+								class="btn btn-secondary btn-active-light-primary btn-sm flex-shrink-0"
+								data-kt-menu-trigger="click"
+								data-kt-menu-placement="bottom-end"
+								data-kt-menu-flip="top-end">
+								Aksi<i class="bi bi-chevron-down fs-8 ms-1"></i>
+							</button>
+							<div class="menu menu-primary menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg menu-state-color fw-bold fs-7 min-w-125px w-auto py-4" data-kt-menu="true">
+								<div class="menu-item px-3">
+									<a href="${routeDetailCategory.replace('_ID_', row.id)}" class="menu-link px-3">Lihat Detail</a>
+								</div>
+								<div class="separator my-2"></div>
+								<div class="menu-item px-3">
+									<a href="href="${routeDeleteCategory.replace('_ID_', row.id)}" class="menu-link menu-link-delete px-3">Hapus</a>
+								</div>
+							</div>`;
+					}
+				}
+			];
+
 			KTUtil.onDOMContentLoaded(function () {
 
-				const data1 = [
-					{
-						idKategori: "KT-072025-0001",
-						kategori: "Sapi",
-					},
-					{
-						idKategori: "KT-072025-0002",
-						kategori: "Ayam",
-					},
-				];
-				const columns1 = [
-					{ data: "idKategori" },
-					{ data: "kategori" },
-					{ data: null, 
-					  orderable: false, 
-					  className: 'text-end',
-						render: function () {
-							return `<button
-										class="btn btn-secondary btn-active-light-primary btn-sm" 
-										data-kt-menu-trigger="click"
-										data-kt-menu-placement="bottom-end" 
-										data-kt-menu-flip="top-end">
-										Aksi
-										<i class="bi bi-chevron-down fs-8 ms-1"></i>
-									</button>
-									<!--begin::Menu-->
-									<div
-										class="menu menu-primary menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg menu-state-color fw-bold fs-7 min-w-125px w-auto py-4"
-										data-kt-menu="true">
-										<!--begin::Menu item-->
-										<div class="menu-item px-3">
-											<a href="#" class="menu-link px-3">
-												Lihat Detail
-											</a>
-										</div>
-										<!--end::Menu item-->
-										
-										<div class="separator my-2"></div>
-										
-										<!--begin::Menu item-->
-										<div class="menu-item px-3">
-											<a href="#" class="menu-link menu-link-delete px-3">
-												Hapus
-											</a>
-										</div>
-										<!--end::Menu item-->
-									</div>
-									<!--end::Menu-->`;
-						}
-					}
-				];
-				const columnDefs1 = [];
+				initCustomDatatable('#kt_datatable_example', columns1, [], getFilteredData('active'));
 
-				initCustomDatatable('#kt_datatable_example', columns1, columnDefs1, data1);
+				document.querySelector('#kt_drawer_filter_global form')?.addEventListener('submit', function (e) {
+					e.preventDefault();
+					const status = this.querySelector('[name="status"]').value;
+					initCustomDatatable('#kt_datatable_example', columns1, [], getFilteredData(status));
+				});
 
-				// handle export excel
+				document.querySelector('#kt_drawer_filter_global form')?.addEventListener('reset', function () {
+					initCustomDatatable('#kt_datatable_example', columns1, [], getFilteredData('active'));
+				});
+
 				document.getElementById('btnExportExcel')?.addEventListener('click', function () {
 					exportDatatableToExcel('#kt_datatable_example', 'Daftar Kategori');
 				});
 
-				// handle Search Datatable
 				document.querySelectorAll('[data-kt-filter="search"]').forEach(function (searchInput) {
-
 					const tableSelector = searchInput.getAttribute('data-table-target');
 					if (!tableSelector) return;
-
-					const table = document.querySelector(tableSelector);
-					if (!table) return;
-
-					const datatable = $(table).DataTable();
-
 					searchInput.addEventListener('keyup', function () {
-						datatable.search(this.value).draw();
+						$(document.querySelector(tableSelector)).DataTable().search(this.value).draw();
 					});
-
 				});
+
 			});
-		</script>
+</script>
 		<!--end::Custom Javascript-->
-		
+@else
+@endif
+
 	</body>
 	<!--end::Body-->
 </html>

@@ -811,10 +811,7 @@ License: For each use you must have a valid license purchased only from above li
 
 		<!--begin::Scrolltop-->
 		<div id="kt_scrolltop" class="scrolltop" data-kt-scrolltop="true">
-			<i class="ki-duotone ki-arrow-up">
-				<span class="path1"></span>
-				<span class="path2"></span>
-			</i>
+			<img src="{{ asset('icons/arrow-up.svg') }}" alt="" class="img-white">
 		</div>
 		<!--end::Scrolltop-->
 

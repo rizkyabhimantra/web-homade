@@ -783,133 +783,265 @@ License: For each use you must have a valid license purchased only from above li
 					<!--begin::Main-->
 					<div class="app-main flex-column flex-row-fluid" id="kt_app_main">
 						<!--begin::Content wrapper-->
-						<div class="d-flex flex-column flex-column-fluid px-10">
+						<div class="d-flex flex-column flex-column-fluid">
+							
+							<!--begin::Toolbar-->
+							<div id="kt_app_toolbar" class="app-toolbar py-3">
+								<!--begin::Toolbar container-->
+								<div id="kt_app_toolbar_container" class="app-container  container-fluid d-flex flex-stack ">
 
-							<div class="d-flex align-items-stretch gap-3 mb-5 w-100 flex-wrap">
-								<a href="{{ route('admin.add-order-page') }}" class="flex-shrink-0 bg-accent text-nowrap text-white py-4 px-5 rounded-2 fw-bold">Tambahkan Transaksi</a>
+									<!--begin::Title & Breadcrumb-->
+									<div 
+										data-kt-swapper="true" 
+										data-kt-swapper-mode="{default: 'prepend', lg: 'prepend'}"
+										data-kt-swapper-parent="{default: '#kt_app_content_container', lg: '#kt_app_toolbar_container'}"
+										class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
+							
+										<!--begin::Breadcrumb-->
+										<ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1 d-none d-md-flex">
+											<!--begin::Item-->
+											<li class="breadcrumb-item">
+												<a href="{{ route('admin.dashboard') }}" class="">Dashboard</a>
+											</li>
+											<!--end::Item-->
 
-								<form action="{{ route('admin.export-orders', [ 'filter_by' => 'yearly', 'category' => 'kitchen']) }}" method="post">
-									@csrf
-									<button class="flex-shrink-0 bg-accent text-white py-4 px-5 rounded-2 fw-bold text-nowrap">Data Export</button>
-								</form>
-
-								<select onchange="applyFilter()" id="filterCategory" class="flex-shrink-0 border-grey-1 outline-0 bg-transparent py-2 px-2 rounded-2 fw-bold">
-									<option value="">Semua Kategori</option>
-									<option value="order" {{ request('category') == 'order' ? 'selected' : '' }}>Order</option>
-									<option value="pre-order" {{ request('category') == 'pre-order' ? 'selected' : '' }}>Pre-Order</option>
-								</select>
-								
-								<select onchange="applyFilter()" id="filterStatus" class="flex-shrink-0 border-grey-1 outline-0 bg-transparent py-2 px-2 rounded-2 fw-bold">
-									<option value="">Semua Status</option>
-									<option value="waiting_for_invoice" {{ request('status') == 'waiting_for_invoice' ? 'selected' : '' }}>Waiting for Invoice</option>
-									<option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
-									<option value="paid" {{ request('status') == 'paid' ? 'selected' : '' }}>Paid</option>
-									<option value="success" {{ request('status') == 'success' ? 'selected' : '' }}>Success</option>
-								</select>
-
-								<input type="text" class="flex-grow-1 min-w-150px border-grey-1 px-3 rounded-2 py-4 fw-bold" id="searchInput" placeholder="cari pesanan...">
-							</div>
-
-							@if ($response['status'] === 'success')
-								<div class="overflow-scroll">
-									<table class="table table-striped rounded-3 flex-shrink-0 w-max overflow-scroll">
-										<thead>
-											<tr>
-												<th scope="col" class="text-nowrap">ID Transaksi</th>
-												<th scope="col" class="text-nowrap">Nama Pengguna</th>
-												<th scope="col" class="text-nowrap">Total Harga</th>
-												<th scope="col" class="text-nowrap">Kategori</th>
-												<th scope="col" class="text-nowrap">Status</th>
-												<th scope="col" class="text-nowrap">Tanggal Pengiriman</th>
-												<th scope="col" class="text-nowrap">Detail Pemesanan</th>
-											</tr>
-										</thead>
-										<tbody>
-											@foreach ($response['data']['orders'] as $order)
-												<tr>
-													<td class="text-nowrap">{{ $order['id'] }}</td>
-													<td class="text-nowrap">{{ $order['user']['first_name'] }}</td>
-													<td class="text-nowrap">{{ number_format($order['total_price'], 0, ',', '.') }}</td>
-													<td class="text-nowrap">{{ $order['category'] }}</td>
-													<td class="text-nowrap">{{ $order['status'] }}</td>
-													<td class="text-nowrap">{{ $order['delivery_at'] }}</td>
-													<td class="text-nowrap"><a href="{{ route('admin.detail-order', ['id' => $order['id']]) }}">Detail</a></td>
-												</tr>
-											@endforeach
-										</tbody>
-									</table>
-								</div>
-
-								<div class="d-flex align-items-center justify-content-between w-100">
-									<select name="limit" onchange="window.location.href='?limit=' + this.value" class="h-100 border-grey-1 outline-0 bg-transparent fs-4 py-2 px-2 rounded-2">
-										@foreach ([4, 8, 12, 16] as $limit)
-											<option value="{{ $limit }}" {{ request('limit') == $limit ? 'selected' : '' }}>
-												{{ $limit }}
-											</option>
-										@endforeach
-									</select>
-
-									@php
-										$pagination = $response['data']['pagination'] ?? null;
-										$currentPage = $pagination['current_page'] ?? 1;
-										$lastPage = $pagination['last_page'] ?? 1;
-
-										$window = 1;
-										$start = max(2, $currentPage - $window);
-										$end = min($lastPage - 1, $currentPage + $window);
-									@endphp
-
-									@if($pagination && $lastPage > 1)
-									<div class="d-flex h-100 gap-2">
-										
-										<a href="{{ $currentPage > 1 ? request()->fullUrlWithQuery(['page' => $currentPage - 1]) : '#' }}" 
-										class="text-decoration-none text-dark h-100 ratio-1 rounded-2 d-flex align-items-center justify-content-center {{ $currentPage <= 1 ? 'opacity-50 pe-none' : '' }}">
-											<img src="{{ asset('icons/caret-arrow-left.svg') }}" alt="Prev" class="h-90">
-										</a>
-
-										<a href="{{ request()->fullUrlWithQuery(['page' => 1]) }}" 
-										class="text-decoration-none h-100 ratio-1 rounded-2 d-flex align-items-center justify-content-center fw-bold {{ $currentPage == 1 ? 'bg-accent text-white' : 'text-dark' }}">
-											1
-										</a>
-
-										@if($start > 2)
-											<div class="h-100 ratio-1 rounded-2 d-flex align-items-center justify-content-center fw-bold cursor-default">
-												...
-											</div>
-										@endif
-
-										@for ($i = $start; $i <= $end; $i++)
-											<a href="{{ request()->fullUrlWithQuery(['page' => $i]) }}" 
-											class="text-decoration-none h-100 ratio-1 rounded-2 d-flex align-items-center justify-content-center fw-bold {{ $currentPage == $i ? 'bg-accent text-white' : 'text-dark' }}">
-												{{ $i }}
-											</a>
-										@endfor
-
-										@if($end < $lastPage - 1)
-											<div class="h-100 ratio-1 rounded-2 d-flex align-items-center justify-content-center fw-bold cursor-default">
-												...
-											</div>
-										@endif
-
-										<a href="{{ request()->fullUrlWithQuery(['page' => $lastPage]) }}" 
-										class="text-decoration-none h-100 ratio-1 rounded-2 d-flex align-items-center justify-content-center fw-bold {{ $currentPage == $lastPage ? 'bg-accent text-white' : 'text-dark' }}">
-											{{ $lastPage }}
-										</a>
-
-										<a href="{{ $currentPage < $lastPage ? request()->fullUrlWithQuery(['page' => $currentPage + 1]) : '#' }}" 
-										class="text-decoration-none text-dark h-100 ratio-1 rounded-2 d-flex align-items-center justify-content-center {{ $currentPage >= $lastPage ? 'opacity-50 pe-none' : '' }}">
-											<img src="{{ asset('icons/caret-arrow-right.svg') }}" alt="Next" class="h-90">
-										</a>
+											<!--begin::Item-->
+											<li class="breadcrumb-item">
+												<span class="bullet bg-gray-500 w-5px h-2px"></span>
+											</li>
+											<!--end::Item-->
+							
+											<!--begin::Item-->
+											<li class="breadcrumb-item text-muted">Kelola Pesanan</li>
+											<!--end::Item-->
+										</ul>
+										<!--end::Breadcrumb-->
 
 									</div>
-									@endif
+									<!--end::Title & Breadcrumb-->
+
+									<!--begin::Action group-->
+									<div class="d-flex align-items-center ms-auto">
+										
+										<!--begin::Action wrapper-->
+										<form action="{{ route('admin.export-orders', [ 'filter_by' => 'yearly', 'category' => 'kitchen']) }}" method="post" class="d-flex align-items-center">
+											@csrf
+											<button id="btnExportExcel" class="btn btn-sm btn-light-primary">
+												<i class="bi bi-file-earmark-spreadsheet fs-4"></i>
+												Export (Excel)
+											</button>
+										</form>
+										<!--end::Action wrapper-->
+
+										<!--begin::Action wrapper-->
+										<div class="d-flex align-items-center">
+											<!--begin::Separartor-->
+											<div class="bullet bg-secondary h-35px w-1px mx-5"></div>
+											<!--end::Separartor-->
+
+											<button class="btn btn-sm btn-dark" id="kt_drawer_filter_global_button">
+												<i class="bi bi-funnel fs-4"></i>
+												Filter
+											</button>
+										</div>
+										<!--end::Action wrapper-->
+
+									</div>
+									<!--end::Action group-->
+							
+								</div>
+								<!--end::Toolbar container-->
+							</div>
+							<!--end::Toolbar-->
+
+							
+							<!--begin::Content-->
+							<div id="kt_app_content" class="app-content flex-column-fluid">
+								<!--begin::Content container-->
+								<div id="kt_app_content_container" class="app-container container-fluid">
+
+									<!--begin::Row Breadcrumb for Mobile View-->
+									<div class="row mb-5 mb-xl-10 d-md-none">
+										<div class="col-12">
+
+											<!--begin::Breadcrumb-->
+											<ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1 d-md-none">
+												<!--begin::Item-->
+												<li class="breadcrumb-item">
+													<a href="index.html" class="">Dashboard</a>
+												</li>
+												<!--end::Item-->
+
+												<!--begin::Item-->
+												<li class="breadcrumb-item">
+													<span class="bullet bg-gray-500 w-5px h-2px"></span>
+												</li>
+												<!--end::Item-->
+								
+												<!--begin::Item-->
+												<li class="breadcrumb-item text-muted">Kelola Pesanan</li>
+												<!--end::Item-->
+											</ul>
+											<!--end::Breadcrumb-->
+
+										</div>
+									</div>
+									<!--begin::Row Breadcrumb for Mobile View-->
+
+									<!--begin::Row-->
+									<div class="row g-5 g-xl-10 mb-5 mb-xl-10">
+										<!--begin::Col-->
+										<div class="col-12">
+
+											<!--begin::Card widget 7-->
+											<div class="card">
+												<!--begin::Header-->
+												<div class="card-header pt-5">
+													<!--begin::Title-->
+													<h3 class="card-title align-items-start flex-column">
+														<span class="card-label fw-bold text-gray-800">Daftar Pesanan</span>
+													</h3>
+													<!--end::Title-->
+												
+													<!--begin::Toolbar-->
+													<div class="card-toolbar"></div>
+													<!--end::Toolbar-->
+												</div>
+												<!--end::Header-->
+
+												<!--begin::Card body-->
+												<div class="card-body">
+
+													<div class="d-flex flex-stack flex-wrap mb-5">
+														<!--begin::Search-->
+														<div class="d-flex align-items-center position-relative my-1">
+															<input type="text" data-kt-filter="search" data-table-target="#kt_datatable_example" class="form-control w-250px" placeholder="Cari" />
+														</div>
+														<!--end::Search-->
+
+														<!--begin::Action-->
+														<div class="d-flex align-items-center">
+														</div>
+														<!--end::Action-->
+													</div>
+
+													<div class="table-responsive">
+														<table class="table align-middle border rounded table-striped table-row-dashed fs-6 g-5 gs-5" id="kt_datatable_example">
+															<thead>
+																<tr class="text-start text-gray-800 fw-bold fs-7 text-capitalize">
+																	<th class="min-w-200px">ID Transaksi</th>
+																	<th class="min-w-100px">Pelanggan</th>
+																	<th class="min-w-100px">Tanggal Pengiriman</th>
+																	<th class="min-w-200px">Menu & Paket</th>
+																	<th class="min-w-100px pe-5">Status</th>
+																	<th class="text-end min-w-125px pe-5">Aksi</th>
+																</tr>
+															</thead>
+															<tbody class="text-gray-700"></tbody>
+														</table>
+													</div>
+
+												</div>
+												<!--end::Card body-->
+											</div>
+											<!--end::Card widget 7-->
+
+										</div>
+										<!--end::Col-->
+
+										
+									</div>
+									<!--end::Row-->
 
 								</div>
-
-							@else
-								{{ $response['message'] }}
-							@endif
+								<!--end::Content container-->
+							</div>
+							<!--end::Content-->
 							
+							<!--begin::Drawer-->
+							<div 
+								id="kt_drawer_filter_global" 
+								class="bg-white" 
+								data-kt-drawer="true" 
+								data-kt-drawer-activate="true"
+								data-kt-drawer-toggle="#kt_drawer_filter_global_button" 
+								data-kt-drawer-close="#kt_drawer_filter_global_close"
+								data-kt-drawer-overlay="true" 
+								data-kt-drawer-permanent="true" 
+								data-kt-drawer-width="{default:'300px', 'md': '300px'}">
+								<!--begin::Card-->
+								<div class="card rounded-0 w-100">
+									<div action="" class="d-flex flex-column h-100">
+										<!--begin::Card header-->
+										<div class="card-header pe-5">
+											<!--begin::Title-->
+											<div class="card-title">
+												Filter
+											</div>
+											<!--end::Title-->
+								
+											<!--begin::Card toolbar-->
+											<div class="card-toolbar">
+												<!--begin::Close-->
+												<div class="btn btn-sm btn-icon btn-active-light-primary" id="kt_drawer_filter_global_close">
+													<i class="bi bi-x-lg fs-1"></i>
+												</div>
+												<!--end::Close-->
+											</div>
+											<!--end::Card toolbar-->
+										</div>
+										<!--end::Card header-->
+								
+										<!--begin::Card body-->
+										<div class="card-body hover-scroll-overlay-y">
+											<div class="row g-3 g-lg-6 mt-0">
+											
+												<div class="col-12">
+													<label class="form-label">Tanggal Pengiriman</label>
+													<input type="date" id="filterDeliveryAt" class="form-control">
+												</div>
+
+												<div class="col-12">
+													<label class="form-label">Kategori</label>
+													<select id="filterCategory" class="form-select">
+														<option value="">Semua Kategori</option>
+														<option value="order">Order</option>
+														<option value="pre_order">Pre-Order</option>
+													</select>
+												</div>
+
+												<div class="col-12">
+													<label class="form-label">Status</label>
+													<select id="filterStatus" class="form-select">
+														<option value="">Semua Status</option>
+														<option value="waiting_for_invoice">Waiting for Invoice</option>
+														<option value="pending">Pending</option>
+														<option value="paid">Paid</option>
+														<option value="success">Success</option>
+														<option value="cancelled_by_admin">Cancelled by Admin</option>
+														<option value="cancelled_by_customer">Cancelled by Customer</option>
+													</select>
+												</div>
+
+											</div>
+										</div>
+										<!--end::Card body-->
+										<!--begin::Card footer-->
+										<div class="card-footer d-flex justify-content-between">
+											<a href="{{ route('admin.orders') }}" type="reset" class="btn btn-sm btn-secondary">
+												Atur Ulang
+											</a>
+											<button onclick="applyFilter()" class="btn btn-sm btn-dark">
+												Terapkan
+											</button>
+										</div>
+										<!--end::Card footer-->
+									</div>
+								</div>
+								<!--end::Card-->
+							</div>
+							<!--end::Drawer-->
+
 						</div>
 						<!--end::Content wrapper-->
 						<!--begin::Footer-->
@@ -939,10 +1071,7 @@ License: For each use you must have a valid license purchased only from above li
 
 		<!--begin::Scrolltop-->
 		<div id="kt_scrolltop" class="scrolltop" data-kt-scrolltop="true">
-			<i class="ki-duotone ki-arrow-up">
-				<span class="path1"></span>
-				<span class="path2"></span>
-			</i>
+			<img src="{{ asset('icons/arrow-up.svg') }}" alt="" class="img-white">
 		</div>
 		<!--end::Scrolltop-->
 		
@@ -958,52 +1087,173 @@ License: For each use you must have a valid license purchased only from above li
 		<script src="{{asset('assets/plugins/custom/formrepeater/formrepeater.bundle.js')}}"></script>
 		<script src="{{asset('assets/plugins/custom/jstree/jstree.bundle.js')}}"></script>
 		<!--end::Vendors Javascript-->
-
+		
 		<!--begin::Custom Javascript(used for this page only)-->
 		<script>
-			document.addEventListener('DOMContentLoaded', function() {
-                const searchInput = document.getElementById('searchInput');
-                const urlParams = new URLSearchParams(window.location.search);
-
-                if (urlParams.has('search')) {
-                    searchInput.value = urlParams.get('search');
-                }
-
-                searchInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        const query = this.value.trim();
-
-                        if (query) {
-                            urlParams.set('search', query);
-                        } else {
-                            urlParams.delete('search');
-                        }
-
-                        urlParams.set('page', 1);
-
-                        window.location.search = urlParams.toString();
-                    }
-                });
-            });
-            
+			const allData = @json($response['data']['orders']);
+			const routeDetailOrder = "{{ route('admin.detail-order', '_ID_') }}";
 		</script>
 
 		<script>
-			function applyFilter() {
-				const category = document.getElementById('filterCategory').value;
-				const status = document.getElementById('filterStatus').value;
-				const params = new URLSearchParams(window.location.search);
+			"use strict";
 
-				if (category) params.set('category', category);
-				else params.delete('category');
+			let exportButton;
 
-				if (status) params.set('status', status);
-				else params.delete('status');
+			function initCustomDatatable(tableId, columns, columnDefs, dataSource) {
+				const tableElement = document.querySelector(tableId);
+				if (!tableElement) return;
 
-				params.delete('page');
+				if ($.fn.DataTable.isDataTable(tableElement)) {
+					$(tableElement).DataTable().destroy();
+				}
 
-				window.location.href = '?' + params.toString();
+				$(tableElement).DataTable({
+					data: dataSource,
+					info: true,
+					order: [],
+					pageLength: 8,
+					lengthMenu: [[5, 8, 10, 25, 50], [5, 8, 10, 25, 50]],
+					language: {
+						lengthMenu: "_MENU_",
+						info: "Showing _START_ to _END_ of _TOTAL_ entries",
+						infoEmpty: "No entries available",
+						infoFiltered: "(filtered from _MAX_ total entries)"
+					},
+					columns: columns,
+					columnDefs: columnDefs,
+					drawCallback: function () {
+						KTMenu.createInstances();
+					}
+				});
+
+				setTimeout(() => {
+					const searchInput = document.querySelector(`[data-kt-filter="search"][data-table-target="${tableId}"]`);
+					searchInput?.focus();
+				}, 100);
 			}
+
+			function exportDatatableToExcel(tableId, filename = 'Export Excel') {
+				const table = $(tableId).DataTable();
+				if (!exportButton) {
+					exportButton = new $.fn.dataTable.Buttons(table, {
+						buttons: [{
+							extend: 'excelHtml5',
+							title: filename,
+							exportOptions: { columns: [0, 1, 2, 3, 4] }
+						}]
+					});
+				}
+				table.button(0).trigger();
+			}
+
+			function getStatusBadge(status) {
+				const map = {
+					'waiting_for_invoice': `<div class="badge badge-light-warning">Waiting for Invoice</div>`,
+					'pending':             `<div class="badge badge-light-primary">Pending</div>`,
+					'paid':                `<div class="badge badge-light-info">Paid</div>`,
+					'process':             `<div class="badge badge-light-info">On Process</div>`,
+					'success':             `<div class="badge badge-light-success">Success</div>`,
+					'cancelled_by_admin':    `<div class="badge badge-light-danger">Cancelled (Admin)</div>`,
+					'cancelled_by_customer': `<div class="badge badge-light-danger">Cancelled (Customer)</div>`,
+				};
+				return map[status] ?? `<div class="badge badge-secondary">${status}</div>`;
+			}
+
+			function getFilteredData(filters) {
+				return allData.filter(item => {
+					// Filter category
+					if (filters.category && item.category !== filters.category) return false;
+
+					// Filter status
+					if (filters.status && item.status !== filters.status) return false;
+
+					// Filter delivery_at (match by date only, ignore time)
+					if (filters.delivery_at) {
+						const itemDate = item.delivery_info?.delivery_at?.substring(0, 10);
+						if (itemDate !== filters.delivery_at) return false;
+					}
+
+					return true;
+				});
+			}
+
+			const columns1 = [
+				{ data: 'id' },
+				{
+					data: 'delivery_info',
+					render: function (data) {
+						return data?.address_info?.received_name ?? '-';
+					}
+				},
+				{
+					data: 'delivery_info',
+					render: function (data) {
+						return data?.delivery_at?.substring(0, 10) ?? '-';
+					}
+				},
+				{
+					data: 'items',
+					render: function (data) {
+						if (!data || data.length === 0) return '-';
+						return data.map(item =>
+							`${item.name} <br><span class="text-muted">${item.package}</span>`
+						).join('<hr class="my-1">');
+					}
+				},
+				{
+					data: 'status',
+					render: function (data) {
+						return getStatusBadge(data);
+					}
+				},
+				{
+					data: null,
+					orderable: false,
+					className: 'text-end',
+					render: function (row) {
+						return `
+							<button
+								class="btn btn-secondary btn-active-light-primary btn-sm"
+								data-kt-menu-trigger="click"
+								data-kt-menu-placement="bottom-end"
+								data-kt-menu-flip="top-end">
+								Aksi <i class="bi bi-chevron-down fs-8 ms-1"></i>
+							</button>
+							<div class="menu menu-primary menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg menu-state-color fw-bold fs-7 min-w-125px w-auto py-4" data-kt-menu="true">
+								<div class="menu-item px-3">
+									<a href="${routeDetailOrder.replace('_ID_', row.id)}" class="menu-link px-3">Lihat Detail</a>
+								</div>
+							</div>`;
+					}
+				}
+			];
+
+			function applyFilter() {
+				const filters = {
+					category:    document.getElementById('filterCategory')?.value || '',
+					status:      document.getElementById('filterStatus')?.value || '',
+					delivery_at: document.getElementById('filterDeliveryAt')?.value || '',
+				};
+				initCustomDatatable('#kt_datatable_example', columns1, [], getFilteredData(filters));
+			}
+
+			KTUtil.onDOMContentLoaded(function () {
+
+				initCustomDatatable('#kt_datatable_example', columns1, [], allData);
+
+				document.getElementById('btnExportExcel')?.addEventListener('click', function () {
+					exportDatatableToExcel('#kt_datatable_example', 'Daftar Pesanan');
+				});
+
+				document.querySelectorAll('[data-kt-filter="search"]').forEach(function (searchInput) {
+					const tableSelector = searchInput.getAttribute('data-table-target');
+					if (!tableSelector) return;
+					searchInput.addEventListener('keyup', function () {
+						$(document.querySelector(tableSelector)).DataTable().search(this.value).draw();
+					});
+				});
+
+			});
 		</script>
 		<!--end::Custom Javascript-->
 		

@@ -783,368 +783,432 @@ License: For each use you must have a valid license purchased only from above li
 					<!--begin::Main-->
 					<div class="app-main flex-column flex-row-fluid" id="kt_app_main">
 						<!--begin::Content wrapper-->
-						<div class="d-flex flex-column flex-column-fluid px-6">
+						<div class="d-flex flex-column flex-column-fluid">
+							
+							<!--begin::Toolbar-->
+							<div id="kt_app_toolbar" class="app-toolbar  py-3">
+								<!--begin::Toolbar container-->
+								<div id="kt_app_toolbar_container" class="app-container  container-fluid d-flex flex-stack ">
 
-                        
-                            @if(isset($response['status']) && $response['status'] === 'success')
+									<!--begin::Title & Breadcrumb-->
+									<div 
+										data-kt-swapper="true" 
+										data-kt-swapper-mode="{default: 'prepend', lg: 'prepend'}"
+										data-kt-swapper-parent="{default: '#kt_app_content_container', lg: '#kt_app_toolbar_container'}"
+										class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
+							
+										<!--begin::Breadcrumb-->
+										<ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1 d-none d-md-flex">
+											<!--begin::Item-->
+											<li class="breadcrumb-item">
+												<a href="{{ route('admin.dashboard') }}" class="">Dashboard</a>
+											</li>
+											<!--end::Item-->
 
-                            @php
-                                $data = $response['data'];
-                                $menus = $data['menus'] ?? [];
-                                $schedules = $data['schedules'] ?? [];
-                                
-                                // Mapping jadwal agar mudah diakses berdasarkan tanggal (DD-MM-YYYY)
-                                $mappedSchedules = [];
-                                foreach($schedules as $key => $schedule) {
-                                    $mappedSchedules[$schedule['date']] = $schedule['menus'];
-                                }
+											<!--begin::Item-->
+											<li class="breadcrumb-item">
+												<span class="bullet bg-gray-500 w-5px h-2px"></span>
+											</li>
+											<!--end::Item-->
+							
+											<!--begin::Item-->
+											<li class="breadcrumb-item text-muted">Kelola Jadwal</li>
+											<!--end::Item-->
+										</ul>
+										<!--end::Breadcrumb-->
 
-                                // Generate 5 Hari (Senin - Jumat) dari startOfWeek
-                                $days = [];
-                                if(isset($data['start_of_week'])) {
-                                    $start_of_week = \Carbon\Carbon::parse($data['start_of_week']);
-                                    for ($i = 0; $i < 5; $i++) {
-                                        $date = $start_of_week->copy()->addDays($i);
-                                        $days[] = [
-                                            // Menggunakan format bahasa indonesia jika app locale sudah di set, atau fallback ke format standar
-                                            'day_name' => $date->translatedFormat('l'), 
-                                            'date_formatted' => $date->translatedFormat('d F Y'),
-                                            'date_key' => $date->format('d-m-Y'),
-                                        ];
-                                    }
-                                    }
-                            @endphp
+									</div>
+									<!--end::Title & Breadcrumb-->
 
-                            <style>
-                                /* Custom Styling untuk Slot Menu */
-                                .slot-empty {
-                                    border: 2px dashed #dee2e6;
-                                    border-radius: 8px;
-                                    background-color: #f8f9fa;
-                                    transition: all 0.2s;
-                                    cursor: pointer;
-                                    min-height: 120px;
-                                    display: flex;
-                                    align-items: center;
-                                    justify-content: center;
-                                }
-                                .slot-empty:hover {
-                                    background-color: #e9ecef;
-                                    border-color: #adb5bd;
-                                }
-                                
-                                .slot-filled {
-                                    position: relative;
-                                    border-radius: 8px;
-                                    overflow: hidden;
-                                    border: 1px solid #dee2e6;
-                                    min-height: 120px;
-                                }
-                                .slot-filled img {
-                                    width: 100%;
-                                    height: 120px;
-                                    object-fit: cover;
-                                }
-                                .slot-overlay {
-                                    position: absolute;
-                                    top: 0; left: 0; right: 0; bottom: 0;
-                                    background: rgba(0,0,0,0.7);
-                                    display: flex;
-                                    flex-direction: column;
-                                    align-items: center;
-                                    justify-content: center;
-                                    opacity: 0;
-                                    transition: opacity 0.3s ease;
-                                    gap: 10px;
-                                }
-                                .slot-filled:hover .slot-overlay {
-                                    opacity: 1;
-                                }
-                                .menu-title-badge {
-                                    position: absolute;
-                                    bottom: 0;
-                                    left: 0;
-                                    right: 0;
-                                    background: rgba(0,0,0,0.6);
-                                    color: white;
-                                    padding: 4px 8px;
-                                    font-size: 0.8rem;
-                                    text-align: center;
-                                    white-space: nowrap;
-                                    overflow: hidden;
-                                    text-overflow: ellipsis;
-                                }
-                            </style>
+									<!--begin::Action group-->
+									<div class="d-flex align-items-center ms-auto">
+										
+										<!--begin::Action wrapper-->
+										<form action="{{ route('admin.export-schedules') }}" method="post" class="d-flex align-items-center">
+											@csrf
+											<button id="btnExportExcel" class="btn btn-sm btn-light-primary">
+												<i class="bi bi-file-earmark-spreadsheet fs-4"></i>
+												Export (Excel)
+											</button>
+										</form>
+										<!--end::Action wrapper-->
 
-                            <div class="container-fluid py-4">
+										<!--begin::Action wrapper-->
+										<div class="d-flex align-items-center">
+										</div>
+										<!--end::Action wrapper-->
 
-                                <form action="{{ route('admin.add-or-update-schedules') }}" method="POST">
-                                    @csrf
-                                    
-                                    <div class="d-flex flex-wrap w-100 justify-content-between align-items-center mb-4">
-                                        <div>
-                                            <h3 class="fw-bold"><i class="bi bi-calendar-week text-primary"></i> Jadwal Menu Catering</h3>
-                                            <p class="text-muted mb-0">Kelola menu mingguan (Senin - Jum'at)</p>
-                                            <input type="hidden" name="start_of_week" value={{ $data['start_of_week'] }}>
-                                            <input type="hidden" name="end_of_week" value={{ $data['end_of_week'] }}>
-                                        </div>
-                                        
-                                        <div class="d-flex align-items-center flex-column w-100 w-sm-auto flex-sm-row gap-3 mt-3 mt-md-0">
-                                            <div class="btn-group w-100 shadow-sm">
-                                                <a href="?week={{ request('week', $data['current_week']) - 1 }}" class="btn btn-outline-secondary"><i class="bi bi-chevron-left"></i></a>
-                                                <span class="btn w-100 text-nowrap btn-light border-secondary text-dark fw-bold" style="pointer-events: none;">
-                                                    Minggu ke-{{ request('week', $data['current_week']) }}
-                                                </span>
-                                                <a href="?week={{ request('week', $data['current_week']) + 1 }}" class="btn btn-outline-secondary"><i class="bi bi-chevron-right"></i></a>
-                                            </div>
-                                            
-                                            <button type="submit" class="btn-primary-homade rounded-2 d-flex align-items-center justify-content-center bg-accent shadow-sm px-4 w-100 text-nowrap">
-                                                <i class="bi bi-save me-1 text-white"></i> Simpan Perubahan
-                                            </button>
-                                        </div>
-                                    </div>
+									</div>
+									<!--end::Action group-->
+							
+								</div>
+								<!--end::Toolbar container-->
+							</div>
+							<!--end::Toolbar-->
+	
+							<div class="d-flex flex-column px-6">
 
-                                    <div class="row row-cols-1 row-cols-md-2 row-cols-xl-5 g-3">
-                                        @foreach($days as $day)
-                                            @php
-                                                // Ambil menu untuk hari ini, maksimal 2 slot
-                                                $dayMenus = $mappedSchedules[$day['date_key']] ?? [];
-                                                $slots = [
-                                                    $dayMenus[0] ?? null,
-                                                    $dayMenus[1] ?? null
-                                                ];
-                                            @endphp
-                                            
-                                            <div class="col">
-                                                <div class=" h-100 border-grey-1 rounded-3">
-                                                    <div class="card-header px-3 pb-2 pt-3">
-                                                        <h6 class="fw-bold mb-1">{{ $day['day_name'] }}</h6>
-                                                        <small class="text-muted">{{ $day['date_formatted'] }}</small>
-                                                    </div>
-                                                    <div class="card-body p-2 d-flex flex-column gap-2" id="container-{{ $day['date_key'] }}">
-                                                        
-                                                        @foreach($slots as $index => $menu)
-                                                            <div id="slot-{{ $day['date_key'] }}-{{ $index }}">
-                                                                @if($menu)
-                                                                    <div class="slot-filled border-grey-1">
-                                                                        <input type="hidden" name="schedules[{{ $day['date_key']}}][]" value="{{ $menu['id'] }}">
-                                                                        
-                                                                        <img src="{{ $menu['image_url'] }}" loading="lazy" alt="Menu" onerror="this.src='https://placehold.co/300x200?text=No+Image'">
-                                                                        <div class="menu-title-badge">{{ $menu['name'] }}</div>
-                                                                        
-                                                                        <div class="slot-overlay">
-                                                                            <button type="button" class="btn btn-sm btn-light w-75 rounded-3" onclick="openMenuModal('{{ $day['date_key'] }}', {{ $index }})">
-                                                                                <i class="bi bi-arrow-repeat"></i> Ganti
-                                                                            </button>
-                                                                            <button type="button" class="btn-primary-homade w-75 rounded-3 text-white" onclick="removeMenu('{{ $day['date_key'] }}', {{ $index }})">
-                                                                                <i class="bi bi-trash text-white"></i> Hapus
-                                                                            </button>
-                                                                        </div>
-                                                                    </div>
-                                                                @else
-                                                                    <div class="slot-empty border-grey-1" onclick="openMenuModal('{{ $day['date_key'] }}', {{ $index }})">
-                                                                        <span class="text-muted small fw-bold"><i class="bi bi-plus-circle"></i> Tambah Menu</span>
-                                                                    </div>
-                                                                @endif
-                                                            </div>
-                                                        @endforeach
-                                                        
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                </form>
-                                <form action="{{ route('admin.export-schedules') }}" method="post">
-                                    @csrf
-                                    <button type="submit" class="btn-primary-homade rounded-2 shadow-sm px-4">
-                                                <i class="bi bi-save me-1 text-white"></i> Export Data
-                                            </button>
-                                </form>
-                            </div>
+								@if(isset($response['status']) && $response['status'] === 'success')
 
-                            <div class="modal fade" id="menuSelectionModal" tabindex="-1" aria-hidden="true">
-                                <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-                                    <div class="modal-content border-0 shadow">
-                                        <div class="modal-header bg-accent text-white border-0">
-                                            <h5 class="modal-title text-white"></i>Pilih Menu</h5>
-                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body bg-light">
-                                            <div class="input-group mb-4 shadow-sm">
-                                                <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
-                                                <input type="text" id="searchMenuInput" class="form-control border-start-0" placeholder="Cari nama menu...">
-                                            </div>
+								@php
+									$data = $response['data'];
+									$menus = $data['menus'] ?? [];
+									$schedules = $data['schedules'] ?? [];
+									
+									// Mapping jadwal agar mudah diakses berdasarkan tanggal (DD-MM-YYYY)
+									$mappedSchedules = [];
+									foreach($schedules as $key => $schedule) {
+										$mappedSchedules[$schedule['date']] = $schedule['menus'];
+									}
 
-                                            <div class="row row-cols-1 row-cols-md-3 g-3" id="menuListContainer">
-                                                </div>
-                                            
-                                            <div id="emptyMenuState" class="text-center py-5 d-none">
-                                                <i class="bi bi-inbox text-muted fs-1"></i>
-                                                <p class="mt-2 text-muted">Menu tidak ditemukan.</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+									// Generate 5 Hari (Senin - Jumat) dari startOfWeek
+									$days = [];
+									if(isset($data['start_of_week'])) {
+										$start_of_week = \Carbon\Carbon::parse($data['start_of_week']);
+										for ($i = 0; $i < 5; $i++) {
+											$date = $start_of_week->copy()->addDays($i);
+											$days[] = [
+												// Menggunakan format bahasa indonesia jika app locale sudah di set, atau fallback ke format standar
+												'day_name' => $date->translatedFormat('l'), 
+												'date_formatted' => $date->translatedFormat('d F Y'),
+												'date_key' => $date->format('d-m-Y'),
+											];
+										}
+										}
+								@endphp
 
-                            @if(session()->has('response'))
-                                @php
-                                    $sessResponse = session('response');
-                                    $statusCode = $sessResponse['status_code'] ?? 200;
-                                    $statusMsg = $sessResponse['message'] ?? 'Pemberitahuan Sistem';
-                                    $statusType = $sessResponse['status'] ?? 'success'; 
-                                    
-                                    // Logika warna dan icon berdasarkan status code
-                                    $themeClass = 'text-success';
-                                    $iconClass = 'bi-check-circle-fill';
-                                    
-                                    if($statusCode == 500) {
-                                        $themeClass = 'text-danger';
-                                        $iconClass = 'bi-x-circle-fill';
-                                    } elseif($statusCode != 200 && $statusCode != 201) {
-                                        $themeClass = 'text-warning';
-                                        $iconClass = 'bi-exclamation-triangle-fill';
-                                    }
-                                @endphp
+								<style>
+									/* Custom Styling untuk Slot Menu */
+									.slot-empty {
+										border: 2px dashed #dee2e6;
+										border-radius: 8px;
+										background-color: #f8f9fa;
+										transition: all 0.2s;
+										cursor: pointer;
+										min-height: 120px;
+										display: flex;
+										align-items: center;
+										justify-content: center;
+									}
+									.slot-empty:hover {
+										background-color: #e9ecef;
+										border-color: #adb5bd;
+									}
+									
+									.slot-filled {
+										position: relative;
+										border-radius: 8px;
+										overflow: hidden;
+										border: 1px solid #dee2e6;
+										min-height: 120px;
+									}
+									.slot-filled img {
+										width: 100%;
+										height: 120px;
+										object-fit: cover;
+									}
+									.slot-overlay {
+										position: absolute;
+										top: 0; left: 0; right: 0; bottom: 0;
+										background: rgba(0,0,0,0.7);
+										display: flex;
+										flex-direction: column;
+										align-items: center;
+										justify-content: center;
+										opacity: 0;
+										transition: opacity 0.3s ease;
+										gap: 10px;
+									}
+									.slot-filled:hover .slot-overlay {
+										opacity: 1;
+									}
+									.menu-title-badge {
+										position: absolute;
+										bottom: 0;
+										left: 0;
+										right: 0;
+										background: rgba(0,0,0,0.6);
+										color: white;
+										padding: 4px 8px;
+										font-size: 0.8rem;
+										text-align: center;
+										white-space: nowrap;
+										overflow: hidden;
+										text-overflow: ellipsis;
+									}
+								</style>
 
-                                <div class="modal fade" id="sessionAlertModal" tabindex="-1" aria-hidden="true">
-                                    <div class="modal-dialog modal-sm modal-dialog-centered">
-                                        <div class="modal-content border-0 shadow-lg text-center p-3">
-                                            <div class="modal-body py-4">
-                                                <i class="bi {{ $iconClass }} {{ $themeClass }}" style="font-size: 3rem;"></i>
-                                                <h5 class="fw-bold mt-3 mb-1">Peringatan</h5>
-                                                <p class="text-muted small mb-4">{{ $statusMsg }}</p>
-                                                <button type="button" class="btn btn-outline-dark btn-sm rounded-pill px-4" data-bs-dismiss="modal">Tutup Pemberitahuan</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endif
+								<div class="container-fluid py-4">
+
+									<form action="{{ route('admin.add-or-update-schedules') }}" method="POST">
+										@csrf
+										
+										<div class="d-flex flex-wrap w-100 justify-content-between align-items-center mb-4">
+											<div>
+												<h3 class="fw-bold"><i class="bi bi-calendar-week text-primary"></i> Jadwal Menu Catering</h3>
+												<p class="text-muted mb-0">Kelola menu mingguan (Senin - Jum'at)</p>
+												<input type="hidden" name="start_of_week" value={{ $data['start_of_week'] }}>
+												<input type="hidden" name="end_of_week" value={{ $data['end_of_week'] }}>
+											</div>
+											
+											<div class="d-flex align-items-center flex-column w-100 w-sm-auto flex-sm-row gap-3 mt-3 mt-md-0">
+												<div class="btn-group w-100 shadow-sm">
+													<a href="?week={{ (int) request('week', $data['current_week']) - 1 }}" class="btn btn-outline-secondary"><i class="bi bi-chevron-left"></i></a>
+													<span class="btn w-100 text-nowrap btn-light border-secondary text-dark fw-bold" style="pointer-events: none;">
+														@php
+															$firstDay = $days[0]['date_formatted'] ?? null;
+															$lastDay = $days[count($days) - 1]['date_formatted'] ?? null;
+															$dateRange = ($firstDay && $lastDay) ? "$firstDay - $lastDay" : '';
+														@endphp
+
+														{{ $dateRange }}
+													</span>
+													<a href="?week={{ (int) request('week', $data['current_week']) + 1 }}" class="btn btn-outline-secondary"><i class="bi bi-chevron-right"></i></a>
+												</div>
+												
+												<button type="submit" class="btn-primary-homade rounded-2 d-flex align-items-center justify-content-center bg-accent shadow-sm px-4 w-100 text-nowrap">
+													<i class="bi bi-save me-1 text-white"></i> Simpan Perubahan
+												</button>
+											</div>
+										</div>
+
+										<div class="row row-cols-1 row-cols-md-2 row-cols-xl-5 g-3">
+											@foreach($days as $day)
+												@php
+													// Ambil menu untuk hari ini, maksimal 2 slot
+													$dayMenus = $mappedSchedules[$day['date_key']] ?? [];
+													$slots = [
+														$dayMenus[0] ?? null,
+														$dayMenus[1] ?? null
+													];
+												@endphp
+												
+												<div class="col">
+													<div class=" h-100 border-grey-1 rounded-3">
+														<div class="card-header px-3 pb-2 pt-3">
+															<h6 class="fw-bold mb-1">{{ $day['day_name'] }}</h6>
+															<small class="text-muted">{{ $day['date_formatted'] }}</small>
+														</div>
+														<div class="card-body p-2 d-flex flex-column gap-2" id="container-{{ $day['date_key'] }}">
+															
+															@foreach($slots as $index => $menu)
+																<div id="slot-{{ $day['date_key'] }}-{{ $index }}">
+																	@if($menu)
+																		<div class="slot-filled border-grey-1">
+																			<input type="hidden" name="schedules[{{ $day['date_key']}}][]" value="{{ $menu['id'] }}">
+																			
+																			<img src="{{ $menu['image_url'] }}" loading="lazy" alt="Menu" onerror="this.src='https://placehold.co/300x200?text=No+Image'">
+																			<div class="menu-title-badge">{{ $menu['name'] }}</div>
+																			
+																			<div class="slot-overlay">
+																				<button type="button" class="btn btn-sm btn-light w-75 rounded-3" onclick="openMenuModal('{{ $day['date_key'] }}', {{ $index }})">
+																					<i class="bi bi-arrow-repeat"></i> Ganti
+																				</button>
+																				<button type="button" class="btn-primary-homade w-75 rounded-3 text-white" onclick="removeMenu('{{ $day['date_key'] }}', {{ $index }})">
+																					<i class="bi bi-trash text-white"></i> Hapus
+																				</button>
+																			</div>
+																		</div>
+																	@else
+																		<div class="slot-empty border-grey-1" onclick="openMenuModal('{{ $day['date_key'] }}', {{ $index }})">
+																			<span class="text-muted small fw-bold"><i class="bi bi-plus-circle"></i> Tambah Menu</span>
+																		</div>
+																	@endif
+																</div>
+															@endforeach
+															
+														</div>
+													</div>
+												</div>
+											@endforeach
+										</div>
+									</form>
+								</div>
+
+								<div class="modal fade" id="menuSelectionModal" tabindex="-1" aria-hidden="true">
+									<div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+										<div class="modal-content border-0 shadow">
+											<div class="modal-header bg-accent text-white border-0">
+												<h5 class="modal-title text-white"></i>Pilih Menu</h5>
+												<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+											</div>
+											<div class="modal-body bg-light">
+												<div class="input-group mb-4 shadow-sm">
+													<span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+													<input type="text" id="searchMenuInput" class="form-control border-start-0" placeholder="Cari nama menu...">
+												</div>
+
+												<div class="row row-cols-1 row-cols-md-3 g-3" id="menuListContainer">
+													</div>
+												
+												<div id="emptyMenuState" class="text-center py-5 d-none">
+													<i class="bi bi-inbox text-muted fs-1"></i>
+													<p class="mt-2 text-muted">Menu tidak ditemukan.</p>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								@if(session()->has('response'))
+									@php
+										$sessResponse = session('response');
+										$statusCode = $sessResponse['status_code'] ?? 200;
+										$statusMsg = $sessResponse['message'] ?? 'Pemberitahuan Sistem';
+										$statusType = $sessResponse['status'] ?? 'success'; 
+										
+										// Logika warna dan icon berdasarkan status code
+										$themeClass = 'text-success';
+										$iconClass = 'bi-check-circle-fill';
+										
+										if($statusCode == 500) {
+											$themeClass = 'text-danger';
+											$iconClass = 'bi-x-circle-fill';
+										} elseif($statusCode != 200 && $statusCode != 201) {
+											$themeClass = 'text-warning';
+											$iconClass = 'bi-exclamation-triangle-fill';
+										}
+									@endphp
+
+									<div class="modal fade" id="sessionAlertModal" tabindex="-1" aria-hidden="true">
+										<div class="modal-dialog modal-sm modal-dialog-centered">
+											<div class="modal-content border-0 shadow-lg text-center p-3">
+												<div class="modal-body py-4">
+													<i class="bi {{ $iconClass }} {{ $themeClass }}" style="font-size: 3rem;"></i>
+													<h5 class="fw-bold mt-3 mb-1">Peringatan</h5>
+													<p class="text-muted small mb-4">{{ $statusMsg }}</p>
+													<button type="button" class="btn btn-outline-dark btn-sm rounded-pill px-4" data-bs-dismiss="modal">Tutup Pemberitahuan</button>
+												</div>
+											</div>
+										</div>
+									</div>
+								@endif
 
 
-                            <script>
-                                // 1. Simpan data menu dari backend ke dalam variable JS
-                                const rawMenus = @json($menus);
-                                
-                                // State untuk mencatat slot mana yang sedang di-edit
-                                let activeTargetDate = null;
-                                let activeTargetSlotIndex = null;
-                                
-                                // Inisialisasi Modal Bootstrap
-                                let menuModalInstance;
+								<script>
+									// 1. Simpan data menu dari backend ke dalam variable JS
+									const rawMenus = @json($menus);
+									
+									// State untuk mencatat slot mana yang sedang di-edit
+									let activeTargetDate = null;
+									let activeTargetSlotIndex = null;
+									
+									// Inisialisasi Modal Bootstrap
+									let menuModalInstance;
 
-                                document.addEventListener("DOMContentLoaded", function() {
-                                    menuModalInstance = new bootstrap.Modal(document.getElementById('menuSelectionModal'));
+									document.addEventListener("DOMContentLoaded", function() {
+										menuModalInstance = new bootstrap.Modal(document.getElementById('menuSelectionModal'));
 
-                                    // Cek dan tampilkan Pop-out Global Session jika ada
-                                    const sessionModalEl = document.getElementById('sessionAlertModal');
-                                    if(sessionModalEl) {
-                                        const sessionModal = new bootstrap.Modal(sessionModalEl);
-                                        sessionModal.show();
-                                    }
+										// Cek dan tampilkan Pop-out Global Session jika ada
+										const sessionModalEl = document.getElementById('sessionAlertModal');
+										if(sessionModalEl) {
+											const sessionModal = new bootstrap.Modal(sessionModalEl);
+											sessionModal.show();
+										}
 
-                                    // Listener Search Engine (Client-side)
-                                    document.getElementById('searchMenuInput').addEventListener('input', function(e) {
-                                        renderMenuList(e.target.value);
-                                    });
-                                });
+										// Listener Search Engine (Client-side)
+										document.getElementById('searchMenuInput').addEventListener('input', function(e) {
+											renderMenuList(e.target.value);
+										});
+									});
 
-                                // Fungsi membuka modal untuk suatu slot
-                                function openMenuModal(dateKey, slotIndex) {
-                                    activeTargetDate = dateKey;
-                                    activeTargetSlotIndex = slotIndex;
-                                    
-                                    document.getElementById('searchMenuInput').value = ''; // Reset search
-                                    renderMenuList(); // Render semua menu
-                                    menuModalInstance.show();
-                                }
+									// Fungsi membuka modal untuk suatu slot
+									function openMenuModal(dateKey, slotIndex) {
+										activeTargetDate = dateKey;
+										activeTargetSlotIndex = slotIndex;
+										
+										document.getElementById('searchMenuInput').value = ''; // Reset search
+										renderMenuList(); // Render semua menu
+										menuModalInstance.show();
+									}
 
-                                // Fungsi merender list menu di dalam modal (dengan fitur filter)
-                                function renderMenuList(keyword = '') {
-                                    const container = document.getElementById('menuListContainer');
-                                    const emptyState = document.getElementById('emptyMenuState');
-                                    container.innerHTML = '';
-                                    
-                                    const filteredMenus = rawMenus.filter(m => m.name.toLowerCase().includes(keyword.toLowerCase()));
-                                    
-                                    if(filteredMenus.length === 0) {
-                                        emptyState.classList.remove('d-none');
-                                    } else {
-                                        emptyState.classList.add('d-none');
-                                        
-                                        filteredMenus.forEach(menu => {
-                                            // Gunakan loading="lazy" untuk performa gambar!
-                                            const card = `
-                                                <div class="col">
-                                                    <div class="card h-100 border-0 shadow-sm" style="cursor: pointer;" onclick="selectMenu('${menu.id}')">
-                                                        <img src="${menu.image_url}" loading="lazy" class="card-img-top" alt="${menu.name}" style="height: 120px; object-fit: cover;" onerror="this.src='https://placehold.co/300x200?text=No+Image'">
-                                                        <div class="card-body p-2 text-center">
-                                                            <h6 class="card-title text-truncate mb-0" style="font-size: 0.85rem;" title="${menu.name}">${menu.name}</h6>
-                                                            <span class="badge bg-light text-dark border mt-1">${menu.theme}</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            `;
-                                            container.innerHTML += card;
-                                        });
-                                    }
-                                }
+									// Fungsi merender list menu di dalam modal (dengan fitur filter)
+									function renderMenuList(keyword = '') {
+										const container = document.getElementById('menuListContainer');
+										const emptyState = document.getElementById('emptyMenuState');
+										container.innerHTML = '';
+										
+										const filteredMenus = rawMenus.filter(m => m.name.toLowerCase().includes(keyword.toLowerCase()));
+										
+										if(filteredMenus.length === 0) {
+											emptyState.classList.remove('d-none');
+										} else {
+											emptyState.classList.add('d-none');
+											
+											filteredMenus.forEach(menu => {
+												// Gunakan loading="lazy" untuk performa gambar!
+												const card = `
+													<div class="col">
+														<div class="card h-100 border-0 shadow-sm" style="cursor: pointer;" onclick="selectMenu('${menu.id}')">
+															<img src="${menu.image_url}" loading="lazy" class="card-img-top" alt="${menu.name}" style="height: 120px; object-fit: cover;" onerror="this.src='https://placehold.co/300x200?text=No+Image'">
+															<div class="card-body p-2 text-center">
+																<h6 class="card-title text-truncate mb-0" style="font-size: 0.85rem;" title="${menu.name}">${menu.name}</h6>
+																<span class="badge bg-light text-dark border mt-1">${menu.theme}</span>
+															</div>
+														</div>
+													</div>
+												`;
+												container.innerHTML += card;
+											});
+										}
+									}
 
-                                // Fungsi saat menu diklik di dalam modal -> Isi slot yang kosong/diganti
-                                function selectMenu(menuId) {
-                                    const selectedMenu = rawMenus.find(m => m.id === menuId);
-                                    if(!selectedMenu) return;
+									// Fungsi saat menu diklik di dalam modal -> Isi slot yang kosong/diganti
+									function selectMenu(menuId) {
+										const selectedMenu = rawMenus.find(m => m.id === menuId);
+										if(!selectedMenu) return;
 
-                                    const targetDivId = `slot-${activeTargetDate}-${activeTargetSlotIndex}`;
-                                    const targetDiv = document.getElementById(targetDivId);
+										const targetDivId = `slot-${activeTargetDate}-${activeTargetSlotIndex}`;
+										const targetDiv = document.getElementById(targetDivId);
 
-                                    // Buat HTML untuk slot yang terisi beserta Hidden Input-nya
-                                    const filledHtml = `
-                                        <div class="slot-filled shadow-sm">
-                                            <input type="hidden" name="schedules[${activeTargetDate}][]" value="${selectedMenu.id}">
-                                            <img src="${selectedMenu.image_url}" loading="lazy" alt="${selectedMenu.name}" onerror="this.src='https://placehold.co/300x200?text=No+Image'">
-                                            <div class="menu-title-badge">${selectedMenu.name}</div>
-                                            <div class="slot-overlay">
-                                                <button type="button" class="btn btn-sm btn-light w-75 rounded-pill" onclick="openMenuModal('${activeTargetDate}', ${activeTargetSlotIndex})">
-                                                    <i class="bi bi-arrow-repeat"></i> Ganti
-                                                </button>
-                                                <button type="button" class="btn btn-sm btn-danger w-75 rounded-pill" onclick="removeMenu('${activeTargetDate}', ${activeTargetSlotIndex})">
-                                                    <i class="bi bi-trash"></i> Hapus
-                                                </button>
-                                            </div>
-                                        </div>
-                                    `;
+										// Buat HTML untuk slot yang terisi beserta Hidden Input-nya
+										const filledHtml = `
+											<div class="slot-filled shadow-sm">
+												<input type="hidden" name="schedules[${activeTargetDate}][]" value="${selectedMenu.id}">
+												<img src="${selectedMenu.image_url}" loading="lazy" alt="${selectedMenu.name}" onerror="this.src='https://placehold.co/300x200?text=No+Image'">
+												<div class="menu-title-badge">${selectedMenu.name}</div>
+												<div class="slot-overlay">
+													<button type="button" class="btn btn-sm btn-light w-75 rounded-pill" onclick="openMenuModal('${activeTargetDate}', ${activeTargetSlotIndex})">
+														<i class="bi bi-arrow-repeat"></i> Ganti
+													</button>
+													<button type="button" class="btn btn-sm btn-danger w-75 rounded-pill" onclick="removeMenu('${activeTargetDate}', ${activeTargetSlotIndex})">
+														<i class="bi bi-trash"></i> Hapus
+													</button>
+												</div>
+											</div>
+										`;
 
-                                    targetDiv.innerHTML = filledHtml;
-                                    menuModalInstance.hide();
-                                }
+										targetDiv.innerHTML = filledHtml;
+										menuModalInstance.hide();
+									}
 
-                                // Fungsi menghapus menu dari slot (Kembali ke mode "Tambah Menu")
-                                function removeMenu(dateKey, slotIndex) {
-                                    const targetDivId = `slot-${dateKey}-${slotIndex}`;
-                                    const targetDiv = document.getElementById(targetDivId);
-                                    
-                                    const emptyHtml = `
-                                        <div class="slot-empty shadow-sm" onclick="openMenuModal('${dateKey}', ${slotIndex})">
-                                            <span class="text-muted small fw-bold"><i class="bi bi-plus-circle"></i> Tambah Menu</span>
-                                        </div>
-                                    `;
-                                    
-                                    targetDiv.innerHTML = emptyHtml;
-                                }
-                            </script>
+									// Fungsi menghapus menu dari slot (Kembali ke mode "Tambah Menu")
+									function removeMenu(dateKey, slotIndex) {
+										const targetDivId = `slot-${dateKey}-${slotIndex}`;
+										const targetDiv = document.getElementById(targetDivId);
+										
+										const emptyHtml = `
+											<div class="slot-empty shadow-sm" onclick="openMenuModal('${dateKey}', ${slotIndex})">
+												<span class="text-muted small fw-bold"><i class="bi bi-plus-circle"></i> Tambah Menu</span>
+											</div>
+										`;
+										
+										targetDiv.innerHTML = emptyHtml;
+									}
+								</script>
 
-                            @else
-                                <div class="alert alert-danger shadow-sm border-0 d-flex align-items-center m-4">
-                                    <i class="bi bi-exclamation-triangle-fill fs-3 me-3"></i>
-                                    <div>
-                                        <strong>Gagal Memuat Jadwal!</strong> Pastikan response API sukses (Status 200).
-                                    </div>
-                                </div>
-                            @endif
+								@else
+									<div class="alert alert-danger shadow-sm border-0 d-flex align-items-center m-4">
+										<i class="bi bi-exclamation-triangle-fill fs-3 me-3"></i>
+										<div>
+											<strong>Gagal Memuat Jadwal!</strong> Pastikan response API sukses (Status 200).
+										</div>
+									</div>
+								@endif
+							</div>
 							
 						</div>
+
 						<!--end::Content wrapper-->
 						<!--begin::Footer-->
 						<div id="kt_app_footer" class="app-footer">
@@ -1173,10 +1237,7 @@ License: For each use you must have a valid license purchased only from above li
 
 		<!--begin::Scrolltop-->
 		<div id="kt_scrolltop" class="scrolltop" data-kt-scrolltop="true">
-			<i class="ki-duotone ki-arrow-up">
-				<span class="path1"></span>
-				<span class="path2"></span>
-			</i>
+			<img src="{{ asset('icons/arrow-up.svg') }}" alt="" class="img-white">
 		</div>
 		<!--end::Scrolltop-->
 		
