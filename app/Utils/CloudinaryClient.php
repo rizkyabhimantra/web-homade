@@ -45,6 +45,7 @@ class CloudinaryClient
         string $public_id
     ) {
         try{
+            if(empty(($public_id))) return;
             $response = $this->cloudinary->adminApi()->deleteAssets($public_id);
             return $response['deleted'][$public_id] === 'deleted';
         }catch(Exception $e){
@@ -78,6 +79,7 @@ class CloudinaryClient
         string $public_id
     ) {
         try{
+            if(empty(($public_id))) return;
             $response = $this->cloudinary->adminApi()->deleteAssets($public_id);
             return $response['deleted'][$public_id] === 'deleted';
         }catch(Exception $e){
