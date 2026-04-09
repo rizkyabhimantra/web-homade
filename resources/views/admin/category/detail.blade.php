@@ -1,36 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+    
+    @include('components.header')
+    
+    <body>
+    @if ($response['status'] === 'success')
 
-@if ($response['status'] === 'success')
+    <div class="d-flex w-100 h-100 align-items-center justify-content-center flex-column">
+        <div class="d-flex flex-column px-10 py-15 w-35 border-homade-1 rounded-3 gap-3">
+            
+            <h2>Detail Kategori - {{ $response['data']['name'] }}</h2>
 
-    <h2>Detail category - {{ $response['data']['name'] }}</h2>
+            <form action="{{ route('admin.edit-category', ['id' => $response['data']['id']] ) }}" method="post" style="display:flex; flex-direction: column; gap:10px;">
+                @csrf
+                @method('put')
+                <label for="name">Nama Kategori</label>
+                <input id="name" class="border-homade-1 px-3 py-2 rounded-2 mb-2" type="text" name="name" value="{{ old('name') ?? $response['data']['name'] }}">
 
-    <form action="{{ route('admin.edit-category', ['id' => $response['data']['id']] ) }}" method="post" style="display:flex; flex-direction: column; gap:10px;">
-        @csrf
-        @method('put')
-        <h4>Data category</h4>
-        <input type="text" name="name" value="{{ old('name') ?? $response['data']['name'] }}">
-        <span>Dibuat Pada: {{ $response['data']['created_at'] }}</span>
-        <span>Dihapus Pada: {{ $response['data']['deleted_at'] }}</span>
-        <button>Simpan Perubahan</button>
-    </form>
+                <span>Dibuat Pada: {{ $response['data']['created_at'] }}</span>
+                @if ($response['data']['deleted_at'])
+                <span>Dihapus Pada: {{ $response['data']['deleted_at'] }}</span>
+                @endif
 
-    <form action="{{ route('admin.delete-category', ['id' => $response['data']['id']] ) }}" method="post" style="display:flex; flex-direction: column; gap:10px;">
-        @csrf
-        @method('delete')
-        <button>Hapus Data</button>
-    </form>
+                <button class="py-3 bg-accent text-white fw-semibold rounded-2">Simpan Perubahan</button>
+            </form>
 
-     <form action="{{ route('admin.restore-category', ['id' => $response['data']['id']] ) }}" method="post" style="display:flex; flex-direction: column; gap:10px;">
-        @csrf
-        @method('patch')
-        <button>Kembalikan Data </button>
-    </form>
+            <div class="d-flex w-100 gap-3 align-items-stretch">
+                <form class="w-50 py-3 bg-accent rounded-2 d-flex align-items-center justify-content-center" action="{{ route('admin.delete-category', ['id' => $response['data']['id']] ) }}" method="post" style="display:flex; flex-direction: column; gap:10px;">
+                    @csrf
+                    @method('delete')
+                    <button class="text-white fw-semibold w-100 h-100">Hapus Data</button>
+                </form>
+    
+                <form class="w-50 py-3 bg-accent rounded-2 d-flex align-items-center justify-content-center" action="{{ route('admin.restore-category', ['id' => $response['data']['id']] ) }}" method="post" style="display:flex; flex-direction: column; gap:10px;">
+                    @csrf
+                    @method('patch')
+                    <button class="text-white fw-semibold w-100 h-100">Kembalikan Data</button>
+                </form>
+            </div>
 
-@else
-    {{ dd($response) }}
-@endif
+            <a href="{{ route('admin.categories') }}" class="text-accent d-flex align-items-center justify-content-center bg-danger-subtle py-3 fw-semibold rounded-2">Kembali</a>
 
-<div style="margin-top:200px">
-    @if (session()->has('response'))
-        {{ dd(session()->get('response')) }}
+        </div>
+    </div>
+
+    @else
+    <p>Error</p>
     @endif
-</div>
+
+    <script src="{{asset('assets/plugins/global/plugins.bundle.js')}}"></script>
+    <script src="{{asset('assets/js/scripts.bundle.js')}}"></script>
+    <script src="{{asset('assets/plugins/custom/datatables/datatables.bundle.js')}}"></script>
+    <script src="{{asset('assets/plugins/custom/formrepeater/formrepeater.bundle.js')}}"></script>
+    <script src="{{asset('assets/plugins/custom/jstree/jstree.bundle.js')}}"></script>
+
+</body>
+</html>
+
+@if (session()->has('response'))
+<script>
+    alert('{{ session()->get('response')['message'] }}')
+</script>
+@endif

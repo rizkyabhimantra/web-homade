@@ -829,6 +829,7 @@ License: For each use you must have a valid license purchased only from above li
 										
 										<!--begin::Action wrapper-->
 										<form method="post" action="{{ route('admin.export-categories') }}" class="d-flex align-items-center">
+											@csrf
 											<button id="btnExportExcel" class="btn btn-sm btn-light-primary">
 												<i class="bi bi-file-earmark-spreadsheet fs-4"></i>
 												Export (Excel)

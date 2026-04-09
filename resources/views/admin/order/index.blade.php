@@ -707,17 +707,37 @@ License: For each use you must have a valid license purchased only from above li
 										data-bs-toggle="tooltip" 
 										data-bs-custom-class="tooltip-inverse" 
 										data-bs-placement="top" 
-										title="Robert Fox">
-										Robert Fox
+										title="">
+										...
 									</span>
 									<span 
 										class="user-email text-elipsis pb-1 text-white fw-medium fs-8 text-gray-600"  
 										data-bs-toggle="tooltip" 
 										data-bs-custom-class="tooltip-inverse" 
 										data-bs-placement="top" 
-										title="robert@email.co">
-										robert@email.co
+										title="">
+										...
 									</span>
+									<script>
+										
+										fetch('/api/me', {
+											headers: { 
+												'Accept': 'application/json',
+												'X-CSRF-TOKEN': '{{ csrf_token() }}'
+											},
+											credentials: 'same-origin'
+										})
+										.then(res => res.json())
+										.then(res => {
+											if (res.status === 'success') {
+												const { first_name, last_name, email } = res.data;
+												document.getElementById('sidebar-user-name').textContent = `${first_name} ${last_name}`;
+												document.getElementById('sidebar-user-email').textContent = email;
+											}
+										});
+
+									</script>
+
 									<div class="d-flex align-items-center">
 										<span class="bullet bullet-dot bg-success h-4px w-4px me-1"></span>
 										<span class="text-success fs-9">Online</span>

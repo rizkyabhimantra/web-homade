@@ -2,39 +2,8 @@
     <html lang="en">
 <!--begin::Head-->
 
-<head>
-	@vite([
-		'sass/app.scss',
-		'sass/metronic/style.scss',
-		'resources/js/app.js',
-	])
-	<meta charset="utf-8" />
-	<meta name="description"
-		content="The most advanced Tailwind CSS & Bootstrap 5 Admin Theme with 40 unique prebuilt layouts on Themeforest trusted by 100,000 beginners and professionals. Multi-demo, Dark Mode, RTL support and complete React, Angular, Vue, Asp.Net Core, Rails, Spring, Blazor, Django, Express.js, Node.js, Flask, Symfony & Laravel versions. Grab your copy now and get life-time updates for free." />
-	<meta name="keywords"
-		content="tailwind, tailwindcss, metronic, bootstrap, bootstrap 5, angular, VueJs, React, Asp.Net Core, Rails, Spring, Blazor, Django, Express.js, Node.js, Flask, Symfony & Laravel starter kits, admin themes, web design, figma, web development, free templates, free admin themes, bootstrap theme, bootstrap template, bootstrap dashboard, bootstrap dak mode, bootstrap button, bootstrap datepicker, bootstrap timepicker, fullcalendar, datatables, flaticon" />
-	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<meta property="og:locale" content="en_US" />
-	<meta property="og:type" content="article" />
-	<meta property="og:title"
-		content="Metronic - The World's #1 Selling Tailwind CSS & Bootstrap Admin Template by KeenThemes" />
-	<meta property="og:url" content="https://keenthemes.com/metronic" />
-	<meta property="og:site_name" content="Metronic by Keenthemes" />
-	<link rel="canonical" href="http://preview.keenthemes.comindex.html" />
-	<link rel="shortcut icon" href="/assets/media/logos/favicon.ico" />
-	<!--begin::Fonts(mandatory for all pages)-->
-	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
-	<!--end::Fonts-->
-	<!--begin::Vendor Stylesheets(used for this page only)-->
-	<link href="/assets/plugins/custom/fullcalendar/fullcalendar.bundle.css" rel="stylesheet" type="text/css" />
-	<link href="/assets/plugins/custom/datatables/datatables.bundle.css" rel="stylesheet" type="text/css" />
-	<!--end::Vendor Stylesheets-->
-	<!--begin::Global Stylesheets Bundle(mandatory for all pages)-->
-	<link href="/assets/plugins/global/plugins.bundle.css" rel="stylesheet" type="text/css" />
-	<link href="/assets/css/style.bundle.css" rel="stylesheet" type="text/css" />
-	<!--end::Global Stylesheets Bundle-->
-	<script>// Frame-busting to prevent site from being loaded within a frame without permission (click-jacking) if (window.top != window.self) { window.top.location.replace(window.self.location.href); }</script>
-</head>
+@include('components.header')
+
 <!--end::Head-->
 <!--begin::Body-->
 <body id="kt_app_body" data-kt-app-layout="dark-sidebar" data-kt-app-header-fixed="true"
@@ -56,9 +25,9 @@
         <div class="row mb-4">
             <div class="col-12 d-flex justify-content-between align-items-center">
                 <div>
-                    <h3 class="fw-bold"><i class="bi bi-pencil-square text-primary"></i> Edit Menu Catering</h3>
+                    <h3 class="fw-bold"> Edit Menu Catering</h3>
                     <p class="text-muted mb-0">Perbarui informasi dan gambar menu.</p>
-                    <a href="{{ route('admin.menus') }}">back</a>
+                    <a class="text-accent" href="{{ route('admin.menus') }}">back</a>
                 </div>
             </div>
         </div>
@@ -67,7 +36,7 @@
             @csrf
             @method('PUT')
             
-            <div class="card border-0 shadow-sm mb-4">
+            <div class="border-0 ">
                 <div class="card-body p-4">
                     <div class="row">
                         <div class="col-md-4 mb-4 mb-md-0">
@@ -87,16 +56,15 @@
                             
                             <div class="mb-3">
                                 <label for="image" class="form-label text-muted small">Upload Gambar Baru (Opsional)</label>
-                                <input class="form-control form-control-sm" type="file" id="image" name="image" accept="image/*">
-                            </div>
+                                <input class="form-control form-control-sm" type="file" id="image" name="image" accept="image/*" onchange="previewImage(this)">                            </div>
 
                             <div class="p-3 bg-light rounded border">
                                 <div class="form-check form-switch mb-0">
-                                    <input class="form-check-input" type="checkbox" role="switch" id="is_active" name="is_active" {{ old('status_active',$menu['is_active'] ? 'active' : 'non-active') === 'active' ? 'checked' : '' }}
+                                    <input class="form-check-input bg-danger border-danger" type="checkbox" role="switch" id="is_active" name="is_active" {{ old('status_active',$menu['is_active'] ? 'active' : 'non-active') === 'active' ? 'checked' : '' }}
                                         onchange="handler_status_active(this)"
                                     >
                                     <input type="hidden" name="status_active" id="status_active" value="{{ old('status_active') ?? $menu['is_active'] ? 'active' : 'non-active' }}">
-                                    <label class="form-check-label fw-bold ms-2" for="is_active">Tampilkan di Website</label>
+                                    <label class="form-check-label fw-bold ms-2 text-black" for="is_active">Tampilkan di Website</label>
                                 </div>
                             </div>
                         </div>
@@ -127,10 +95,10 @@
 
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label fw-bold"><i class="bi bi-tags"></i> Kategori</label>
-                                    <div class="p-2 border rounded bg-light" style="max-height: 150px; overflow-y: auto;">
+                                    <div class="p-2 border rounded bg-light overflow-scroll d-flex flex-column gap-4 py-3" style="max-height: 150px;">
                                         @foreach($categories as $cat)
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" name="category_ids[]" value="{{ $cat['id'] }}" id="cat_{{ $cat['id'] }}" 
+                                            <div class="form-check d-flex gap-3">
+                                                <input class="form-check-input bg-danger border-danger" type="checkbox" name="category_ids[]" value="{{ $cat['id'] }}" id="cat_{{ $cat['id'] }}" 
                                                     {{ in_array($cat['id'], $menu['categories']->toArray()) ? 'checked' : '' }}>
                                                 <label class="form-check-label" for="cat_{{ $cat['id'] }}">
                                                     {{ $cat['name'] }}
@@ -195,7 +163,7 @@
                     </div>
                 </div>
                 <div class="card-footer bg-white text-end py-3 px-4">
-                    <button type="submit" class="btn btn-primary"><i class="bi bi-save me-1"></i> Simpan Perubahan</button>
+                    <button type="submit" class="bg-accent fw-bold px-6 py-4 d-flex gap-3 align-items-center rounded-2 text-white"><i class="bi bi-save me-1 text-white"></i> Simpan Perubahan</button>
                 </div>
             </div>
         </form>
@@ -203,33 +171,47 @@
             @csrf
             @method('delete')
              <div class="card-footer bg-white text-end py-3 px-4">
-                    <button type="submit" class="btn btn-danger"><i class="bi bi-save me-1"></i> Hapus Menu</button>
+                    <button type="submit" class="btn bg-danger-subtle d-flex align-items-center gap-3 text-danger"><img src="{{ asset('icons/trash.svg') }}" alt="" class="h-12em img-accent"> Hapus Menu</button>
                 </div>
         </form>
          <form action="{{ route('admin.restore-menu', [ 'id' => $menu['id'] ]) }}" method="post">
             @csrf
             @method('patch')
              <div class="card-footer bg-white text-end py-3 px-4">
-                    <button type="submit" class="btn btn-primary"><i class="bi bi-save me-1"></i> Kembalikan Menu</button>
+                    <button type="submit" class="btn btn-secondary d-flex align-items-center gap-3"><img src="{{ asset('icons/history.svg') }}" alt="" class="h-12em"> Kembalikan Menu</button>
                 </div>
         </form>
     </div>
-
-    <div class="container py-5">
-        <div class="alert alert-danger d-flex align-items-center shadow-sm" role="alert">
-            <i class="bi bi-exclamation-octagon-fill fs-4 me-3"></i>
-            <div>
-                <strong>Gagal Memuat Data!</strong> Pastikan response API berhasil (Status 200). Pesan sistem: {{ $response['message'] ?? 'Data tidak ditemukan.' }}
-            </div>
-        </div>
-    </div>
-    {{ dd($response) }}
-
 <script defer>
     function handler_status_active(e) {
         document.getElementById('status_active').value = e.checked? 'active' : 'non-active';
     }
 </script>
+
+<script>
+    function previewImage(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.querySelector('img[alt="{{ $menu['name'] }}"]').src = e.target.result;
+                document.getElementById('img-warning').classList.add('d-none');
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
+
+<!--begin::Global Javascript Bundle(mandatory for all pages)-->
+<script src="{{asset('assets/plugins/global/plugins.bundle.js')}}"></script>
+<script src="{{asset('assets/js/scripts.bundle.js')}}"></script>
+<!--end::Global Javascript Bundle-->
+
+<!--begin::Vendors Javascript(used for this page only)-->
+<script src="{{asset('assets/plugins/custom/datatables/datatables.bundle.js')}}"></script>
+<script src="{{asset('assets/plugins/custom/formrepeater/formrepeater.bundle.js')}}"></script>
+<script src="{{asset('assets/plugins/custom/jstree/jstree.bundle.js')}}"></script>
+<!--end::Vendors Javascript-->
+
 
 <div class="mt-20">
     @if (session()->has('response'))
