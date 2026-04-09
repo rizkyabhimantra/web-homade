@@ -219,11 +219,3 @@ Route::post('/testing-date-time', function(Request $request) {
    return $request;
 
 });
-
-Route::get('/testing-export', function(Request $request) {
-
-    return (New MenuExport)->download('sample-export-menu.xlsx');
-
-    // return Excel::download(new MenuExport, 'menu-export.xlsx');
-
-});
