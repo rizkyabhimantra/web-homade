@@ -30,7 +30,7 @@ class CategoryController extends Controller
 
             $search = $request->query('search');
             $limit = (int) $request->query('limit', 8);
-            $status = $request->query('status', 'active');
+            $status = $request->query('status', 'all');
 
             $categories = $this->categoryService->all(
                 $search, 

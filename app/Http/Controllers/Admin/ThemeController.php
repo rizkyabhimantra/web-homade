@@ -28,7 +28,7 @@ class ThemeController extends Controller
         try {
             $search = $request->query('search');
             $limit = (int) $request->query('limit', 8);
-            $status = $request->query('status', 'active');
+            $status = $request->query('status', 'all');
 
             $themes = $this->themeService->all(
                 $search,

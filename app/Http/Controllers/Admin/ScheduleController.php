@@ -34,10 +34,10 @@ class ScheduleController extends Controller
 
             $currentDate->weekOfMonth($week);
             $currentDayOfWeek = $currentDate->dayOfWeekIso; //4
-            $startOfWeek = $currentDate->subDays($currentDayOfWeek - 1);
+            $startOfWeek = $currentDate->clone()->subDays($currentDayOfWeek - 1);
             $endOfWeek = $startOfWeek->clone()->addDays(4);
 
-            $schedules = $this->menuService->getByMultipleDay([$startOfWeek, $endOfWeek], is_admin:true);
+            $schedules = $this->menuService->getByMultipleDay([$startOfWeek, $endOfWeek]);
             $menus = $this->menuService->all(is_has_limit: false);
 
             $response = $this->responseData->create(

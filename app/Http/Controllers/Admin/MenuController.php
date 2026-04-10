@@ -49,7 +49,7 @@ class MenuController extends Controller
             $category = $request->query('category');
             $limit = $request->query('limit', 8);
             $status_active = $request->query('status_active', 'all');
-            $status = $request->query('status', 'available');
+            $status = $request->query('status', 'all');
 
             $menus = $this->menuService->all(
                 $search,
