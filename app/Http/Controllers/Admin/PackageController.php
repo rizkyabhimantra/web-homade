@@ -29,7 +29,7 @@ class PackageController extends Controller
         try {
             $search = $request->query('search');
             $limit = $request->query('limit', 8);
-            $status = $request->query('status', 'active');
+            $status = $request->query('status', 'all');
             $packages = $this->packageService->all(
                 $search,
                 $limit,

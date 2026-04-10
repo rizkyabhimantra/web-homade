@@ -42,10 +42,10 @@ class CloudinaryClient
     }
 
     public function delete(
-        string $public_id
+        string | null $public_id
     ) {
         try{
-            if(empty(($public_id))) return;
+            if(!$public_id) return;
             $response = $this->cloudinary->adminApi()->deleteAssets($public_id);
             return $response['deleted'][$public_id] === 'deleted';
         }catch(Exception $e){
@@ -76,10 +76,10 @@ class CloudinaryClient
     }
 
     public function deleteThePaymentProofImage(
-        string $public_id
+        string | null $public_id
     ) {
         try{
-            if(empty(($public_id))) return;
+            if(!$public_id) return;
             $response = $this->cloudinary->adminApi()->deleteAssets($public_id);
             return $response['deleted'][$public_id] === 'deleted';
         }catch(Exception $e){
