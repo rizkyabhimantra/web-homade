@@ -175,6 +175,7 @@ class MenuService
     public function getByMultipleDay(
         array $date,
         bool $is_query = false,
+        bool $is_admin = true,
     )
     {
         $schedules = MenuSchedule::query();
@@ -187,8 +188,9 @@ class MenuService
             $schedules = $schedules->get();
             $schedules = $schedules->groupBy(function ($schedule) {
                 return $schedule->date_at;
-            })->map(function ($schedule, $key) {
+            })->map(function ($schedule, $key) use($is_admin) {
                 return [
+                    'is_admin' => $is_admin,
                     'date' => Carbon::parse($key)->format('d-m-Y'),
                     'menus' => $schedule->map(function ($s) {
                         return $s->menu;
