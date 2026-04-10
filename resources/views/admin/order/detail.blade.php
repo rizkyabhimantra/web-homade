@@ -955,11 +955,11 @@ License: For each use you must have a valid license purchased only from above li
                                             </div>
                                         @endforeach
         
-                                        <span class="w-100 h-1px bg-dark-grey mb-5"></span>
-
+                                        
                                         <div style="display:flex; flex-direction: column; gap:2px;">
-                                            <h4 class="text-accent fsc-3">Invoice Pemesanan</h4>
                                             @if ($response['data']['status'] === 'waiting_for_invoice' || !$response['data']['payment_proof'] || $response['data']['payment_proof']['status'] === 'rejected')
+                                            <span class="w-100 h-1px bg-dark-grey mb-5"></span>
+                                            <h4 class="text-accent fsc-3">Invoice Pemesanan</h4>
                                                     <span>Transaksi Belum Memiliki Invoice</span>
                                                     
                                                     <span class="w-100 h-1px bg-dark-grey mb-5"></span>
@@ -999,15 +999,14 @@ License: For each use you must have a valid license purchased only from above li
                                                 </form>
                                             @endif
                                         </div>
+                                        
+                                        
                                         @if ($response['data']['payment_proof'])
-                                            <div style="display:flex; flex-direction: column; gap:5px;"></div>
-                                            <h2>Data Bukti Pembayaran</h2>
+                                        <span class="w-100 h-1px bg-dark-grey mb-5"></span>
+                                            <h2 class="text-accent fsc-3">Data Bukti Pembayaran</h2>
                                             <div style="display:flex; flex-direction: column; gap:2px;">
                                                 <span>Payment Proof ID: {{ $response['data']['payment_proof']['id'] }}</span>
                                                 <span>Bukti Pembayaran Dibawha ini</span>
-                                                <img src="{{ $response['data']['payment_proof']['url'] }}" alt="bukt-pembayaram">
-                                                <span>Status : {{ $response['data']['payment_proof']['status'] }}</span>
-                                                <span>Alasan : {{ $response['data']['payment_proof']['reason'] }}</span>
                                                 {{-- terima bukti pembayaran --}}
                                                 <h4>Action Untuk Menerima / Menolak Bukti Pembayaran</h4>
                                                 {{-- gak ada validasi ya disini, takutnya kepencet acc hehe... tpai kalo status transaksi sudah success itu gak bisa
@@ -1047,15 +1046,9 @@ License: For each use you must have a valid license purchased only from above li
                                         </script>
                                         </div>
                                     @else
-                                        {{ dd($response) }}
+									<p>Error</p>
                                     @endif
         
-                                    <div style="margin-top: 200px;">
-                                        @if (session()->has('response'))
-                                            {{ dd(session()->get('response')) }}
-                                        @endif
-                                    </div>
-
                                 </div>
                             </div>
 
@@ -1111,6 +1104,11 @@ License: For each use you must have a valid license purchased only from above li
 
 		<!--begin::Custom Javascript(used for this page only)-->
 
+		@if (session()->has('response'))
+		<script>
+			alert('{{ session()->get('response')['message'] }}')
+		</script>
+		@endif
 		<!--end::Custom Javascript-->
 		
 	</body>

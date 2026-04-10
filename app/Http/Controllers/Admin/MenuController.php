@@ -73,7 +73,7 @@ class MenuController extends Controller
             $response = $this->responseData->create(
                 'Berhasil Mendapatkan Menu',
                 [
-                    'pagination' => new PaginationResource($menus),
+                    'pagination' => (new PaginationResource($menus))->toArray($request),
                     'menus' => MenuResource::collection($menus)->toArray($request),
                 ],
                 isJson: false
