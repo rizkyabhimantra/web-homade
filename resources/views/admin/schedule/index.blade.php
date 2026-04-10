@@ -19,7 +19,7 @@ License: For each use you must have a valid license purchased only from above li
 	<!--end::Head-->
 
 
-
+	
 	<!--begin::Body-->
 	<body 
 		id="kt_app_body" 
@@ -551,7 +551,7 @@ License: For each use you must have a valid license purchased only from above li
 				<!--begin::Wrapper-->
 				<div class="app-wrapper flex-column flex-row-fluid" id="kt_app_wrapper">
 					@include('components.sidebar', ["page" => "schedule"])
-					
+
 					<!--begin::Main-->
 					<div class="app-main flex-column flex-row-fluid" id="kt_app_main">
 						<!--begin::Content wrapper-->
@@ -754,7 +754,6 @@ License: For each use you must have a valid license purchased only from above li
 														$dayMenus[1] ?? null
 													];
 												@endphp
-												
 												<div class="col">
 													<div class=" h-100 border-grey-1 rounded-3">
 														<div class="card-header px-3 pb-2 pt-3">
@@ -762,10 +761,26 @@ License: For each use you must have a valid license purchased only from above li
 															<small class="text-muted">{{ $day['date_formatted'] }}</small>
 														</div>
 														<div class="card-body p-2 d-flex flex-column gap-2" id="container-{{ $day['date_key'] }}">
-															
 															@foreach($slots as $index => $menu)
 																<div id="slot-{{ $day['date_key'] }}-{{ $index }}">
 																	@if($menu)
+																		@if ($menu['is_deleted'])
+																		<div class="slot-filled border-grey-1">
+																			<input type="hidden" name="schedules[{{ $day['date_key']}}][]" value="{{ $menu['id'] }}">
+																			
+																			<img src="https://placehold.co/300x200?text=Menu+Tidak+Ditemukan" loading="lazy" alt="Menu">
+																			<div class="menu-title-badge">Menu Sudah Tidak Ada</div>
+																			
+																			<div class="slot-overlay">
+																				<button type="button" class="btn btn-sm btn-light w-75 rounded-3" onclick="openMenuModal('{{ $day['date_key'] }}', {{ $index }})">
+																					<i class="bi bi-arrow-repeat"></i> Ganti
+																				</button>
+																				<button type="button" class="btn-primary-homade w-75 rounded-3 text-white" onclick="removeMenu('{{ $day['date_key'] }}', {{ $index }})">
+																					<i class="bi bi-trash text-white"></i> Hapus
+																				</button>
+																			</div>
+																		</div>
+																		@else
 																		<div class="slot-filled border-grey-1">
 																			<input type="hidden" name="schedules[{{ $day['date_key']}}][]" value="{{ $menu['id'] }}">
 																			
@@ -781,6 +796,7 @@ License: For each use you must have a valid license purchased only from above li
 																				</button>
 																			</div>
 																		</div>
+																		@endif
 																	@else
 																		<div class="slot-empty border-grey-1" onclick="openMenuModal('{{ $day['date_key'] }}', {{ $index }})">
 																			<span class="text-muted small fw-bold"><i class="bi bi-plus-circle"></i> Tambah Menu</span>

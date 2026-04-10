@@ -696,7 +696,7 @@ License: For each use you must have a valid license purchased only from above li
 													</div>
 
 													<div class="table-responsive">
-														<table class="table align-middle border rounded table-striped table-row-dashed fs-6 g-5 gs-5" id="kt_datatable_example">
+														<table class="mb-4 table align-middle border rounded table-striped table-row-dashed fs-6 g-5 gs-5" id="kt_datatable_example">
 															<thead>
 																<tr class="text-start text-gray-800 fw-bold fs-7 text-capitalize">
 																	<th class="min-w-200px">ID Transaksi</th>
@@ -709,6 +709,72 @@ License: For each use you must have a valid license purchased only from above li
 															</thead>
 															<tbody class="text-gray-700"></tbody>
 														</table>
+
+														<div class="mt-3 d-flex align-items-center justify-content-between w-100 h-40px">
+															<select name="limit" onchange="window.location.href='?limit=' + this.value" class="h-100 border-grey-05 outline-0 bg-transparent fs-4 py-2 px-2 rounded-2">
+																@foreach ([8, 16, 24, 32] as $limit)
+																	<option value="{{ $limit }}" {{ request('limit') == $limit ? 'selected' : '' }}>
+																		{{ $limit }}
+																	</option>
+																@endforeach
+															</select>
+
+															@php
+																$pagination = $response['data']['pagination'] ?? null;
+																$currentPage = $pagination['current_page'] ?? 1;
+																$lastPage = $pagination['last_page'] ?? 1;
+
+																$window = 1;
+																$start = max(2, $currentPage - $window);
+																$end = min($lastPage - 1, $currentPage + $window);
+															@endphp
+
+															@if($pagination && $lastPage > 1)
+															<div class="d-flex h-100 gap-2">
+																
+																<a href="{{ $currentPage > 1 ? request()->fullUrlWithQuery(['page' => $currentPage - 1]) : '#' }}" 
+																class="text-decoration-none text-dark h-100 ratio-1 rounded-2 d-flex align-items-center justify-content-center {{ $currentPage <= 1 ? 'opacity-50 pe-none' : '' }}">
+																	<img src="{{ asset('icons/caret-arrow-left.svg') }}" alt="Prev" class="h-90">
+																</a>
+
+																<a href="{{ request()->fullUrlWithQuery(['page' => 1]) }}" 
+																class="text-decoration-none h-100 ratio-1 rounded-2 d-flex align-items-center justify-content-center fw-bold {{ $currentPage == 1 ? 'bg-accent text-white' : 'text-dark' }}">
+																	1
+																</a>
+
+																@if($start > 2)
+																	<div class="h-100 ratio-1 rounded-2 d-flex align-items-center justify-content-center fw-bold text-black cursor-default">
+																		...
+																	</div>
+																@endif
+
+																@for ($i = $start; $i <= $end; $i++)
+																	<a href="{{ request()->fullUrlWithQuery(['page' => $i]) }}" 
+																	class="text-decoration-none h-100 ratio-1 rounded-2 d-flex align-items-center justify-content-center fw-bold {{ $currentPage == $i ? 'bg-accent text-white' : 'text-dark' }}">
+																		{{ $i }}
+																	</a>
+																@endfor
+
+																@if($end < $lastPage - 1)
+																	<div class="h-100 ratio-1 rounded-2 d-flex align-items-center justify-content-center fw-bold text-black cursor-default">
+																		...
+																	</div>
+																@endif
+
+																<a href="{{ request()->fullUrlWithQuery(['page' => $lastPage]) }}" 
+																class="text-decoration-none h-100 ratio-1 rounded-2 d-flex align-items-center justify-content-center fw-bold {{ $currentPage == $lastPage ? 'bg-accent text-white' : 'text-dark' }}">
+																	{{ $lastPage }}
+																</a>
+
+																<a href="{{ $currentPage < $lastPage ? request()->fullUrlWithQuery(['page' => $currentPage + 1]) : '#' }}" 
+																class="text-decoration-none text-dark h-100 ratio-1 rounded-2 d-flex align-items-center justify-content-center {{ $currentPage >= $lastPage ? 'opacity-50 pe-none' : '' }}">
+																	<img src="{{ asset('icons/caret-arrow-right.svg') }}" alt="Next" class="h-90">
+																</a>
+
+															</div>
+															@endif
+
+														</div>
 													</div>
 
 												</div>
@@ -882,7 +948,10 @@ License: For each use you must have a valid license purchased only from above li
 
 				$(tableElement).DataTable({
 					data: dataSource,
-					info: true,
+					deferRender: true,
+					searching: true,
+					info: false,
+					paging: false,
 					order: [],
 					pageLength: 8,
 					lengthMenu: [[5, 8, 10, 25, 50], [5, 8, 10, 25, 50]],
