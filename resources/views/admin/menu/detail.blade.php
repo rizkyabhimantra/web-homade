@@ -92,9 +92,7 @@
 
                             <div class="p-3 bg-light rounded border">
                                 <div class="form-check form-switch mb-0">
-                                    <input class="form-check-input" type="checkbox" role="switch" id="is_active" name="is_active" {{ old('status_active',$menu['is_active'] ? 'active' : 'non-active') === 'active' ? 'checked' : '' }}
-                                        onchange="handler_status_active(this)"
-                                    >
+                                    <input class="form-check-input" type="checkbox" role="switch" id="is_active" name="is_active" {{ old('status_active',$menu['is_active'] ? 'active' : 'non-active') === 'active' ? 'checked' : '' }}>
                                     <input type="hidden" name="status_active" id="status_active" value="{{ old('status_active') ?? $menu['is_active'] ? 'active' : 'non-active' }}">
                                     <label class="form-check-label fw-bold ms-2" for="is_active">Tampilkan di Website</label>
                                 </div>
@@ -223,12 +221,12 @@
             </div>
         </div>
     </div>
-    {{ dd($response) }}
 
 <script defer>
-    function handler_status_active(e) {
-        document.getElementById('status_active').value = e.checked? 'active' : 'non-active';
-    }
+    document.getElementById('is_active').addEventListener('change', function(e){
+        const status_active =  document.getElementById('status_active');
+        status_active.value = e.target.checked? 'active' : 'non-active';
+    })
 </script>
 
 <div class="mt-20">
