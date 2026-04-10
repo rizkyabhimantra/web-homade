@@ -23,6 +23,7 @@ class MenuSchedule extends Model
 
     public function menu(){
         return $this->belongsTo(Menu::class, 'id_menu')
+        ->withTrashed()
         ->with([
             'menu_categories',
             'theme',
