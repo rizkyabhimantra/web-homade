@@ -551,7 +551,7 @@ License: For each use you must have a valid license purchased only from above li
 				<!--begin::Wrapper-->
 				<div class="app-wrapper flex-column flex-row-fluid" id="kt_app_wrapper">
 					@include('components.sidebar', ["page" => "schedule"])
-
+					
 					<!--begin::Main-->
 					<div class="app-main flex-column flex-row-fluid" id="kt_app_main">
 						<!--begin::Content wrapper-->

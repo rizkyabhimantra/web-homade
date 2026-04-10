@@ -37,6 +37,9 @@ class ScheduleController extends Controller
             $startOfWeek = $currentDate->subDays($currentDayOfWeek - 1);
             $endOfWeek = $startOfWeek->clone()->addDays(4);
 
+            $schedules = $this->menuService->getByMultipleDay([$startOfWeek, $endOfWeek]);
+            $menus = $this->menuService->all(is_has_limit: false);
+
             $response = $this->responseData->create(
                 'Berhasil Mendapatkan Data',
                 [
@@ -45,8 +48,8 @@ class ScheduleController extends Controller
                     'current_week' => $currentDate->weekOfMonth,
                     'current_month' => $currentDate->monthName,
                     'current_date' => $currentDate->format('d-m-Y'),
-                    'menus' => MenuResource::collection($this->menuService->all(is_has_limit: false))->toArray($request),
-                    'schedules' => MenuScheduleResource::collection($this->menuService->getByMultipleDay([$startOfWeek, $endOfWeek]))->toArray($request)
+                    'menus' => MenuResource::collection($menus)->toArray($request),
+                    'schedules' => MenuScheduleResource::collection($schedules)->toArray($request)
                 ],
                 isJson: false,
             );

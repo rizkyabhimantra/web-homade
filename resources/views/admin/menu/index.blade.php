@@ -1110,10 +1110,6 @@ License: For each use you must have a valid license purchased only from above li
 								<div class="menu-item px-3">
 									<a href="${routeDetailMenu.replace('_ID_', row.id)}" class="menu-link px-3">Lihat Detail</a>
 								</div>
-								<div class="separator my-2"></div>
-								<div class="menu-item px-3">
-									<a href="${routeDeleteMenu.replace('_ID_', row.id)}" class="menu-link menu-link-delete px-3">Hapus</a>
-								</div>
 							</div>`;
 					}
 				}

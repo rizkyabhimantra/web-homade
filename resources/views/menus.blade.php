@@ -34,21 +34,14 @@
                         <p class="fs-2 {{ !$category ? 'text-white' : 'text-grey' }} mb-0 fw-bold">ALL</p>
                     </a>
 
-                    <a href="/menus?category=ayam#category" class="d-flex text-nowrap {{ $category == "ayam" ? 'bg-accent' : '' }} h-100 align-items-center px-5 rounded-pill">
-                        <p class="fs-2 {{ $category == "ayam" ? 'text-white' : 'text-grey' }} mb-0 fw-bold">Ayam</p>
+                    @foreach (["ayam" => "Ayam", "ikan" => "Ikan & Seafood", "nasi" => "Nasi", "sapi" => "Sapi & Kambing"] as $kategori => $judul)
+                        
+                    <a href="/menus?category={{ $kategori }}#category" class="d-flex text-nowrap {{ $category == $kategori ? 'bg-accent' : '' }} h-100 align-items-center px-5 rounded-pill">
+                        <p class="fs-2 {{ $category == $kategori ? 'text-white' : 'text-grey' }} mb-0 fw-bold">{{ $judul }}</p>
                     </a>
 
-                    <a href="/menus?category=ikan#category" class="d-flex text-nowrap {{ $category == "ikan" ? 'bg-accent' : '' }} h-100 align-items-center px-5 rounded-pill">
-                        <p class="fs-2 {{ $category == "ikan" ? 'text-white' : 'text-grey' }} mb-0 fw-bold">Ikan & Seafood</p>
-                    </a>
+                    @endforeach
 
-                    <a href="/menus?category=nasi#category" class="d-flex text-nowrap {{ $category == "nasi" ? 'bg-accent' : '' }} h-100 align-items-center px-5 rounded-pill">
-                        <p class="fs-2 {{ $category == "nasi" ? 'text-white' : 'text-grey' }} mb-0 fw-bold">Nasi</p>
-                    </a>
-
-                    <a href="/menus?category=sapi#category" class="d-flex text-nowrap {{ $category == "sapi" ? 'bg-accent' : '' }} h-100 align-items-center px-5 rounded-pill">
-                        <p class="fs-2 {{ $category == "sapi" ? 'text-white' : 'text-grey' }} mb-0 fw-bold">Sapi & Kambing</p>
-                    </a>
                 </div>
 
                 <div class="d-flex h-100px h-md-50px w-100 justify-content-center align-items-center">

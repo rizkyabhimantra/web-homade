@@ -18,15 +18,15 @@
             <!-- begin::Left Side -->
                 <div class="d-flex w-100 w-lg-25 flex-column border-grey-1 rounded-4 gap-1 p-5 flex-shrink-0">
 
-                    <div class="d-flex w-100 mb-2 h-100px align-items-center gap-5">
+                    <div class="d-flex w-100 mb-2 h-75px align-items-center gap-5">
 
-                        <div class="h-100 ratio-1 flex-shrink-0">
-                            <img src="{{ $placeImg }}" class="w-100 h-100 rounded-circle" alt="">
+                        <div class="h-100 ratio-1 rounded-circle border-black-1 align-items-center justify-content-center d-flex flex-shrink-0">
+                            <img src="{{ asset('icons/user.svg') }}" class="h-75 ratio-1" alt="">
                         </div>
 
                         <div class="d-flex w-100 h-75 flex-column justify-content-center w-100 ">
-                            <p class="fs-3 text-accent fw-bolder mb-0">Andi Pratama</p>
-                            <a href="/me" class="fs-5 mb-0 text-accent fw-light d-flex align-items-center gap-1"><img src="{{ asset("icons/edit.svg") }}" class="h-12em"> Ubah Profil</a>
+                            <p class="fs-3 text-accent fw-bolder mb-0">{{ auth()->user()->first_name }} {{ auth()->user()->last_name }}</p>
+                            <a href="{{ route('user.me') }}" class="fs-5 mb-0 text-accent fw-light d-flex align-items-center gap-1"><img src="{{ asset("icons/edit.svg") }}" class="h-12em"> Ubah Profil</a>
                         </div>
 
                     </div>
@@ -44,8 +44,8 @@
                             <!--begin::Body-->
                             <div id="kt_accordion_3_item_1" class="fs-6 mb-3 collapse show ps-10 flex-column" data-bs-parent="#kt_accordion_3">
                                 <div class="d-flex flex-column w-100 h-100">
-                                    <a href="/me" class="fs-4 w-100 px-5 text-black fw-semibold">Profil</a>
-                                    <a href="/me/address" class="fs-4 w-100 px-5 text-black fw-semibold">Alamat</a>
+                                    <a href="{{ route('user.me') }}" class="fs-4 w-100 px-5 text-black fw-semibold">Profil</a>
+                                    <a href="{{ route('user.user-address') }}" class="fs-4 w-100 px-5 text-black fw-semibold">Alamat</a>
                                 </div>
                             </div>
                             <!--end::Body-->
@@ -55,11 +55,12 @@
                     </div>
                     <!--end::Accordion-->
 
-                    <a href="/me/orders" class="fs-2 fw-bolder px-3 mb-0 d-flex align-items-center text-black mb-3 gap-1"><img src="{{ asset('icons/document.svg')}}" class="h-15em" alt="">Pesanan Saya</a>
+                    <a href="{{ route('user.orders') }}" class="fs-2 fw-bolder px-3 mb-0 d-flex align-items-center text-black mb-3 gap-1"><img src="{{ asset('icons/document.svg')}}" class="h-15em" alt="">Pesanan Saya</a>
                     <form method="post" action="{{ route('user.signout') }}">
                         @csrf
                         <button class="fs-2 fw-bolder px-3 mb-0 d-flex align-items-center text-accent gap-1"><img src="{{asset('icons/log-out.svg')}}" class="h-15em img-accent" alt="">Log Out</button>
                     </form>
+
                 </div>
             <!-- end::Left Side -->
 
@@ -280,42 +281,3 @@
 
 
 </html>
-
-<div>
-    <!-- Live as if you were to die tomorrow. Learn as if you were to live forever. - Mahatma Gandhi -->
-    <a href="{{ route('user.add-user-address-page') }}">
-        Tambahkan Alamat
-        <br>
-    </a>
-    @if ($response['status'] == 'success')
-        <h2>Data Berhasil</h2>
-        <h2>akun {{ auth()->user()->first_name }}</h2>
-        @foreach ($response['data'] as $key => $address)
-            <a href="{{ route('user.detail-user-address', ['id' => $address['id']]) }}">
-                Alamat ke - {{ $key + 1 }}
-                <br>
-            </a>
-            <br>
-            @if ($address['is_main'])
-                <span>Ini adlaah Alamat Utama</span>
-            @endif
-            <br>
-            <span>Alamat : {{ $address['address'] }}</span>
-            <br>
-            <form action="{{ route('user.delete-user-address', ['id' => $address['id']]) }}" method="post" id="kamu-yakin">
-                @csrf
-                @method('delete')
-                <button>Delete Alamat Ini</button>
-            </form>
-        @endforeach
-    @endif
-</div>
-
-<script>
-    document.getElementById('kamu-yakin').addEventListener('submit', (e) => {
-        e.preventDefault();
-        if (confirm('apakah kamu yakin ingin menhapus alamat ini?')) {
-            e.target.submit();
-        }
-    })
-</script>

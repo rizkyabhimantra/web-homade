@@ -213,11 +213,11 @@
 <!--end::Vendors Javascript-->
 
 
-<div class="mt-20">
-    @if (session()->has('response'))
-        {{ dd(session()->get('response')) }}
-    @endif
-</div>
+@if (session()->has('response'))
+<script>
+    alert({{ session()->get('response')['message'] }})
+</script>
+@endif
 
 </body>
 </html>

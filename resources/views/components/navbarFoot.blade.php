@@ -6,13 +6,14 @@
 <nav class="bg-nav h-sm-90 flex-shrink-0 d-flex flex-column align-items-center justify-content-center overflow-hidden">
     <div class="d-flex mb-5 w-100 gap-5 h-sm-40px align-items-center mt-5 flex-column flex-sm-row justify-content-center">
 
-        <a href="/" class="{{ $page == "home" ? 'text-yellow' : 'text-white fw-light' }} fsc-4 me-sm-3">Home</a>
-        <a href="/menus" class="{{ $page == "menu" ? 'text-yellow' : 'text-white fw-light' }} fsc-4 me-sm-3">Menu</a>
-        <a href="/schedule" class="{{ $page == "schedule" ? 'text-yellow' : 'text-white fw-light' }} fsc-4 me-sm-3">Jadwal</a>
-        <a href="/profile" class="{{ $page == "profile" ? 'text-yellow' : 'text-white fw-light' }} fsc-4 me-sm-3">Profil</a>
-        <a href="/contact" class="{{ $page == "contact" ? 'text-yellow' : 'text-white fw-light' }} fsc-4 me-sm-3">Kontak</a>
+        <a href="{{ route('user.home') }}" class="{{ $page == "home" ? 'text-yellow' : 'text-white fw-light' }} fsc-4 me-sm-3">Home</a>
+        <a href="{{ route('user.menus') }}" class="{{ $page == "menu" ? 'text-yellow' : 'text-white fw-light' }} fsc-4 me-sm-3">Menu</a>
+        <a href="{{ route('user.schedules') }}" class="{{ $page == "schedule" ? 'text-yellow' : 'text-white fw-light' }} fsc-4 me-sm-3">Jadwal</a>
+        <a href="{{ route('user.profile') }}" class="{{ $page == "profile" ? 'text-yellow' : 'text-white fw-light' }} fsc-4 me-sm-3">Profil</a>
+        <a href="{{ route('user.contact') }}" class="{{ $page == "contact" ? 'text-yellow' : 'text-white fw-light' }} fsc-4 me-sm-3">Kontak</a>
         
-        <a href="/" class="h-50px h-sm-100 ratio-1"><img src="{{ $placeImg }}" class="rounded-circle" alt=""></a>
+        <a href="{{ route('user.me') }}" class="h-50px h-sm-100 ratio-1 bg-white d-flex rounded-circle align-items-center justify-content-center"><img src="{{ asset('icons/user.svg') }}" class="rounded-circle h-50" alt=""></a>
+
     </div>
 
     <div class="d-flex mt-5 w-100 gap-1 h-25 align-items-center justify-content-center flex-column">
@@ -28,9 +29,9 @@
 
     <div class="d-flex w-100 h-60px h-sm-40px align-items-center mt-5 mb-5 justify-content-center">
         <div class="d-flex h-100 gap-5">
-            <a href="/" class="d-flex h-100 ratio-1 bg-white align-items-center rounded-circle justify-content-center"><img class="w-50 h-50" src="{{asset('icons/facebook.svg')}}" alt=""></a>
-            <a href="/" class="d-flex h-100 ratio-1 bg-white align-items-center rounded-circle justify-content-center"><img class="w-50 h-50" src="{{asset('icons/x.svg')}}" alt=""></a>
-            <a href="/" class="d-flex h-100 ratio-1 bg-white align-items-center rounded-circle justify-content-center"><img class="w-50 h-50" src="{{asset('icons/instagram.svg')}}" alt=""></a>
+            <a href="https://www.facebook.com/homade.id/" class="d-flex h-100 ratio-1 bg-white align-items-center rounded-circle justify-content-center"><img class="w-50 h-50" src="{{asset('icons/facebook.svg')}}" alt=""></a>
+            <a href="https://x.com/homade_id" class="d-flex h-100 ratio-1 bg-white align-items-center rounded-circle justify-content-center"><img class="w-50 h-50" src="{{asset('icons/x.svg')}}" alt=""></a>
+            <a href="https://www.instagram.com/homade.indonesia/" class="d-flex h-100 ratio-1 bg-white align-items-center rounded-circle justify-content-center"><img class="w-50 h-50" src="{{asset('icons/instagram.svg')}}" alt=""></a>
         </div>
     </div>
     
