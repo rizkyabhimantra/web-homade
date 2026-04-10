@@ -1046,15 +1046,9 @@ License: For each use you must have a valid license purchased only from above li
                                         </script>
                                         </div>
                                     @else
-                                        {{ dd($response) }}
+									<p>Error</p>
                                     @endif
         
-                                    <div style="margin-top: 200px;">
-                                        @if (session()->has('response'))
-                                            {{ dd(session()->get('response')) }}
-                                        @endif
-                                    </div>
-
                                 </div>
                             </div>
 
@@ -1110,6 +1104,11 @@ License: For each use you must have a valid license purchased only from above li
 
 		<!--begin::Custom Javascript(used for this page only)-->
 
+		@if (session()->has('response'))
+		<script>
+			alert('{{ session()->get('response')['message'] }}')
+		</script>
+		@endif
 		<!--end::Custom Javascript-->
 		
 	</body>

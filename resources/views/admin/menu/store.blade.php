@@ -18,6 +18,14 @@
         $packages = $data['packages'];
     @endphp
 
+
+@if (session()->has('response'))
+<script>
+    alert('{{ session()->get('response')['message'] }}');
+    console.log(@json(session()->get('response')))
+</script>
+@endif
+
     <div class="container py-4">
         
         <div class="row mb-4">
@@ -73,7 +81,7 @@
 
                             <div class="mb-3">
                                 <label for="description" class="form-label fw-bold">Deskripsi</label>
-                                <textarea class="form-control" id="description" name="description" rows="3" required>{{ old('description') }}</textarea>
+                                <textarea minlength="10" class="form-control" id="description" name="description" rows="3" required>{{ old('description') }}</textarea>
                             </div>
 
                             <div class="row">
@@ -81,6 +89,7 @@
                                     <label for="theme_id" class="form-label fw-bold"><i class="bi bi-palette"></i> Theme</label>
                                     <select class="form-select" id="theme_id" name="theme_id" required>
                                         <option value="">Pilih Theme...</option>
+
                                         @foreach($themes as $theme)
                                             <option value="{{ $theme['id'] }}" {{  (old('theme_id', '') ) == $theme['id'] ? 'selected' : '' }}>
                                                 {{ $theme['name'] }}
