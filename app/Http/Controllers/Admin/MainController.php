@@ -67,23 +67,39 @@ class MainController extends Controller
 
             $period = $request->query('period', 'today'); // today, this_week, this_month
 
-            $dates = $this->gettingPeriod($request);
+            $period = $this->gettingPeriod($request);
 
             $ts = new TransactionService();
 
-            // total_transaksi
-            // $total_transactions = $
-            // total_dikirimkan
-            $delivereds = $ts->all(
-                null,null,null,
-                status_delivery: 'paid',
-            );
+            $transaction_query = $ts->all(null, null, null, null, 1,null, is_query:true)
+            ->whereBetween('created_at', [  $period['date']['start'], $period['date']['end'] ]);
 
-            return$response = $this->responseData->create(
+            // total_transaksi (refactor ini nannti, kayaknya ini n+1)
+            $total_transactions = $transaction_query->count();
+            $total_waiting_for_validation_payment_proofs = $transaction_query->clone()->whereHas('payment_proof', function($query){
+                return $query->where('status', 'wait_for_confirmation');
+            })->count();
+            $total_waiting_for_invoice = $transaction_query->clone()->where('status', 'waiting_for_invoice')->count();
+            $total_process_transactions = $transaction_query->clone()->where('status_delivery', 'process')->count();
+            $total_waiting_for_pick_up_transactions = $transaction_query->clone()->where('status_delivery', 'waiting_for_pick_up')->count();
+            $total_on_the_way_transactions = $transaction_query->clone()->where('status_delivery', 'on_the_way')->count();
+            $total_delivered_transactions = $transaction_query->clone()->where('status_delivery', 'delivered')->count();
+
+            // total_dikirimkan
+
+            $response = $this->responseData->create(
                 'Berhasil Dalam Mendapatkan Ringkasan Data',
                 [
-                    'current_period' => $dates['period'],
-                    'date' => $dates['date']
+                    'current_period' => $period['period'],
+                    'date' => $period['date'],
+                    'trasnaction_summary' => [
+                        'total' => $total_transactions,
+                        'waiting_for_invoice' => $total_waiting_for_invoice,
+                        'waiting_for_confirmation_payment_proof' => $total_waiting_for_validation_payment_proofs,
+                        'process' => $total_process_transactions,
+                        'on_the_way' => $total_on_the_way_transactions,
+                        'delivered' => $total_delivered_transactions,
+                    ]
                 ]
             );
 
