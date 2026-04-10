@@ -41,7 +41,8 @@ class MenuScheduleResource extends JsonResource
                             'minimum_order' => $price->package->minimum_order,
                             'image_url' => $price->package->image_url,
                         ];
-                    }) : []
+                    }) : [],
+                    'is_deleted' => ($this['is_admin'] ?? false) &&  $menu->deleted_at ? true : false
                 ];
             })
         ];

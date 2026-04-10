@@ -37,7 +37,7 @@ class ScheduleController extends Controller
             $startOfWeek = $currentDate->subDays($currentDayOfWeek - 1);
             $endOfWeek = $startOfWeek->clone()->addDays(4);
 
-            $schedules = $this->menuService->getByMultipleDay([$startOfWeek, $endOfWeek]);
+            $schedules = $this->menuService->getByMultipleDay([$startOfWeek, $endOfWeek], is_admin:true);
             $menus = $this->menuService->all(is_has_limit: false);
 
             $response = $this->responseData->create(
