@@ -8,7 +8,7 @@
 @php
 
     $placeImg = "https://placehold.co/400";
-    $state = 2
+    $state = 3
 
 @endphp
 
@@ -934,9 +934,10 @@
                                         <img src="{{ asset('icons/show.svg') }}" alt="" class="h-12em img-white">Lihat Bukti Pembayaran
                                     </button>
 
-                                    <form action="">
+                                    <form action="{{ route('admin.accept-payment-proof', ['id' => $response['data']['id']]) }}" method="post">
                                         @csrf
-
+                                        
+									    <input type="hidden" name="reason" value="Bukti pembayaran yang sangat valid!">
                                         <button class="w-100 py-4 gap-2 bg-accent rounded-3 d-flex align-items-center justify-content-center mb-0 text-white fsc-2 mt-5">
                                             <img src="{{ asset('icons/checkmark.svg') }}" alt="" class="h-12em img-white">Konfirmasi Pembayaran
                                         </button>
@@ -1130,8 +1131,6 @@
                     <div class="d-flex w-100 h-100 overflow-hidden">
                         <img src="{{ $response['data']['payment_proof']['url'] ?? "https://placehold.co/400x250/FFEEEE/DC3545?text=Gambar+Rusak" }}" alt="" class="w-100 h-100 object-fit-contain">
                     </div>
-
-                    <p>@json($response['data']['payment_proof'] ?? [])</p>
 
                 </div>
             </div>
