@@ -638,6 +638,11 @@ class TransactionService
 
                 // seharusnya perlu cek nih di satu stau setelah saving...
 
+                // woilah lupa commit transaksinya wkwkw - 12 april 2026
+                DB::commit();
+
+                $transaction->fresh();
+
                 Mail::to($transaction->contact_email)->send(new RejectedPaymentProofMail($transaction));
 
                 return [
