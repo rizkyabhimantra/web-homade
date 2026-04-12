@@ -31,7 +31,7 @@
                         <!--begin:Menu item-->
                         <div class="menu-item">
                             <!--begin:Menu link-->
-                            <a href="/" class="menu-link">
+                            <a href="{{ route('user.home') }}" class="menu-link">
                                 <span class="menu-title fs-1 {{ $page == "home" ? 'text-yellow' : 'text-white fw-normal' }}">Home</span>
                             </a>
                             <!--end:Menu link-->
@@ -41,7 +41,7 @@
                         <!--begin:Menu item-->
                         <div class="menu-item">
                             <!--begin:Menu link-->
-                            <a href="/menus" class="menu-link">
+                            <a href="{{ route('user.menus') }}" class="menu-link">
                                 <span class="menu-title fs-1 {{ $page == "menu" ? 'text-yellow' : 'text-white fw-normal' }}">Menu</span>
                             </a>
                             <!--end:Menu link-->
@@ -51,7 +51,7 @@
                         <!--begin:Menu item-->
                         <div class="menu-item">
                             <!--begin:Menu link-->
-                            <a href="/schedule" class="menu-link">
+                            <a href="{{ route('user.schedules') }}" class="menu-link">
                                 <span class="menu-title fs-1 {{ $page == "schedule" ? 'text-yellow' : 'text-white fw-normal' }}">Jadwal</span>
                             </a>
                             <!--end:Menu link-->
@@ -61,7 +61,7 @@
                         <!--begin:Menu item-->
                         <div class="menu-item">
                             <!--begin:Menu link-->
-                            <a href="/profile" class="menu-link">
+                            <a href="{{ route('user.profile') }}" class="menu-link">
                                 <span class="menu-title fs-1 {{ $page == "profile" ? 'text-yellow' : 'text-white fw-normal' }}">Profil</span>
                             </a>
                             <!--end:Menu link-->
@@ -71,7 +71,7 @@
                         <!--begin:Menu item-->
                         <div class="menu-item">
                             <!--begin:Menu link-->
-                            <a href="/contact" class="menu-link">
+                            <a href="{{ route('user.contact') }}" class="menu-link">
                                 <span class="menu-title fs-1 {{ $page == "contact" ? 'text-yellow' : 'text-white fw-normal' }}">Contact</span>
                             </a>
                             <!--end:Menu link-->
@@ -87,8 +87,8 @@
                     <div class="app-navbar-item ms-1 ms-md-4" id="kt_header_user_menu_toggle">
                         <!--begin::Menu wrapper-->
                         <!-- <div class="cursor-pointer symbol symbol-35px" data-kt-menu-trigger="{default: 'click', lg: 'hover'}" data-kt-menu-attach="parent" data-kt-menu-placement="bottom-end"> -->
-                        <a href="/me" class="cursor-pointer symbol symbol-35px" data-kt-menu-attach="parent" data-kt-menu-placement="bottom-end">
-                            <img src="{{ asset("assets/media/avatars/300-3.jpg")}}" class="rounded-circle" alt="user" />
+                        <a href="{{ route('user.me') }}" class="cursor-pointer symbol symbol-35px bg-white rounded-circle" data-kt-menu-attach="parent" data-kt-menu-placement="bottom-end">
+                            <img src="{{ asset('icons/user.svg') }}" class="rounded-circle" alt="user" />
                         </a>
                         <!--begin::User account menu-->
                         <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-800 menu-state-bg menu-state-color fw-semibold py-4 fs-6 w-275px" data-kt-menu="true">
@@ -96,8 +96,8 @@
                             <div class="menu-item px-3">
                                 <div class="menu-content d-flex align-items-center px-3">
                                     <!--begin::Avatar-->
-                                    <div class="symbol symbol-50px me-5">
-                                        <img alt="Logo" src="assets/media/avatars/300-3.jpg" />
+                                    <div class="symbol symbol-50px me-5 bg-white">
+                                        <img alt="Logo" src="{{ asset('icons/user.svg') }}" />
                                     </div>
                                     <!--end::Avatar-->
                                     <!--begin::Username-->

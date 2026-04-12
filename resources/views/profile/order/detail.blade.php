@@ -149,6 +149,8 @@
                 </div>
 
                 @elseif ($response['data']['transaction']['status'] === "pending")
+
+                
                 @elseif ($response['data']['transaction']['status'] === "wait_for_confirmation")
 
                 <div class="d-flex align-items-end align-items-sm-center gap-3 gap-sm-0 flex-column flex-sm-row w-100 justify-content-between mb-5">
@@ -1112,6 +1114,8 @@
                 </form>
             </div>
             <!-- end::cancel pop up -->
+
+
 
         @include('components.navbarFoot',[ "page" => "schedule"])
         <script src="{{ asset('assets/plugins/global/plugins.bundle.js') }}"></script>

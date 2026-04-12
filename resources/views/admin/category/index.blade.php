@@ -706,7 +706,7 @@ License: For each use you must have a valid license purchased only from above li
 													</div>
 
 													<div class="table-responsive">
-														<table class="table align-middle border rounded table-striped table-row-dashed fs-6 g-5 gs-5" id="kt_datatable_example">
+														<table class="mb-4 table align-middle border rounded table-striped table-row-dashed fs-6 g-5 gs-5" id="kt_datatable_example">
 															<thead>
 																<tr class="text-start text-gray-800 fw-bold fs-7 text-capitalize">
 																	<th class="min-w-200px">ID Kategori</th>
@@ -717,7 +717,7 @@ License: For each use you must have a valid license purchased only from above li
 															<tbody class="text-gray-700"></tbody>
 														</table>
 
-														<div class="d-flex align-items-center justify-content-between w-100 h-40px">
+														<div class="mt-3 d-flex align-items-center justify-content-between w-100 h-40px">
 															<select name="limit" onchange="window.location.href='?limit=' + this.value" class="h-100 border-grey-05 outline-0 bg-transparent fs-4 py-2 px-2 rounded-2">
 																@foreach ([8, 16, 24, 32] as $limit)
 																	<option value="{{ $limit }}" {{ request('limit') == $limit ? 'selected' : '' }}>
@@ -943,7 +943,10 @@ License: For each use you must have a valid license purchased only from above li
 
 				datatableInstance = $(tableElement).DataTable({
 					data: dataSource,
-					info: true,
+					deferRender: true,
+					searching: true,
+					info: false,
+					paging: false,
 					order: [],
 					pageLength: 8,
 					lengthMenu: [[5, 8, 10, 25, 50], [5, 8, 10, 25, 50]],
@@ -994,8 +997,8 @@ License: For each use you must have a valid license purchased only from above li
 					orderable: false,
 					className: 'text-end',
 					render: function (row) {
-						const routeDetailCategory = "{{ route('admin.detail-category', '_ID_') }}";
-						const routeDeleteCategory = "{{ route('admin.delete-category', '_ID_') }}";
+						const detailUrl = "{{ route('admin.detail-category', '_ID_') }}".replace('_ID_', row.id);
+						const deleteUrl = "{{ route('admin.delete-category', '_ID_') }}".replace('_ID_', row.id);
 
 						return `
 							<button
@@ -1007,12 +1010,14 @@ License: For each use you must have a valid license purchased only from above li
 							</button>
 							<div class="menu menu-primary menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg menu-state-color fw-bold fs-7 min-w-125px w-auto py-4" data-kt-menu="true">
 								<div class="menu-item px-3">
-									<a href="${routeDetailCategory.replace('_ID_', row.id)}" class="menu-link px-3">Lihat Detail</a>
+									<a href="${detailUrl}" class="menu-link px-3">Lihat Detail</a>
 								</div>
 								<div class="separator my-2"></div>
-								<div class="menu-item px-3">
-									<a href="href="${routeDeleteCategory.replace('_ID_', row.id)}" class="menu-link menu-link-delete px-3">Hapus</a>
-								</div>
+								<form action="${deleteUrl}" method="post" class="menu-item px-3">
+									@csrf
+									@method('delete')
+									<button class="menu-link menu-link-delete px-3">Hapus</button>
+								</form>
 							</div>`;
 					}
 				}

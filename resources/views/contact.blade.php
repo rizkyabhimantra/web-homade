@@ -86,9 +86,9 @@
                         <p class="fs-2 text-black fw-black">Ikuti Kami</p>
 
                         <div class="d-flex h-40px w-100 gap-5"> 
-                            <a href="" class="h-100 ratio-1 bg-black"></a>
-                            <a href="" class="h-100 ratio-1 bg-black"></a>
-                            <a href="" class="h-100 ratio-1 bg-black"></a>
+                            <a href="https://www.facebook.com/homade.id/" class="d-flex h-100 ratio-1 bg-white align-items-center rounded-circle justify-content-center"><img class="w-50 h-50" src="{{asset('icons/facebook.svg')}}" alt=""></a>
+                            <a href="https://x.com/homade_id" class="d-flex h-100 ratio-1 bg-white align-items-center rounded-circle justify-content-center"><img class="w-50 h-50" src="{{asset('icons/x.svg')}}" alt=""></a>
+                            <a href="https://www.instagram.com/homade.indonesia/" class="d-flex h-100 ratio-1 bg-white align-items-center rounded-circle justify-content-center"><img class="w-50 h-50" src="{{asset('icons/instagram.svg')}}" alt=""></a>
                         </div>
 
                     </div>

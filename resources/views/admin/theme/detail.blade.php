@@ -23,22 +23,24 @@
                 @if ($response['data']['deleted_at'])
                 <span>Dihapus Pada: {{ $response['data']['deleted_at'] }}</span>
                 @endif
-
+                
                 <button class="py-3 bg-accent text-white fw-semibold rounded-2">Simpan Perubahan</button>
             </form>
-
+            
             <div class="d-flex w-100 gap-3 align-items-stretch">
-                <form class="w-50 py-3 bg-accent rounded-2 d-flex align-items-center justify-content-center" action="{{ route('admin.delete-theme', ['id' => $response['data']['id']] ) }}" method="post" style="display:flex; flex-direction: column; gap:10px;">
-                    @csrf
-                    @method('delete')
-                    <button class="text-white w-100 h-100 fw-semibold ">Hapus Data Perubahan</button>
-                </form>
-    
-                <form class="w-50 py-3 bg-accent rounded-2 d-flex align-items-center justify-content-center" action="{{ route('admin.restore-theme', ['id' => $response['data']['id']] ) }}" method="post" style="display:flex; flex-direction: column; gap:10px;">
+                @if ($response['data']['deleted_at'])
+                <form class="w-100 py-3 bg-accent rounded-2 d-flex align-items-center justify-content-center" action="{{ route('admin.restore-theme', ['id' => $response['data']['id']] ) }}" method="post" style="display:flex; flex-direction: column; gap:10px;">
                     @csrf
                     @method('patch')
                     <button class="text-white w-100 h-100 fw-semibold ">Kembalikan tema</button>
                 </form>
+                @else
+                <form class="w-100 py-3 bg-accent rounded-2 d-flex align-items-center justify-content-center" action="{{ route('admin.delete-theme', ['id' => $response['data']['id']] ) }}" method="post" style="display:flex; flex-direction: column; gap:10px;">
+                    @csrf
+                    @method('delete')
+                    <button class="text-white w-100 h-100 fw-semibold ">Hapus Data Perubahan</button>
+                </form>
+                @endif
             </div>
 
             <a href="{{ route('admin.themes') }}" class="text-accent d-flex align-items-center justify-content-center bg-danger-subtle py-3 fw-semibold rounded-2">Kembali</a>

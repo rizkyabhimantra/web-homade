@@ -3,7 +3,6 @@
 <!--begin::Head-->
 
 @include('components.header')
-
 <!--end::Head-->
 <!--begin::Body-->
 <body id="kt_app_body" data-kt-app-layout="dark-sidebar" data-kt-app-header-fixed="true"
@@ -60,13 +59,9 @@
 
                             <div class="p-3 bg-light rounded border">
                                 <div class="form-check form-switch mb-0">
-<<<<<<< HEAD
-                                    <input class="form-check-input" type="checkbox" role="switch" id="is_active" name="is_active" {{ old('status_active',$menu['is_active'] ? 'active' : 'non-active') === 'active' ? 'checked' : '' }}>
-=======
                                     <input class="form-check-input bg-danger border-danger" type="checkbox" role="switch" id="is_active" name="is_active" {{ old('status_active',$menu['is_active'] ? 'active' : 'non-active') === 'active' ? 'checked' : '' }}
                                         onchange="handler_status_active(this)"
                                     >
->>>>>>> 59566a7d1af9395795eb8f5acbfb9145b2959ec7
                                     <input type="hidden" name="status_active" id="status_active" value="{{ old('status_active') ?? $menu['is_active'] ? 'active' : 'non-active' }}">
                                     <label class="form-check-label fw-bold ms-2 text-black" for="is_active">Tampilkan di Website</label>
                                 </div>
@@ -171,26 +166,28 @@
                 </div>
             </div>
         </form>
+        @if ($menu['deleted_at'])
+        <form action="{{ route('admin.restore-menu', [ 'id' => $menu['id'] ]) }}" method="post">
+           @csrf
+           @method('patch')
+            <div class="card-footer bg-white text-end py-3 px-4">
+                   <button type="submit" class="btn btn-secondary d-flex align-items-center gap-3"><img src="{{ asset('icons/history.svg') }}" alt="" class="h-12em"> Kembalikan Menu</button>
+               </div>
+       </form>
+       @else        
         <form action="{{ route('admin.delete-menu', [ 'id' => $menu['id'] ]) }}" method="post">
             @csrf
             @method('delete')
              <div class="card-footer bg-white text-end py-3 px-4">
                     <button type="submit" class="btn bg-danger-subtle d-flex align-items-center gap-3 text-danger"><img src="{{ asset('icons/trash.svg') }}" alt="" class="h-12em img-accent"> Hapus Menu</button>
                 </div>
-        </form>
-         <form action="{{ route('admin.restore-menu', [ 'id' => $menu['id'] ]) }}" method="post">
-            @csrf
-            @method('patch')
-             <div class="card-footer bg-white text-end py-3 px-4">
-                    <button type="submit" class="btn btn-secondary d-flex align-items-center gap-3"><img src="{{ asset('icons/history.svg') }}" alt="" class="h-12em"> Kembalikan Menu</button>
-                </div>
-        </form>
+            </form>
+        @endif
     </div>
 <script defer>
-    document.getElementById('is_active').addEventListener('change', function(e){
-        const status_active =  document.getElementById('status_active');
-        status_active.value = e.target.checked? 'active' : 'non-active';
-    })
+    function handler_status_active(e) {
+        document.getElementById('status_active').value = e.checked? 'active' : 'non-active';
+    }
 </script>
 
 <script>
@@ -218,11 +215,11 @@
 <!--end::Vendors Javascript-->
 
 
-<div class="mt-20">
-    @if (session()->has('response'))
-        {{ dd(session()->get('response')) }}
-    @endif
-</div>
+@if (session()->has('response'))
+<script>
+    alert({{ session()->get('response')['message'] }})
+</script>
+@endif
 
 </body>
 </html>
