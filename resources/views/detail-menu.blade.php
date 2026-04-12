@@ -150,7 +150,7 @@
             
             <span class="h-30px flex-shrink-0"></span>
 
-            <div class="d-flex w-100 h-200px h-md-60px align-items-center flex-column flex-md-row gap-5 justify-content-center">
+            <div class="d-none w-100 h-200px h-md-60px align-items-center flex-column flex-md-row gap-5 justify-content-center">
 
                 @foreach (range(1,4) as $k)
 

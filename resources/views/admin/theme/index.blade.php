@@ -1025,9 +1025,11 @@ License: For each use you must have a valid license purchased only from above li
 									<a href="${detailUrl}" class="menu-link px-3">Lihat Detail</a>
 								</div>
 								<div class="separator my-2"></div>
-								<div class="menu-item px-3">
-									<a href="${deleteUrl}" class="menu-link menu-link-delete px-3">Hapus</a>
-								</div>
+								<form action="${deleteUrl}" method="post" class="menu-item px-3">
+									@csrf
+									@method('delete')
+									<button class="menu-link menu-link-delete px-3">Hapus</button>
+								</form>
 							</div>`;
 					}
 				}

@@ -3,7 +3,6 @@
 <!--begin::Head-->
 
 @include('components.header')
-
 <!--end::Head-->
 <!--begin::Body-->
 <body id="kt_app_body" data-kt-app-layout="dark-sidebar" data-kt-app-header-fixed="true"
@@ -167,20 +166,23 @@
                 </div>
             </div>
         </form>
+        @if ($menu['deleted_at'])
+        <form action="{{ route('admin.restore-menu', [ 'id' => $menu['id'] ]) }}" method="post">
+           @csrf
+           @method('patch')
+            <div class="card-footer bg-white text-end py-3 px-4">
+                   <button type="submit" class="btn btn-secondary d-flex align-items-center gap-3"><img src="{{ asset('icons/history.svg') }}" alt="" class="h-12em"> Kembalikan Menu</button>
+               </div>
+       </form>
+       @else        
         <form action="{{ route('admin.delete-menu', [ 'id' => $menu['id'] ]) }}" method="post">
             @csrf
             @method('delete')
              <div class="card-footer bg-white text-end py-3 px-4">
                     <button type="submit" class="btn bg-danger-subtle d-flex align-items-center gap-3 text-danger"><img src="{{ asset('icons/trash.svg') }}" alt="" class="h-12em img-accent"> Hapus Menu</button>
                 </div>
-        </form>
-         <form action="{{ route('admin.restore-menu', [ 'id' => $menu['id'] ]) }}" method="post">
-            @csrf
-            @method('patch')
-             <div class="card-footer bg-white text-end py-3 px-4">
-                    <button type="submit" class="btn btn-secondary d-flex align-items-center gap-3"><img src="{{ asset('icons/history.svg') }}" alt="" class="h-12em"> Kembalikan Menu</button>
-                </div>
-        </form>
+            </form>
+        @endif
     </div>
 <script defer>
     function handler_status_active(e) {
