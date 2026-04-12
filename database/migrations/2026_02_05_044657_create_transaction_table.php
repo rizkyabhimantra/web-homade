@@ -76,7 +76,7 @@ return new class extends Migration {
             $table->uuid('id')->primary();
             $table->foreignUuid('id_transaction');
             $table->foreignUuid('id_driver');
-            $table->timestamp('picked_up_at');
+            $table->timestamp('picked_up_at')->nullable();
             $table->timestamp('delivered_at');
             $table->enum('status', StatusDelivery::cases())->default(StatusDelivery::WAIT_FOR_CONFIRMATION);
             $table->timestamps();
