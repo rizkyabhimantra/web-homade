@@ -513,7 +513,7 @@ class AuthController extends Controller
                 return redirect()->back()->with(compact('response'));
             }
 
-            Mail::to($user->email)->send(new SuccessfullyChangedPassword($user));
+            Mail::to($user->email)->queue(new SuccessfullyChangedPassword($user));
 
             $response = $this->responseData->create(
                 'Berhasil Melakukan Reset Kata Sandi',

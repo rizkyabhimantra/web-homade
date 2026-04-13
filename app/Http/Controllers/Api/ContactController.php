@@ -219,7 +219,7 @@ class ContactController extends Controller
                 'message' => $request->message,
             ];
 
-            Mail::to($contact->email)->send(new \App\Mail\ContactSupportMail($mailData));
+            Mail::to($contact->email)->queue(new \App\Mail\ContactSupportMail($mailData));
 
             return $this->responseData->create(
                 'Pesan berhasil dikirim! Tim Support akan segera menghubungi Anda.',
