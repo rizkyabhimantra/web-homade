@@ -2,15 +2,12 @@
 
 namespace App\Service;
 
-use App\Http\Resources\Admin\DetailMenuResource;
 use App\Mail\AcceptedThePaymentProofMail;
 use App\Mail\AcceptedTransactionMail;
 use App\Mail\ChangedTransactionInformationMail;
 use App\Mail\CreatedTransactionMail;
 use App\Mail\RejectedPaymentProofMail;
 use App\Mail\RejectedTransactionMail;
-use App\Mail\SuccessCreateTransactionEmail;
-use App\Mail\SuccessfullyCreatedNewInvoice;
 use App\Mail\TransactionCompletedMail;
 use App\Mail\TransactionDeliveredMail;
 use App\Mail\TransactionOnDeliveryMail;
@@ -19,7 +16,6 @@ use App\Models\Transaction;
 use App\Models\TransactionAddress;
 use App\Models\TransactionOrder;
 use App\Models\TransactionPaymentProof;
-use App\RefundStatus;
 use App\StatusDelivery;
 use App\StatusTransaction;
 use App\TransactionCategory;
@@ -27,15 +23,11 @@ use App\TransactionPaymentProofStatus;
 use App\Utils\CloudinaryClient;
 use App\Utils\ConvertDateSafely;
 use Carbon\Carbon;
-use Cloudinary\Cloudinary;
-use ErrorException;
 use Exception;
-use File;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Log;
 use Mail;
-use PHPUnit\TextUI\XmlConfiguration\FailedSchemaDetectionResult;
 use Str;
 
 class TransactionService

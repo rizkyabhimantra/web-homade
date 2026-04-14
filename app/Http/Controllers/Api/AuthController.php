@@ -3,8 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Mail\SuccessfullyChangedPassword;
-use App\Mail\SuccessfullyRegistered;
 use App\ResponseData;
 use App\Service\UserService;
 use Auth;

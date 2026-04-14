@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\DetailTransactionResource;
 use App\Http\Resources\PaginationResource;
 use App\Http\Resources\TransactionResource;
-use App\Mail\SuccessCreateTransactionEmail;
 use App\ResponseData;
 use App\Service\MenuService;
 use App\Service\TransactionService;
@@ -16,7 +15,6 @@ use ErrorException;
 use Illuminate\Http\Request;
 use Log;
 use Exception;
-use Mail;
 use Validator;
 
 class TransactionController extends Controller

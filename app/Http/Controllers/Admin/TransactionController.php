@@ -9,15 +9,11 @@ use App\Http\Resources\MenuScheduleResource;
 use App\Http\Resources\PaginationResource;
 use App\Http\Resources\SelectMenuResource;
 use App\Http\Resources\TransactionResource;
-use App\Mail\RejectedTransaction;
-use App\Mail\SuccessfullyCreatedNewInvoice;
 use App\ResponseData;
 use App\Service\ContactService;
 use App\Service\MenuService;
 use App\Service\TransactionService;
 use App\Service\UserService;
-use App\StatusDelivery;
-use App\StatusTransaction;
 use App\UserRole;
 use App\Utils\CalculateDistance;
 use App\Utils\TransactionHelper;
@@ -26,7 +22,6 @@ use ErrorException;
 use Exception;
 use Illuminate\Http\Request;
 use Log;
-use Mail;
 use Validator;
 
 class TransactionController extends Controller
