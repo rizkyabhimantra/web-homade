@@ -148,8 +148,6 @@ Route::middleware([
     Route::get('/orders/{id}', [\App\Http\Controllers\Admin\TransactionController::class, 'detail'])->name('detail-order');
     Route::get('/create-order', [\App\Http\Controllers\Admin\TransactionController::class, 'store'])->name('add-order-page');
     Route::post('/order', [\App\Http\Controllers\Admin\TransactionController::class, 'storeHandler'])->name('add-order');
-    Route::post('/export-orders', [\App\Http\Controllers\Admin\TransactionController::class, 'export'])->name('export-orders');
-
     // note: id yang diberikan adalah id transaksi
     Route::put('/order/change-information/{id}', [\App\Http\Controllers\Admin\TransactionController::class, 'changeTransactionInformation'])->name('change-transaction-information');
     Route::post('/order/reject/{id}', [\App\Http\Controllers\Admin\TransactionController::class, 'rejectTheTransactionHandler'])->name('reject-order');
@@ -162,9 +160,13 @@ Route::middleware([
     // complete the transaction
     Route::post('/order/complete/{id}', [\App\Http\Controllers\Admin\TransactionController::class, 'completeTheTransactionHandler'])->name('complete-order');
     // kirim invoice ke customer?
-    Route::post('/order/send-invoice/{id}', [\App\Http\Controllers\Admin\TransactionController::class, 'completeTheTransactionHandler'])->name('send-invoice-order');
+    // Route::post('/order/send-invoice/{id}', [\App\Http\Controllers\Admin\TransactionController::class, 'completeTheTransactionHandler'])->name('send-invoice-order');
+    // notif transaksi sekarang kepada customer?
+    Route::post('/order/notif-customer/{id}',  [\App\Http\Controllers\Admin\TransactionController::class, 'sendTheTransactionIntoMail'])->name('notif-customer-transaction');
     // refund?
-    // buat pdf / export?
+    // export
+    Route::post('/export-orders', [\App\Http\Controllers\Admin\TransactionController::class, 'export'])->name('export-orders');
+    // buat pdf?
 
     // Partner / Perusahaan Yang Bekerja Sama
     Route::get('/partners', [\App\Http\Controllers\Admin\PartnerController::class, 'index'])->name('partners');
