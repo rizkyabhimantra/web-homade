@@ -30,7 +30,7 @@ class CreatedAccountMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Berhasil Dalam Membuat Akun!',
+            subject: '[Homade] Selamat Datang!, ' . $this->user->first_name,
         );
     }
 

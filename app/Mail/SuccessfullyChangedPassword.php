@@ -30,7 +30,7 @@ class SuccessfullyChangedPassword extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Successfully Changed Password',
+            subject: '[Homade] Kata Sandi Anda Telah Berhasil Dirubah!',
         );
     }
 

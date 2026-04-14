@@ -34,7 +34,7 @@ class ChangedPasswordMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Berhasil Dalam Merubah Password',
+            subject: '[Homade] Berhasil Dalam Merubah Password Anda!',
         );
     }
 
