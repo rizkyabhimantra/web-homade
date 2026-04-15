@@ -145,7 +145,7 @@ class MainController extends Controller
                 }
             }
 
-            $this->responseData->create(
+            $response = $this->responseData->create(
                 'Berhasil Dalam Mendapatkan Ringkasan Data',
                 [
                     'current_period' => $period['period'],

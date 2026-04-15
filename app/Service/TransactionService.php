@@ -313,8 +313,8 @@ class TransactionService
                 ];
             }
             // syarat masuk kesini adalaah
-            // status transaksi masih waiting for invoice dan pending
-            // jika status pending maka dan payment proof sudah ada maka status payment_proof harus reject
+            // status transaksi masih waiting for invoice atau pending
+            // jika status pending maka dan payment proof sudah ada maka status payment_proof harus rejected
             $cloudinary = new CloudinaryClient();
             // uploud gambar disini!
             $uplouded = $cloudinary->uploudPaymentProof($image->getRealPath());
