@@ -27,7 +27,7 @@ class WebMiddleware
             return redirect()->route(auth()->user()->isAdminOrOwner() ? 'admin.dashboard' : 'user.home');
         }
 
-        if($is_authorized){
+        if($is_authorized || $is_in_authentication_route){
             return $next($request);
         }
         // nah ini dlu dah

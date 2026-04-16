@@ -54,6 +54,18 @@ class TransactionSeeder extends Seeder
                 ]
             ],
             [
+                'shipping_cost' => 5000,
+                'status' => StatusTransaction::PENDING,
+                'status_delivery' => StatusDelivery::WAIT_FOR_CONFIRMATION,
+                'delivery_at' => now()->addDays(1)->setTime(11,48,0),
+                'notes' => [
+                    'Bang ini jangan pake nasi ya!',
+                ],
+                'payment' => [
+                    'status' => TransactionPaymentProofStatus::REJECTED,
+                ]
+            ],
+            [
                 'status' => StatusTransaction::PAID,
                 'status_delivery' => StatusDelivery::PROCESS,
                 'shipping_cost' => 10000,
