@@ -45,12 +45,15 @@ Route::name('user.')->group(function () {
     Route::get('/profile', [ProfileController::class, 'profile'])->name('profile');
     Route::get('/contact', [ContactController::class, 'contact'])->name('contact');
     Route::post('/contact-support', [ContactController::class, 'sendEmailToSupport'])->name('contact-support');
+
     // buat autentikasi disini banh
 
-    Route::get('/signup', [AuthController::class, 'signup'])->name('signup');
-    Route::get('/signin', [AuthController::class, 'signin'])->name('signin');
-    Route::post('/signin', [AuthController::class, 'signinHandler'])->name('signin-handler');
-    Route::post('/signup', [AuthController::class, 'signupHandler'])->name('signup-handler');
+    Route::middleware(WebMiddleware::class)->group(function () {
+        Route::get('/signup', [AuthController::class, 'signup'])->name('signup');
+        Route::get('/signin', [AuthController::class, 'signin'])->name('signin');
+        Route::post('/signin', [AuthController::class, 'signinHandler'])->name('signin-handler');
+        Route::post('/signup', [AuthController::class, 'signupHandler'])->name('signup-handler');
+    });
 
     // reset password..
     Route::get('/forgot-password', [AuthController::class, 'forgot'])->name('forgot-password-page');
@@ -103,7 +106,7 @@ Route::middleware([
     AdminMiddleware::class,
 ])->name('admin.')->prefix('admin')->group(function () {
 
-    Route::withoutMiddleware([WebMiddleware::class, AdminMiddleware::class])->group(function () {
+    Route::withoutMiddleware([AdminMiddleware::class])->group(function () {
         Route::get('/signin', [\App\Http\Controllers\Admin\AuthController::class, 'signin'])->name('signin');
         Route::post('/signin', [\App\Http\Controllers\Admin\AuthController::class, 'signinHandler'])->name('signin-handler');
     });
@@ -279,31 +282,31 @@ Route::name('mailable.')->prefix('mailable')->group(function () {
 
     // rejected-payment-proof-mail
     Route::get('/rejected-payment-proof-mail', function () {
-        $transaction = (new TransactionService())->all(null, null, null, null, 1, null, true)->whereHas('payment_proof', function($q){
+        $transaction = (new TransactionService())->all(null, null, null, null, 1, null, true)->whereHas('payment_proof', function ($q) {
             return $q->where('status', 'rejected');
         })
-        ->first();
+            ->first();
         return new RejectedPaymentProofMail($transaction);
     })->name('/rejected-payment-proof-mail');
 
     // rejected-transaction-mail
     Route::get('/rejected-transaction-mail', function () {
         $transaction = (new TransactionService())->all(null, null, null, null, 1, null, true)->where('status', 'LIKE', '%cancelled%')
-        ->first();
+            ->first();
         return new RejectedTransactionMail($transaction);
     })->name('/rejected-transaction-mail');
 
     // transaction-completed-mail
     Route::get('/transaction-completed-mail', function () {
         $transaction = (new TransactionService())->all(null, null, null, null, 1, null, true)->where('status', 'success')
-        ->first();
+            ->first();
         return new TransactionCompletedMail($transaction);
     })->name('/transaction-completed-mail');
 
     // transaction-delivered-mail
     Route::get('/transaction-delivered-mail', function () {
         $transaction = (new TransactionService())->all(null, null, null, null, 1, null, true)->where('status_delivery', 'delivered')
-        ->first();
+            ->first();
         return new TransactionDeliveredMail($transaction);
     })->name('/transaction-delivered-mail');
 
@@ -316,16 +319,16 @@ Route::name('mailable.')->prefix('mailable')->group(function () {
     // transaction-on-delivery-mail
     Route::get('/transaction-on-delivery-mail', function () {
         $transaction = (new TransactionService())->all(null, null, null, null, 1, null, true)->where('status_delivery', 'on_the_way')
-        ->first();
+            ->first();
         return new TransactionOnDeliveryMail($transaction);
     })->name('/transaction-on-delivery-mail');
 
     // uploud-the-payment-proof-mail
     Route::get('/uploud-the-payment-proof-mail', function () {
-        $transaction = (new TransactionService())->all(null, null, null, null, 1, null, true)->whereHas('payment_proof', function($q){
+        $transaction = (new TransactionService())->all(null, null, null, null, 1, null, true)->whereHas('payment_proof', function ($q) {
             return $q->where('status', 'waiting_for_invoice');
         })
-        ->first();
+            ->first();
         return new UploudThePaymentProofMail($transaction);
     })->name('/uploud-the-payment-proof-mail');
 
