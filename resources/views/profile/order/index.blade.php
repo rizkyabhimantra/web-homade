@@ -76,7 +76,7 @@
                     <p class="fsc-4 fw-bold">Daftar Pesanan</p>
 
                     <div class="d-flex mb-5 w-100 align-items-center gap-3 overflow-scroll">
-                        <a href="/me/orders"                            class="fsc-3 px-2 text-default w-max text-nowrap {{ request('status') == '' ? 'text-accent fw-bold' : '' }}">All</a>
+                        <a href="{{ route('user.orders') }}"            class="fsc-3 px-2 text-default w-max text-nowrap {{ request('status') == '' ? 'text-accent fw-bold' : '' }}">All</a>
                         <a href="/me/orders?status=pending"             class="fsc-3 px-2 text-default w-max text-nowrap {{ request('status') == 'pending' ? 'text-accent fw-bold' : '' }}">Pending</a>
                         <a href="/me/orders?status=paid"                class="fsc-3 px-2 text-default w-max text-nowrap {{ request('status') == 'paid' ? 'text-accent fw-bold' : '' }}">Paid</a>
                         <a href="/me/orders?status=success"             class="fsc-3 px-2 text-default w-max text-nowrap {{ request('status') == 'success' ? 'text-accent fw-bold' : '' }}">Success</a>
@@ -89,10 +89,13 @@
 
                     <div class="d-flex w-100 rounded-3 flex-column-reverse flex-lg-row mb-5 p-5 px-7 border-grey-1 overflow-hidden">
                         <div class="d-flex w-100 flex-column overflow-hidden">
-                            <p class="fsc-2 border-grey-1 bg-dark-grey p-1 px-4 text-accent w-max rounded-pill">Rumah</p>
-                            <p class="fsc-3 mb-0 fw-bolder">Jl. Kemajuan V No.45</p>
-                            <p class="fsc-2 mb-0 fw-bold">0812-3456-7890</p>
-                            <p class="fsc-2 mb-5 w-100 w-lg-50">Jl. Kemajuan V No.45, RT.5/RW.4, Petukangan Sel., Kec. Pesanggrahan, Kota Jakarta Selatan.</p>
+                            @php
+                             $alamat = $pesanan['delivery_info']['address_info'];
+                            @endphp
+                            <p class="fsc-2  bg-light-accent p-1 px-4 text-accent w-max rounded-pill">{{ $alamat['label'] }}</p>
+                            <p class="fsc-3 mb-0 fw-bolder">{{ $alamat['received_name'] }}</p>
+                            <p class="fsc-2 mb-0 fw-bold">{{ $alamat['phone'] }}</p>
+                            <p class="fsc-2 mb-5 w-100 w-lg-50">{{ $alamat['address'] }}</p>
 
                             <div class="d-flex w-100 h-50px h-lg-75px mt-5 gap-5 mb-5">
                                 <div class="d-flex h-100 ratio-1">
