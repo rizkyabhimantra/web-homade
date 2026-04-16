@@ -12,7 +12,23 @@ use App\Http\Controllers\UserAddressController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\WebMiddleware;
+use App\Mail\AcceptedThePaymentProofMail;
+use App\Mail\AcceptedTransactionMail;
+use App\Mail\ChangedPasswordMail;
+use App\Mail\ChangedTransactionInformationMail;
+use App\Mail\ContactSupportMail;
+use App\Mail\CreatedAccountMail;
+use App\Mail\CreatedTransactionMail;
+use App\Mail\RejectedPaymentProofMail;
+use App\Mail\RejectedTransactionMail;
+use App\Mail\TransactionCompletedMail;
+use App\Mail\TransactionDeliveredMail;
+use App\Mail\TransactionMail;
+use App\Mail\TransactionOnDeliveryMail;
+use App\Mail\UploudThePaymentProofMail;
 use App\Notifications\ResetPasswordNotification;
+use App\Service\TransactionService;
+use App\Service\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Maatwebsite\Excel\Facades\Excel;
@@ -29,12 +45,15 @@ Route::name('user.')->group(function () {
     Route::get('/profile', [ProfileController::class, 'profile'])->name('profile');
     Route::get('/contact', [ContactController::class, 'contact'])->name('contact');
     Route::post('/contact-support', [ContactController::class, 'sendEmailToSupport'])->name('contact-support');
+
     // buat autentikasi disini banh
 
-    Route::get('/signup', [AuthController::class, 'signup'])->name('signup');
-    Route::get('/signin', [AuthController::class, 'signin'])->name('signin');
-    Route::post('/signin', [AuthController::class, 'signinHandler'])->name('signin-handler');
-    Route::post('/signup', [AuthController::class, 'signupHandler'])->name('signup-handler');
+    Route::middleware(WebMiddleware::class)->group(function () {
+        Route::get('/signup', [AuthController::class, 'signup'])->name('signup');
+        Route::get('/signin', [AuthController::class, 'signin'])->name('signin');
+        Route::post('/signin', [AuthController::class, 'signinHandler'])->name('signin-handler');
+        Route::post('/signup', [AuthController::class, 'signupHandler'])->name('signup-handler');
+    });
 
     // reset password..
     Route::get('/forgot-password', [AuthController::class, 'forgot'])->name('forgot-password-page');
@@ -87,7 +106,7 @@ Route::middleware([
     AdminMiddleware::class,
 ])->name('admin.')->prefix('admin')->group(function () {
 
-    Route::withoutMiddleware([WebMiddleware::class, AdminMiddleware::class])->group(function () {
+    Route::withoutMiddleware([AdminMiddleware::class])->group(function () {
         Route::get('/signin', [\App\Http\Controllers\Admin\AuthController::class, 'signin'])->name('signin');
         Route::post('/signin', [\App\Http\Controllers\Admin\AuthController::class, 'signinHandler'])->name('signin-handler');
     });
@@ -104,7 +123,7 @@ Route::middleware([
     Route::patch('/themes/{id}', [\App\Http\Controllers\Admin\ThemeController::class, 'restoreHandler'])->name('restore-theme');
     Route::post('/export-themes', [\App\Http\Controllers\Admin\ThemeController::class, 'export'])->name('export-themes');
 
-    
+
     // kategori
     Route::get('/categories', [\App\Http\Controllers\Admin\CategoryController::class, 'index'])->name('categories');
     Route::get('/categories/{id}', [\App\Http\Controllers\Admin\CategoryController::class, 'detail'])->name('detail-category');
@@ -148,8 +167,6 @@ Route::middleware([
     Route::get('/orders/{id}', [\App\Http\Controllers\Admin\TransactionController::class, 'detail'])->name('detail-order');
     Route::get('/create-order', [\App\Http\Controllers\Admin\TransactionController::class, 'store'])->name('add-order-page');
     Route::post('/order', [\App\Http\Controllers\Admin\TransactionController::class, 'storeHandler'])->name('add-order');
-    Route::post('/export-orders', [\App\Http\Controllers\Admin\TransactionController::class, 'export'])->name('export-orders');
-
     // note: id yang diberikan adalah id transaksi
     Route::put('/order/change-information/{id}', [\App\Http\Controllers\Admin\TransactionController::class, 'changeTransactionInformation'])->name('change-transaction-information');
     Route::post('/order/reject/{id}', [\App\Http\Controllers\Admin\TransactionController::class, 'rejectTheTransactionHandler'])->name('reject-order');
@@ -162,9 +179,13 @@ Route::middleware([
     // complete the transaction
     Route::post('/order/complete/{id}', [\App\Http\Controllers\Admin\TransactionController::class, 'completeTheTransactionHandler'])->name('complete-order');
     // kirim invoice ke customer?
-    Route::post('/order/send-invoice/{id}', [\App\Http\Controllers\Admin\TransactionController::class, 'completeTheTransactionHandler'])->name('send-invoice-order');
+    // Route::post('/order/send-invoice/{id}', [\App\Http\Controllers\Admin\TransactionController::class, 'completeTheTransactionHandler'])->name('send-invoice-order');
+    // notif transaksi sekarang kepada customer?
+    Route::post('/order/notif-customer/{id}', [\App\Http\Controllers\Admin\TransactionController::class, 'sendTheTransactionIntoMail'])->name('notif-customer-transaction');
     // refund?
-    // buat pdf / export?
+    // export
+    Route::post('/export-orders', [\App\Http\Controllers\Admin\TransactionController::class, 'export'])->name('export-orders');
+    // buat pdf?
 
     // Partner / Perusahaan Yang Bekerja Sama
     Route::get('/partners', [\App\Http\Controllers\Admin\PartnerController::class, 'index'])->name('partners');
@@ -201,21 +222,114 @@ Route::middleware([
     Route::put('/setting', [\App\Http\Controllers\Admin\SettingController::class, 'editHandler'])->name('edit-setting');
 });
 
-Route::get('/testing-notificiation', function () {
-    $token = 'asaswasas';
 
-    return (new ResetPasswordNotification($token))
-        ->toMail(auth()->user());
-})->middleware(WebMiddleware::class);
+// preview for mail
 
-Route::get('/testing-date-time', function() {
+Route::name('mailable.')->prefix('mailable')->group(function () {
 
-    return view('testing');
+    // accepted-the-payment-proof-mail
+    Route::get('/accepted-the-payment-proof-mail', function () {
+        $transaction = (new TransactionService())->all(null, null, null, null, 1, null, true)->where('status', 'success')->first();
+        return new AcceptedThePaymentProofMail($transaction);
+    })->name('accepted-the-payment-proof-mail');
 
-});
+    // accepted-the-transaction-mail
+    Route::get('/accepted-the-transaction-mail', function () {
+        $transaction = (new TransactionService())->all(null, null, null, null, 1, null, true)->where('status', 'pending')->first();
+        return new AcceptedTransactionMail($transaction);
+    })->name('accepted-the-transaction-mail');
 
-Route::post('/testing-date-time', function(Request $request) {
+    // changed-passowrd-mail
+    Route::get('/changed-passowrd-mail', function () {
+        $user = (new UserService())->all()->first();
+        return new ChangedPasswordMail($user);
+    })->name('changed-passowrd-mail');
 
-   return $request;
+    // change-transaction-mail
+    Route::get('/change-transaction-mail', function () {
+        $transaction = (new TransactionService())->all(null, null, null, null, 1, null, true)->first();
+        return new ChangedTransactionInformationMail($transaction);
+    })->name('change-transaction-mail');
+
+    // contact-support-mail
+    Route::get('/contact-support-mail', function () {
+        $mailData = [
+            'fullname' => 'Customer Baik Hati',
+            'email' => 'binatika@bin.id',
+            'subject' => 'saya mengalami maalah',
+            'message' => 'lupa password, passowrdnya salah mulu heheheheh',
+        ];
+        return new ContactSupportMail($mailData);
+    })->name('contact-support-mail');
+
+    // change-transaction-information-mail
+    Route::get('/change-transaction-information-mail', function () {
+        $transaction = (new TransactionService())->all(null, null, null, null, 1, null, true)->first();
+        return new ChangedTransactionInformationMail($transaction);
+    })->name('/change-transaction-information-mail');
+
+    // created-account-mail
+    Route::get('/created-account-mail', function () {
+        $user = (new UserService())->all()->first();
+        return new CreatedAccountMail($user);
+    })->name('/created-account-mail');
+
+    // created-transaction-mail
+    Route::get('/created-transaction-mail', function () {
+        $transaction = (new TransactionService())->all(null, null, null, null, 1, null, true)->first();
+        return new CreatedTransactionMail($transaction);
+    })->name('/created-transaction-mail');
+
+    // rejected-payment-proof-mail
+    Route::get('/rejected-payment-proof-mail', function () {
+        $transaction = (new TransactionService())->all(null, null, null, null, 1, null, true)->whereHas('payment_proof', function ($q) {
+            return $q->where('status', 'rejected');
+        })
+            ->first();
+        return new RejectedPaymentProofMail($transaction);
+    })->name('/rejected-payment-proof-mail');
+
+    // rejected-transaction-mail
+    Route::get('/rejected-transaction-mail', function () {
+        $transaction = (new TransactionService())->all(null, null, null, null, 1, null, true)->where('status', 'LIKE', '%cancelled%')
+            ->first();
+        return new RejectedTransactionMail($transaction);
+    })->name('/rejected-transaction-mail');
+
+    // transaction-completed-mail
+    Route::get('/transaction-completed-mail', function () {
+        $transaction = (new TransactionService())->all(null, null, null, null, 1, null, true)->where('status', 'success')
+            ->first();
+        return new TransactionCompletedMail($transaction);
+    })->name('/transaction-completed-mail');
+
+    // transaction-delivered-mail
+    Route::get('/transaction-delivered-mail', function () {
+        $transaction = (new TransactionService())->all(null, null, null, null, 1, null, true)->where('status_delivery', 'delivered')
+            ->first();
+        return new TransactionDeliveredMail($transaction);
+    })->name('/transaction-delivered-mail');
+
+    // transaction-mail
+    Route::get('/transaction-mail', function () {
+        $transaction = (new TransactionService())->all(null, null, null, null, 1, null, true)->first();
+        return new TransactionMail($transaction);
+    })->name('/transaction-mail');
+
+    // transaction-on-delivery-mail
+    Route::get('/transaction-on-delivery-mail', function () {
+        $transaction = (new TransactionService())->all(null, null, null, null, 1, null, true)->where('status_delivery', 'on_the_way')
+            ->first();
+        return new TransactionOnDeliveryMail($transaction);
+    })->name('/transaction-on-delivery-mail');
+
+    // uploud-the-payment-proof-mail
+    Route::get('/uploud-the-payment-proof-mail', function () {
+        $transaction = (new TransactionService())->all(null, null, null, null, 1, null, true)->whereHas('payment_proof', function ($q) {
+            return $q->where('status', 'waiting_for_invoice');
+        })
+            ->first();
+        return new UploudThePaymentProofMail($transaction);
+    })->name('/uploud-the-payment-proof-mail');
 
 });

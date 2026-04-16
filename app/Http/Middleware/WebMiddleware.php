@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Log;
 use Symfony\Component\HttpFoundation\Response;
 
 class WebMiddleware
@@ -16,7 +17,17 @@ class WebMiddleware
     public function handle(Request $request, Closure $next): Response
     {
 
-        if(auth()->check()){
+        $authenticationRoutes = [ route('user.signin'), route('user.signup'), route('admin.signin') ];
+
+        $is_in_authentication_route = in_array($request->url(),$authenticationRoutes);
+
+        $is_authorized = auth()->check();
+
+        if($is_in_authentication_route && $is_authorized){
+            return redirect()->route(auth()->user()->isAdminOrOwner() ? 'admin.dashboard' : 'user.home');
+        }
+
+        if($is_authorized){
             return $next($request);
         }
         // nah ini dlu dah

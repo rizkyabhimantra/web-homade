@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Mail;
 class TestEmailController extends Controller
 {
     public function local(){
-        $send = Mail::to(auth()->user()->email)->send(new TestMail());
+        $send = Mail::to(auth()->user()->email)->queue(new TestMail());
 
         return response()->json([
             'status' => $send ? 'success' : 'false',

@@ -66,7 +66,7 @@ class UserService
         $user->password = $data['password'];
         $user->save();
         if ($send_email) {
-            Mail::to($user)->send(new CreatedAccountMail($user));
+            Mail::to($user)->queue(new CreatedAccountMail($user));
         }
         return $user;
     }
@@ -87,7 +87,7 @@ class UserService
         $user->save();
 
         if ($send_mail) {
-            Mail::to($user)->send(new ChangedPasswordMail($user));
+            Mail::to($user)->queue(new ChangedPasswordMail($user));
         }
 
         return $user;

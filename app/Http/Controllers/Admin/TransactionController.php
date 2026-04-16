@@ -9,15 +9,12 @@ use App\Http\Resources\MenuScheduleResource;
 use App\Http\Resources\PaginationResource;
 use App\Http\Resources\SelectMenuResource;
 use App\Http\Resources\TransactionResource;
-use App\Mail\RejectedTransaction;
-use App\Mail\SuccessfullyCreatedNewInvoice;
+use App\Mail\TransactionMail;
 use App\ResponseData;
 use App\Service\ContactService;
 use App\Service\MenuService;
 use App\Service\TransactionService;
 use App\Service\UserService;
-use App\StatusDelivery;
-use App\StatusTransaction;
 use App\UserRole;
 use App\Utils\CalculateDistance;
 use App\Utils\TransactionHelper;
@@ -738,6 +735,42 @@ class TransactionController extends Controller
         }
     }
 
+    public function sendTheTransactionIntoMail(string $id){
+        try{
+
+            $transaction = $this->transactionService->detail($id, false);
+
+            if(!$transaction){
+                $response = $this->responseData->create(
+                    'Tidak Dapat Menemukan Transaksi',
+                    status: 'warning',
+                    status_code:404,
+                    isJson:false,
+                );
+                return redirect()->back()->with(compact('response'));
+            }
+
+            Mail::to($transaction->contact_email)->queue(new TransactionMail($transaction));
+
+            $response = $this->responseData->create(
+                'Berhasil dalam memberikan notifikasi kepada pembeli melalui email',
+                isJson:false
+            );
+
+            return redirect()->back()->with(compact('response'));
+
+        }catch (Exception $e) {
+            Log::error('Error when send the transaction mail from admin :' . $e->getMessage());
+            $response = $this->responseData->create(
+                'Telah Terjadi Kesalahan Pada Server',
+                status: 'error',
+                status_code: 500,
+                isJson: false
+            );
+            return redirect()->back()->with(compact('response'));
+        }
+    }
+
     public function export(Request $request)
     {
 
@@ -773,21 +806,6 @@ class TransactionController extends Controller
             $filename,
             $is_order,
         ))->download($filename . '.xlsx');
-
-        return $this->transactionService->all(
-            null,
-            null,
-            null,
-            null,
-            1,
-            null,
-            is_query: true
-        )
-            ->with([
-                'address',
-                'orders'
-            ])->orderBy('delivery_at')
-            ->get();
     }
 
     private function dateByFilterTransaction(string $filter_by)

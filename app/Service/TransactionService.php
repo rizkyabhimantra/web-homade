@@ -2,15 +2,12 @@
 
 namespace App\Service;
 
-use App\Http\Resources\Admin\DetailMenuResource;
 use App\Mail\AcceptedThePaymentProofMail;
 use App\Mail\AcceptedTransactionMail;
 use App\Mail\ChangedTransactionInformationMail;
 use App\Mail\CreatedTransactionMail;
 use App\Mail\RejectedPaymentProofMail;
 use App\Mail\RejectedTransactionMail;
-use App\Mail\SuccessCreateTransactionEmail;
-use App\Mail\SuccessfullyCreatedNewInvoice;
 use App\Mail\TransactionCompletedMail;
 use App\Mail\TransactionDeliveredMail;
 use App\Mail\TransactionOnDeliveryMail;
@@ -19,7 +16,6 @@ use App\Models\Transaction;
 use App\Models\TransactionAddress;
 use App\Models\TransactionOrder;
 use App\Models\TransactionPaymentProof;
-use App\RefundStatus;
 use App\StatusDelivery;
 use App\StatusTransaction;
 use App\TransactionCategory;
@@ -27,15 +23,11 @@ use App\TransactionPaymentProofStatus;
 use App\Utils\CloudinaryClient;
 use App\Utils\ConvertDateSafely;
 use Carbon\Carbon;
-use Cloudinary\Cloudinary;
-use ErrorException;
 use Exception;
-use File;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Log;
 use Mail;
-use PHPUnit\TextUI\XmlConfiguration\FailedSchemaDetectionResult;
 use Str;
 
 class TransactionService
@@ -275,15 +267,13 @@ class TransactionService
 
             $transaction = $this->detail($createdTransaciton->id, false);
 
-            Mail::to($createdTransaciton->contact_email)->send(new CreatedTransactionMail($transaction));
+            Mail::to($createdTransaciton->contact_email)->queue(new CreatedTransactionMail($transaction));
 
-            if (!$is_created_by_customer) {
+            if ($is_created_by_customer) {
                 // kirim ke email admin?
                 $contact = (new ContactService())->contact();
-                Mail::to($contact->email)->send(new CreatedTransactionMail($transaction, true));
+                Mail::to($contact->email)->queue(new CreatedTransactionMail($transaction, true));
             }
-
-
 
             return [
                 'is_success' => true,
@@ -323,8 +313,8 @@ class TransactionService
                 ];
             }
             // syarat masuk kesini adalaah
-            // status transaksi masih waiting for invoice dan pending
-            // jika status pending maka dan payment proof sudah ada maka status payment_proof harus reject
+            // status transaksi masih waiting for invoice atau pending
+            // jika status pending maka dan payment proof sudah ada maka status payment_proof harus rejected
             $cloudinary = new CloudinaryClient();
             // uploud gambar disini!
             $uplouded = $cloudinary->uploudPaymentProof($image->getRealPath());
@@ -371,11 +361,11 @@ class TransactionService
                 // send ke dua email?
                 if (!auth()->user()->isAdminOrOwner()) {
                     $contact = (new ContactService())->contact();
-                    Mail::to($contact->email)->send(new UploudThePaymentProofMail($transaction, true));
+                    Mail::to($contact->email)->queue(new UploudThePaymentProofMail($transaction, true));
                 }
 
                 // send ke customer
-                Mail::to($transaction->contact_email)->send(new UploudThePaymentProofMail($transaction));
+                Mail::to($transaction->contact_email)->queue(new UploudThePaymentProofMail($transaction));
 
                 return [
                     'is_success' => true,
@@ -467,9 +457,9 @@ class TransactionService
             if ($notif_to_customer || $is_waiting_for_invoice) {
                 // send mail disini....
                 if ($is_waiting_for_invoice) {
-                    Mail::to($transaction->user->email)->send(new AcceptedTransactionMail($transaction));
+                    Mail::to($transaction->user->email)->queue(new AcceptedTransactionMail($transaction));
                 } else {
-                    Mail::to($transaction->user->email)->send(new ChangedTransactionInformationMail($transaction));
+                    Mail::to($transaction->user->email)->queue(new ChangedTransactionInformationMail($transaction));
                 }
             }
 
@@ -512,13 +502,13 @@ class TransactionService
 
             if ($is_management) {
                 // cuman ke customer
-                Mail::to($transaction->contact_email)->send(new RejectedTransactionMail($transaction));
+                Mail::to($transaction->contact_email)->queue(new RejectedTransactionMail($transaction));
             } else {
                 // untuk admin
                 $contact = (new ContactService())->contact();
-                Mail::to($contact->email)->send(new RejectedTransactionMail($transaction, true));
+                Mail::to($contact->email)->queue(new RejectedTransactionMail($transaction, true));
                 // untuk customer
-                Mail::to($transaction->contact_email)->send(new RejectedTransactionMail($transaction, false));
+                Mail::to($transaction->contact_email)->queue(new RejectedTransactionMail($transaction, false));
             }
 
             return [
@@ -593,7 +583,7 @@ class TransactionService
                 // seharusnya perlu cek nih di satu stau setelah saving...
                 $message = $new_proof['is_success'] ? 'Berhasil Menyetujui Bukti Pembayaran Customer Dan Mengubah Photo Bukti Pembayaran!' : 'Berhasil Menyetujui Bukti Pembayaran Customer';
 
-                Mail::to($transaction->contact_email)->send(new AcceptedThePaymentProofMail($transaction));
+                Mail::to($transaction->contact_email)->queue(new AcceptedThePaymentProofMail($transaction));
 
                 return [
                     'is_success' => true,
@@ -643,7 +633,7 @@ class TransactionService
 
                 $transaction->fresh();
 
-                Mail::to($transaction->contact_email)->send(new RejectedPaymentProofMail($transaction));
+                Mail::to($transaction->contact_email)->queue(new RejectedPaymentProofMail($transaction));
 
                 return [
                     'is_success' => true,
@@ -704,9 +694,9 @@ class TransactionService
         $transaction->save();
 
         if ($isValidStatusDelivery === StatusDelivery::DELIVERED) {
-            Mail::to($transaction->contact_email)->send(new TransactionDeliveredMail($transaction));
+            Mail::to($transaction->contact_email)->queue(new TransactionDeliveredMail($transaction));
         } else if ($isValidStatusDelivery === StatusDelivery::ON_THE_WAY) {
-            Mail::to($transaction->contact_email)->send(new TransactionOnDeliveryMail($transaction));
+            Mail::to($transaction->contact_email)->queue(new TransactionOnDeliveryMail($transaction));
         }
 
         return [
@@ -735,7 +725,7 @@ class TransactionService
         $transaction->status = StatusTransaction::SUCCESS;
         $transaction->save();
 
-        Mail::to($transaction->contact_email)->send(new TransactionCompletedMail($transaction));
+        Mail::to($transaction->contact_email)->queue(new TransactionCompletedMail($transaction));
 
         return [
             'is_success' => true,

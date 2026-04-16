@@ -2,7 +2,8 @@
 
 namespace App\Mail;
 
-use App\Models\User;
+use App\Models\Transaction;
+use App\Service\ContactService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -10,18 +11,18 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class CreatedAccountMail extends Mailable
+class TransactionMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    private User $user;
+    private Transaction $transaction;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(User $user)
+    public function __construct(Transaction $transaction)
     {
-        $this->user = $user;
+        $this->transaction = $transaction;
     }
 
     /**
@@ -30,7 +31,7 @@ class CreatedAccountMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: '[Homade] Selamat Datang!, ' . $this->user->first_name,
+            subject: '[Homade] Lihat Pemesanan Yang Terbaru Anda!',
         );
     }
 
@@ -40,8 +41,11 @@ class CreatedAccountMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'mail.created-account-mail',
-            with: [ 'user' => $this->user ]
+            view: 'mail.transaction-mail',
+            with: [
+                'transaction' => $this->transaction,
+                'contact' => (new ContactService())->contact(),
+            ]
         );
     }
 

@@ -34,7 +34,7 @@ class RejectedTransactionMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Rejected Transaction Mail',
+            subject: $this->is_admin ?  '[Homade] Pemesanan Telah Dibatalkan Oleh Pembeli!' : '[Homade] Pemesanan Anda Telah Dibatalkan!',
         );
     }
 

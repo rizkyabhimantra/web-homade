@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Resources\DetailTransactionResource;
 use App\Http\Resources\PaginationResource;
 use App\Http\Resources\TransactionResource;
-use App\Mail\SuccessCreateTransactionEmail;
 use App\ResponseData;
 use App\Service\MenuService;
 use App\Service\PaymentMethodService;
@@ -14,12 +13,10 @@ use App\Service\UserAddressService;
 use App\StatusTransaction;
 use App\TransactionPaymentProofStatus;
 use App\Utils\TransactionHelper;
-use Carbon\Carbon;
 use ErrorException;
 use Exception;
 use Illuminate\Http\Request;
 use Log;
-use Mail;
 use Validator;
 
 class TransactionController extends Controller
