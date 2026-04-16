@@ -269,7 +269,7 @@ class TransactionService
 
             Mail::to($createdTransaciton->contact_email)->queue(new CreatedTransactionMail($transaction));
 
-            if (!$is_created_by_customer) {
+            if ($is_created_by_customer) {
                 // kirim ke email admin?
                 $contact = (new ContactService())->contact();
                 Mail::to($contact->email)->queue(new CreatedTransactionMail($transaction, true));
