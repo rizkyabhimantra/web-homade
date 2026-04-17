@@ -199,11 +199,11 @@
 									<!--end::Menu separator-->
 									<!--begin::Menu item-->
 									<div class="menu-item px-5">
-										<a href="{{ route('admin.accounts') }}" class="menu-link px-5">My Profile</a>
+										<a href="{{ route('admin.accounts') }}" class="menu-link d-none px-5">My Profile</a>
 									</div>
 									<!--end::Menu item-->
 									<!--begin::Menu separator-->
-									<div class="separator my-2"></div>
+									<div class="separator my-2 d-none"></div>
 									<!--end::Menu separator-->
 									<!--begin::Menu item-->
 									<div class="menu-item px-5">

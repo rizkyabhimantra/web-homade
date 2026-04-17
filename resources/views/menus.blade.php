@@ -7,6 +7,7 @@
 <html lang="en">
     @include('components.header' )
 
+    @dd($response)
     <body class="d-flex flex-column">
         @include('components.navbarHead',[ "page" => "menu", "bg" => ""])
         
@@ -33,11 +34,10 @@
                     <a href="/menus#category" class="d-flex text-nowrap {{ !$category ? 'bg-accent' : '' }} h-100 align-items-center px-5 rounded-pill">
                         <p class="fs-2 {{ !$category ? 'text-white' : 'text-grey' }} mb-0 fw-bold">ALL</p>
                     </a>
-
-                    @foreach (["ayam" => "Ayam", "ikan" => "Ikan & Seafood", "nasi" => "Nasi", "sapi" => "Sapi & Kambing"] as $kategori => $judul)
+                    @foreach ( $response['data']['categories'] as $kategori)
                         
-                    <a href="/menus?category={{ $kategori }}#category" class="d-flex text-nowrap {{ $category == $kategori ? 'bg-accent' : '' }} h-100 align-items-center px-5 rounded-pill">
-                        <p class="fs-2 {{ $category == $kategori ? 'text-white' : 'text-grey' }} mb-0 fw-bold">{{ $judul }}</p>
+                    <a href="/menus?category={{ $kategori['name'] }}#category" class="d-flex text-nowrap {{ $category == $kategori['name'] ? 'bg-accent' : '' }} h-100 align-items-center px-5 rounded-pill">
+                        <p class="fs-2 {{ $category == $kategori['name'] ? 'text-white' : 'text-grey' }} mb-0 fw-bold">{{ $kategori['name'] }}</p>
                     </a>
 
                     @endforeach

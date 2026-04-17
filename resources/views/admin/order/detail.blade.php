@@ -673,6 +673,215 @@
                     </div>
                 </div>
                 
+                @elseif ($response['data']['status'] === "cancelled_by_customer")
+
+                <div class="d-flex align-items-end align-items-sm-center gap-3 gap-sm-0 flex-column flex-sm-row w-100 justify-content-between mb-5">
+                    <p class="fsc-3 mb-0 fw-black d-flex gap-5 align-items-center w-100 w-sm-auto"><img src="{{ asset('icons/arrow-left-right.svg') }}" alt="" class="h-1em"> WORKFLOW STATUS : <br class="d-sm-none">DELIVERED</p>
+                    <p class="fsc-2 mb-0 bg-danger text-white rounded-pill d-none d-sm-flex align-items-center gap-3 px-4 py-1"><img src="{{ asset('icons/close-circle.svg') }}" class="img-white h-1em"> Cancelled</p>
+                </div>
+
+                <div class="d-flex align-items-center justify-content-center w-100 mt-5 h-100px">
+                    <div class="d-flex align-items-center w-101 w-lg-90 overflow-scroll h-100">
+
+                        <div class="d-flex align-items-center justify-content-between h-100 w-125px flex-shrink-0 flex-lg-shrink-1 w-lg-100 flex-column">
+                            
+                            <div class="d-flex justify-content-center align-items-center h-100 w-100 ">
+                                <span class="w-100 h-5px"></span>
+                                <div class="d-flex h-90 rounded-circle bg-danger ratio-1 justify-content-center align-items-center">
+                                    <img src="{{ asset('icons/close.svg') }}" alt="" class="h-40 img-white">
+                                </div>
+                                <span class="w-100 h-5px bg-danger"></span>
+                            </div>
+
+                            <p class="fsc-2 text-center w-100 mb-0 fw-light h-30px">Waiting Review</p>
+                            <p class="fsc-1 text-center w-100 mb-0 fw-light h-30px">Validation Order</p>
+
+                        </div>
+
+                        <div class="d-flex align-items-center justify-content-between h-100 w-125px flex-shrink-0 flex-lg-shrink-1 w-lg-100 flex-column">
+                            
+                            <div class="d-flex justify-content-center align-items-center h-100 w-100 ">
+                                <span class="w-100 h-5px bg-danger"></span>
+                                <div class="d-flex h-90 rounded-circle bg-danger ratio-1 justify-content-center align-items-center">
+                                    <img src="{{ asset('icons/close.svg') }}" alt="" class="h-40 img-white">
+                                </div>
+                                <span class="w-100 h-5px bg-danger"></span>
+                            </div>
+
+                            <p class="fsc-2 text-center text-nowrap w-100 mb-0 fw-light h-30px">Waiting Confirmation</p>
+                            <p class="fsc-1 text-center w-100 mb-0 fw-light h-30px">Wait Payment</p>
+
+                        </div>
+
+                        <div class="d-flex align-items-center justify-content-between h-100 w-125px flex-shrink-0 flex-lg-shrink-1 w-lg-100 flex-column">
+                            
+                            <div class="d-flex justify-content-center align-items-center h-100 w-100 ">
+                                <span class="w-100 h-5px bg-danger"></span>
+                                <div class="d-flex h-90 rounded-circle bg-danger ratio-1 justify-content-center align-items-center">
+                                    <img src="{{ asset('icons/close.svg') }}" alt="" class="h-40 img-white">
+                                </div>
+                                <span class="w-100 h-5px bg-danger"></span>
+                            </div>
+
+                            <p class="fsc-2 text-center w-100 mb-0 fw-light h-30px">Process</p>
+                            <p class="fsc-1 text-center w-100 mb-0 fw-light h-30px">Processing Your Food</p>
+
+                        </div>
+
+                        <div class="d-flex align-items-center justify-content-between h-100 w-125px flex-shrink-0 flex-lg-shrink-1 w-lg-100 flex-column">
+                            
+                            <div class="d-flex justify-content-center align-items-center h-100 w-100 ">
+                                <span class="w-100 h-5px bg-danger"></span>
+                                <div class="d-flex h-90 rounded-circle bg-danger ratio-1 justify-content-center align-items-center">
+                                    <img src="{{ asset('icons/close.svg') }}" alt="" class="h-40 img-white">
+                                </div>
+                                <span class="w-100 h-5px bg-danger"></span>
+                            </div>
+
+                            <p class="fsc-2 text-center w-100 mb-0 fw-light h-30px">Waiting For Pickup</p>
+                            <p class="fsc-1 text-center w-100 mb-0 fw-light h-30px">Menunggu Kurir</p>
+
+                        </div>
+
+                        <div class="d-flex align-items-center justify-content-between h-100 w-125px flex-shrink-0 flex-lg-shrink-1 w-lg-100 flex-column">
+                            
+                            <div class="d-flex justify-content-center align-items-center h-100 w-100 ">
+                                <span class="w-100 h-5px bg-danger"></span>
+                                <div class="d-flex h-90 rounded-circle bg-danger ratio-1 justify-content-center align-items-center">
+                                    <img src="{{ asset('icons/close.svg') }}" alt="" class="h-40 img-white">
+                                </div>
+                                <span class="w-100 h-5px bg-danger"></span>
+                            </div>
+
+                            <p class="fsc-2 text-center w-100 mb-0 fw-light h-30px">On The Way</p>
+                            <p class="fsc-1 text-center w-100 mb-0 fw-light h-30px">Dalam Perjalanan</p>
+
+                        </div>
+                            
+                        <div class="d-flex align-items-center justify-content-between h-100 w-125px flex-shrink-0 flex-lg-shrink-1 w-lg-100 flex-column">
+                            
+                            <div class="d-flex justify-content-center align-items-center h-100 w-100">
+                                <span class="w-100 h-5px bg-danger"></span>
+                                <div class="d-flex h-90 rounded-circle bg-danger ratio-1 justify-content-center align-items-center">
+                                    <img src="{{ asset('icons/close.svg') }}" alt="" class="h-40 img-white">
+                                </div>
+                                <span class="w-100 h-5px"></span>
+                            </div>
+
+                            <p class="fsc-2 text-center w-100 mb-0 fw-light h-30px">Delivered</p>
+                            <p class="fsc-1 text-center w-100 mb-0 fw-light h-30px">Finished</p>
+
+                        </div>
+                        
+                    </div>
+
+                </div>
+
+                @elseif ($response['data']['status'] === "cancelled_by_admin")
+
+                <div class="d-flex align-items-end align-items-sm-center gap-3 gap-sm-0 flex-column flex-sm-row w-100 justify-content-between mb-5">
+                    <p class="fsc-3 mb-0 fw-black d-flex gap-5 align-items-center w-100 w-sm-auto"><img src="{{ asset('icons/arrow-left-right.svg') }}" alt="" class="h-1em"> WORKFLOW STATUS : <br class="d-sm-none">DELIVERED</p>
+                    <p class="fsc-2 mb-0 bg-danger text-white rounded-pill d-none d-sm-flex align-items-center gap-3 px-4 py-1"><img src="{{ asset('icons/close-circle.svg') }}" class="img-white h-1em"> Cancelled</p>
+                </div>
+
+                <div class="d-flex align-items-center justify-content-center w-100 mt-5 h-100px">
+                    <div class="d-flex align-items-center w-101 w-lg-90 overflow-scroll h-100">
+
+                        <div class="d-flex align-items-center justify-content-between h-100 w-125px flex-shrink-0 flex-lg-shrink-1 w-lg-100 flex-column">
+                            
+                            <div class="d-flex justify-content-center align-items-center h-100 w-100 ">
+                                <span class="w-100 h-5px"></span>
+                                <div class="d-flex h-90 rounded-circle bg-danger ratio-1 justify-content-center align-items-center">
+                                    <img src="{{ asset('icons/close.svg') }}" alt="" class="h-40 img-white">
+                                </div>
+                                <span class="w-100 h-5px bg-danger"></span>
+                            </div>
+
+                            <p class="fsc-2 text-center w-100 mb-0 fw-light h-30px">Waiting Review</p>
+                            <p class="fsc-1 text-center w-100 mb-0 fw-light h-30px">Validation Order</p>
+
+                        </div>
+
+                        <div class="d-flex align-items-center justify-content-between h-100 w-125px flex-shrink-0 flex-lg-shrink-1 w-lg-100 flex-column">
+                            
+                            <div class="d-flex justify-content-center align-items-center h-100 w-100 ">
+                                <span class="w-100 h-5px bg-danger"></span>
+                                <div class="d-flex h-90 rounded-circle bg-danger ratio-1 justify-content-center align-items-center">
+                                    <img src="{{ asset('icons/close.svg') }}" alt="" class="h-40 img-white">
+                                </div>
+                                <span class="w-100 h-5px bg-danger"></span>
+                            </div>
+
+                            <p class="fsc-2 text-center text-nowrap w-100 mb-0 fw-light h-30px">Waiting Confirmation</p>
+                            <p class="fsc-1 text-center w-100 mb-0 fw-light h-30px">Wait Payment</p>
+
+                        </div>
+
+                        <div class="d-flex align-items-center justify-content-between h-100 w-125px flex-shrink-0 flex-lg-shrink-1 w-lg-100 flex-column">
+                            
+                            <div class="d-flex justify-content-center align-items-center h-100 w-100 ">
+                                <span class="w-100 h-5px bg-danger"></span>
+                                <div class="d-flex h-90 rounded-circle bg-danger ratio-1 justify-content-center align-items-center">
+                                    <img src="{{ asset('icons/close.svg') }}" alt="" class="h-40 img-white">
+                                </div>
+                                <span class="w-100 h-5px bg-danger"></span>
+                            </div>
+
+                            <p class="fsc-2 text-center w-100 mb-0 fw-light h-30px">Process</p>
+                            <p class="fsc-1 text-center w-100 mb-0 fw-light h-30px">Processing Your Food</p>
+
+                        </div>
+
+                        <div class="d-flex align-items-center justify-content-between h-100 w-125px flex-shrink-0 flex-lg-shrink-1 w-lg-100 flex-column">
+                            
+                            <div class="d-flex justify-content-center align-items-center h-100 w-100 ">
+                                <span class="w-100 h-5px bg-danger"></span>
+                                <div class="d-flex h-90 rounded-circle bg-danger ratio-1 justify-content-center align-items-center">
+                                    <img src="{{ asset('icons/close.svg') }}" alt="" class="h-40 img-white">
+                                </div>
+                                <span class="w-100 h-5px bg-danger"></span>
+                            </div>
+
+                            <p class="fsc-2 text-center w-100 mb-0 fw-light h-30px">Waiting For Pickup</p>
+                            <p class="fsc-1 text-center w-100 mb-0 fw-light h-30px">Menunggu Kurir</p>
+
+                        </div>
+
+                        <div class="d-flex align-items-center justify-content-between h-100 w-125px flex-shrink-0 flex-lg-shrink-1 w-lg-100 flex-column">
+                            
+                            <div class="d-flex justify-content-center align-items-center h-100 w-100 ">
+                                <span class="w-100 h-5px bg-danger"></span>
+                                <div class="d-flex h-90 rounded-circle bg-danger ratio-1 justify-content-center align-items-center">
+                                    <img src="{{ asset('icons/close.svg') }}" alt="" class="h-40 img-white">
+                                </div>
+                                <span class="w-100 h-5px bg-danger"></span>
+                            </div>
+
+                            <p class="fsc-2 text-center w-100 mb-0 fw-light h-30px">On The Way</p>
+                            <p class="fsc-1 text-center w-100 mb-0 fw-light h-30px">Dalam Perjalanan</p>
+
+                        </div>
+                            
+                        <div class="d-flex align-items-center justify-content-between h-100 w-125px flex-shrink-0 flex-lg-shrink-1 w-lg-100 flex-column">
+                            
+                            <div class="d-flex justify-content-center align-items-center h-100 w-100">
+                                <span class="w-100 h-5px bg-danger"></span>
+                                <div class="d-flex h-90 rounded-circle bg-danger ratio-1 justify-content-center align-items-center">
+                                    <img src="{{ asset('icons/close.svg') }}" alt="" class="h-40 img-white">
+                                </div>
+                                <span class="w-100 h-5px"></span>
+                            </div>
+
+                            <p class="fsc-2 text-center w-100 mb-0 fw-light h-30px">Delivered</p>
+                            <p class="fsc-1 text-center w-100 mb-0 fw-light h-30px">Finished</p>
+
+                        </div>
+                        
+                    </div>
+
+                </div>
+
+
                 @endif
 
                 </div>
@@ -1187,6 +1396,39 @@
 
                             </div>
 
+                        @elseif ($response['data']['status'] === "cancelled_by_customer")
+
+                            <div class="d-flex w-90 h-95 py-5 flex-column align-items-center justify-content-center">
+                                <p class="w-100 fsc-3 mb-3 flex-shrink-0">STATUS PEMESANAN</p>
+
+                                <div class="d-flex mt-5 h-50px bg-danger align-items-center justify-content-center ratio-1 rounded-circle">
+                                    <img src="{{ asset('icons/close.svg') }}" alt="" class="h-50 img-white">
+                                </div>
+
+                                <p class="fsc-3 mb-0 mt-5">Pesanan Dibatalkan</p>
+                                <p class="fsc-2 mb-7 mt-1">Oleh Pengguna</p>
+
+                                <p class="fsc-2 mb-7 mt-1">Alasan: {{ $response['data']['cancelled_reason'] }}</p>
+                                
+                            </div>
+
+                        @elseif ($response['data']['status'] === "cancelled_by_admin")
+
+                            <div class="d-flex w-90 h-95 py-5 flex-column align-items-center justify-content-center">
+                                <p class="w-100 fsc-3 mb-3 flex-shrink-0">STATUS PEMESANAN</p>
+
+                                <div class="d-flex mt-5 h-50px bg-danger align-items-center justify-content-center ratio-1 rounded-circle">
+                                    <img src="{{ asset('icons/close.svg') }}" alt="" class="h-50 img-white">
+                                </div>
+
+                                <p class="fsc-3 mb-0 mt-5">Pesanan Dibatalkan</p>
+                                <p class="fsc-2 mb-7 mt-1">Oleh Admin</p>
+
+                                <p class="fsc-2 mb-7 mt-1">Alasan: {{ $response['data']['cancelled_reason'] }}</p>
+
+                            </div>
+                            
+                        
 						@endif
                             
                         </div>
@@ -1234,15 +1476,17 @@
                     
                     <div class="d-flex h-30px justify-content-end align-items-center gap-3 flex-shrink-0">
 
-                        @if ($response['data']['payment_proof']['status'] == "rejected")
-                        
-                        <form enctype="multipart/form-data" action="{{ route('admin.uploud-payment-proof', ['id' => $response['data']['id']]) }}" method="post" class="position-relative cursor-pointer bg-accent rounded-pill align-items-center h-100 px-3 pe-5 d-flex gap-3 fsc-2 text-white mb-0">
-                            @csrf
-                            <img src="{{ asset('icons/arrow-left-right.svg') }}" alt="" class="h-1em img-white"> Ganti Bukti
-                            <input type="hidden" name="reason" value="Bukti Pembayaran Baru">
-                            <input name="uplouded_file" accept="image/*" type="file" onchange="this.form.submit()" class="w-100 h-100 top-0 left-0 position-absolute opacity-0">
-                        </form>
+                        @if ($response['data']['payment_proof'])
+                            @if ($response['data']['payment_proof']['status'] == "rejected")
+                            
+                            <form enctype="multipart/form-data" action="{{ route('admin.uploud-payment-proof', ['id' => $response['data']['id']]) }}" method="post" class="position-relative cursor-pointer bg-accent rounded-pill align-items-center h-100 px-3 pe-5 d-flex gap-3 fsc-2 text-white mb-0">
+                                @csrf
+                                <img src="{{ asset('icons/arrow-left-right.svg') }}" alt="" class="h-1em img-white"> Ganti Bukti
+                                <input type="hidden" name="reason" value="Bukti Pembayaran Baru">
+                                <input name="uplouded_file" accept="image/*" type="file" onchange="this.form.submit()" class="w-100 h-100 top-0 left-0 position-absolute opacity-0">
+                            </form>
 
+                            @endif
                         @endif
 
                         <button onclick="togglePopUp('proof')" class="bg-accent rounded-pill align-items-center h-100 px-3 pe-5 d-flex gap-3 fsc-2 text-white mb-0">

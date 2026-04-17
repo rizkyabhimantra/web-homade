@@ -48,8 +48,6 @@
                 </div>
                 <!-- end::detail pesanan -->
 
-                {{ $response['data']['transaction']['status'] }}
-
                 <!-- begin::timeline -->
                 <div class="d-flex align-items-center justify-content-center w-95 border-grey-1 rounded-5 p-10 flex-column">
                     
@@ -1019,7 +1017,7 @@
                                     <div class="d-flex h-100 w-30 flex-shrink-0 align-items-center justify-content-center"><p class="fsc-2 mb-0 w-100 text-end">TOTAL PRICE</p></div>
 
                                 </div>
-
+                                
                                 @foreach ($response['data']['transaction']['items'] as $menu)
                                     
                                     <div class="overflow-hidden d-flex w-100 gap-1 h-60px h-md-100px align-items-center justify-content-center">
@@ -1123,7 +1121,7 @@
                                 </div>
                                 <p class="fsc-1 w-100 flex-shrink-0 mb-0"><b>*</b>BELUM TERMASUK ONGKIR</p>
 
-                                <a href="https://web.whatsapp.com/send?phone=6285711801336&text=Halo%20Homade%20catering%2C" class="w-100 bg-whatsapp d-flex align-items-center justify-content-center text-white fsc-2 py-4 rounded-3 mt-5 mb-3 gap-3"><img src="{{ asset('icons/whatsapp.svg') }}" alt="" class="img-white h-15em"> like whatsapp danger</a>
+                                <a href="https://web.whatsapp.com/send?phone=6285711801336&text=Halo%20Homade%20catering%2C" class="w-100 bg-whatsapp d-flex align-items-center justify-content-center text-white fsc-2 py-4 rounded-3 mt-5 mb-3 gap-3"><img src="{{ asset('icons/whatsapp.svg') }}" alt="" class="img-white h-15em"> Whatsapp Admin</a>
                                 <button onclick="togglePopUp()" class="w-100 btn-primary-homade align-items-center justify-content-center text-white fsc-2 py-4 rounded-3 mb-3">Batalkan Pesanan</button>
 
                             </div>
@@ -1157,44 +1155,44 @@
 
                                     <p class="fsc-2 mb-2">Konfirmasi Pembayaran</p>
 
-                                    @if ($response['data']['transaction']['payment_proof'] == null || $response['data']['transaction']['payment_proof']['status'] == "rejected")
-                                        <form enctype="multipart/form-data" action="{{ route('user.uploud-payment-proof', $response['data']['transaction']['id']) }}" method="post" class="w-100">
-                                            @csrf
+                                        @if ($response['data']['transaction']['payment_proof'] == null || $response['data']['transaction']['payment_proof']['status'] == "rejected")
+                                            <form enctype="multipart/form-data" action="{{ route('user.uploud-payment-proof', $response['data']['transaction']['id']) }}" method="post" class="w-100">
+                                                @csrf
 
-                                                
-                                            <div class="position-relative d-flex w-100 mb-3 h-150px border-grey-1 rounded-3" id="upload-area">
-                                                <input type="file" name="uplouded_file" accept="image/*" class="w-100 h-100 opacity-0 position-relative cursor-pointer" style="z-index:2;" id="payment-proof-input">
-                                                
-                                                <div class="d-flex flex-column w-100 h-100 position-absolute top-0 start-0 bg-white rounded-3 pointer-events-none align-items-center justify-content-center" id="upload-placeholder">
-                                                    <div class="d-flex h-50">
-                                                        <img src="{{ asset('icons/cloud-upload.svg') }}" alt="" class="h-100 img-grey">
+                                                    
+                                                <div class="position-relative d-flex w-100 mb-3 h-150px border-grey-1 rounded-3" id="upload-area">
+                                                    <input type="file" name="uplouded_file" accept="image/*" class="w-100 h-100 opacity-0 position-relative cursor-pointer" style="z-index:2;" id="payment-proof-input">
+                                                    
+                                                    <div class="d-flex flex-column w-100 h-100 position-absolute top-0 start-0 bg-white rounded-3 pointer-events-none align-items-center justify-content-center" id="upload-placeholder">
+                                                        <div class="d-flex h-50">
+                                                            <img src="{{ asset('icons/cloud-upload.svg') }}" alt="" class="h-100 img-grey">
+                                                        </div>
+                                                        <p class="fsc-2 mb-0">Drag and Drop Gambar</p>
+                                                        <p class="fsc-1 mb-0">atau klik untuk pilih gambar</p>
                                                     </div>
-                                                    <p class="fsc-2 mb-0">Drag and Drop Gambar</p>
-                                                    <p class="fsc-1 mb-0">atau klik untuk pilih gambar</p>
+
+                                                    <div class="d-none w-100 h-100 position-absolute top-0 start-0 bg-white rounded-3 align-items-center justify-content-center px-3 gap-2" id="upload-preview">
+                                                        <img src="{{ asset('icons/image.svg') }}" alt="" class="img-grey" style="height:24px; width:24px; flex-shrink:0;">
+                                                        <span class="fsc-2 text-truncate flex-grow-1" id="upload-filename"></span>
+                                                        <button type="button" class="btn-close fsc-2 flex-shrink-0" id="upload-remove" aria-label="Hapus file"></button>
+                                                    </div>
                                                 </div>
 
-                                                <div class="d-none w-100 h-100 position-absolute top-0 start-0 bg-white rounded-3 align-items-center justify-content-center px-3 gap-2" id="upload-preview">
-                                                    <img src="{{ asset('icons/image.svg') }}" alt="" class="img-grey" style="height:24px; width:24px; flex-shrink:0;">
-                                                    <span class="fsc-2 text-truncate flex-grow-1" id="upload-filename"></span>
-                                                    <button type="button" class="btn-close fsc-2 flex-shrink-0" id="upload-remove" aria-label="Hapus file"></button>
-                                                </div>
+                                                <p class="fsc-2 text-danger mb-2 d-none" id="upload-error"></p>
+
+                                                <button class="w-100 fsc-2 fw-bold py-3 align-items-center justify-content-center d-flex bg-accent rounded-2 text-white mb-2">Kirim Bukti Pembayaran</button>
+
+                                            </form>
+                                        @else
+                                            <div class="d-flex w-100 flex-column">
+                                                <p class="fsc-2 w-100 text-center my-10">Bukti pesanan sedang di review admin</p>
                                             </div>
-
-                                            <p class="fsc-2 text-danger mb-2 d-none" id="upload-error"></p>
-
-                                            <button class="w-100 fsc-2 fw-bold py-3 align-items-center justify-content-center d-flex bg-accent rounded-2 text-white mb-2">Kirim Bukti Pembayaran</button>
-
-                                        </form>
-                                    @else
-                                        <div class="d-flex w-100 flex-column">
-                                            <p class="fsc-2 w-100 text-center my-10">Bukti pesanan sedang di review admin</p>
-                                        </div>
-                                    @endif
-                                    
-                                    @if ($response['data']['transaction']['payment_proof']['status'] == "rejected")
-                                        <p class="fsc-2 w-100 text-start my-10">Pembayaran Ditolak Karena: {{ $response['data']['transaction']['payment_proof']['reason'] }}</p>
+                                        @endif
                                         
-                                    @endif
+                                        @if ($response['data']['transaction']['payment_proof'] && $response['data']['transaction']['payment_proof']['status'] == "rejected" ?? [])
+                                            <p class="fsc-2 w-100 text-start my-10">Pembayaran Ditolak Karena: {{ $response['data']['transaction']['payment_proof']['reason'] }}</p>
+                                            
+                                        @endif
 
                                 </div>
                             </div>
@@ -1358,7 +1356,7 @@
                     <p class="fsc-3 mb-5 fw-bold">Alasan Kenapa Cancel</p>
                     <textarea name="reason" class="w-100 px-2 py-3 min-h-100px max-h-300px rounded-2 border-grey-2 mb-5" minlength="10" required></textarea>
                     <div class="d-flex w-100 gap-3">
-                        <button type="button" onclick="togglePopUp()" class="w-100 rounded-2 bg-light-accent py-3 fsc-2 text-accent fw-bold d-flex justify-content-center align-items-center">Cancel</button>
+                        <button type="button" onclick="togglePopUp()" class="w-100 rounded-2 bg-light-accent py-3 fsc-2 text-accent fw-bold d-flex justify-content-center align-items-center">Close</button>
                         <button type="submit" class="w-100 rounded-2 bg-accent py-3 fsc-2 text-white fw-bold d-flex justify-content-center align-items-center">Cancel</button>
                     </div>
                 </form>
