@@ -122,6 +122,7 @@ class TransactionExport implements FromQuery, ShouldAutoSize, ShouldQueue, WithC
             null,
             $status,
             null,
+            null,
             1,
             $final_date,
             is_query: true

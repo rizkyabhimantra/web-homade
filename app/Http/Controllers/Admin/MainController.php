@@ -67,7 +67,7 @@ class MainController extends Controller
             $ts = new TransactionService();
 
             // Ambil base query
-            $transaction_query = $ts->all(null, null, null, null, 1, null, is_query: true)->whereBetween('created_at', [$period['date']['start'], $period['date']['end']]);
+            $transaction_query = $ts->all(null, null, null, null, null,1, null,is_query: true)->whereBetween('created_at', [$period['date']['start'], $period['date']['end']]);
 
             //Summary Transaksi
             $total_transactions = $transaction_query->count();
