@@ -203,7 +203,7 @@ class MenuController extends Controller
 
             return $this->responseData->create(
                 'Berhasil mendapatkan menu populer mingguan',
-                MenuResource::collection($menus)
+                MenuResource::collection($menus),
             );
 
         }catch(Exception $e){
