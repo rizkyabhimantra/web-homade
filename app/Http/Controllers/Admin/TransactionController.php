@@ -48,11 +48,13 @@ class TransactionController extends Controller
             $status_delivery = $request->query('status_delivery');
             $limit = $request->query('limit', 8);
             $delivery_at = $request->query('delivery_at');
+            $sort_by = $request->query('sort_by', 'new_created');
 
             $transactions = $this->transactionService->all(
                 search: $search,
                 category: $category,
                 status: $status,
+                sort_by: $sort_by,
                 status_delivery: $status_delivery,
                 limit: $limit,
                 delivery_at: $delivery_at

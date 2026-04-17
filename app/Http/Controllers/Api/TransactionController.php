@@ -39,7 +39,7 @@ class TransactionController extends Controller
         // today, tomorrow, week, month, 6months?, a year
         $search = $request->query('search', '');
         $category = $request->query('category', '');
-        $sort_by = $request->query('sort_by');
+        $sort_by = $request->query('sort_by', 'new_created');
 
         $status = $request->query('status');
         $status_delivery = $request->query('status_delivery');
