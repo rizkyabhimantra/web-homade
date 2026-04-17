@@ -49,11 +49,14 @@ class MenuController extends Controller
                 $limit,
             );
 
-            $categories = (new CategoryService())->all();
+            $categories = (new CategoryService())->all(is_has_limit:false);
 
             if ($menus->isEmpty()) {
                 $response = $this->responseData->create(
                     "Tidak dapat menemukan menu",
+                    data : [
+                        'categories' => CategoryResource::collection($categories)->toArray($request),
+                    ],
                     status_code: 404,
                     status: "warning",
                     isJson: false

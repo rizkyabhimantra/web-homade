@@ -63,7 +63,7 @@ class MenuService
             return $menus->paginate($limit);
         }
 
-        if($is_query){
+        if ($is_query) {
             return $menus;
         }
 
@@ -176,19 +176,18 @@ class MenuService
         array $date,
         bool $is_query = false,
         bool $is_admin = true,
-    )
-    {
+    ) {
         $schedules = MenuSchedule::query();
-        
+
         $schedules->with([
             'menu',
         ])->whereBetween('date_at', $date);
 
-        if(!$is_query){
+        if (!$is_query) {
             $schedules = $schedules->get();
             $schedules = $schedules->groupBy(function ($schedule) {
                 return $schedule->date_at;
-            })->map(function ($schedule, $key) use($is_admin) {
+            })->map(function ($schedule, $key) use ($is_admin) {
                 return [
                     'is_admin' => $is_admin,
                     'date' => Carbon::parse($key)->format('d-m-Y'),
@@ -200,7 +199,7 @@ class MenuService
         }
 
         return $schedules;
-        
+
     }
 
     public function menuNonWeekly(
