@@ -42,7 +42,7 @@ class ContactSupportMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'mail.contact-support-mail',
+            markdown: 'mail.contact-support-mail',
             with: [
                 'mailData' => $this->mailData
             ]

@@ -41,7 +41,7 @@ class ChangedTransactionInformationMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'mail.changed-transaction-information-mail',
+            markdown: 'mail.changed-transaction-information-mail',
             with : [
                 'transaction' => $this->transaction,
                 'contact' => (new ContactService())->contact(),

@@ -40,7 +40,7 @@ class SuccessfullyChangedPassword extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'mail.change-password', 
+            markdown: 'mail.change-password', 
             with:[
                 'user' => $this->user
             ]

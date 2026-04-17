@@ -41,7 +41,7 @@ class TransactionOnDeliveryMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'mail.transaction-on-delivery-mail',
+            markdown: 'mail.transaction-on-delivery-mail',
             with: [
                 'transaction' => $this->transaction,
                 'contact' => (new ContactService())->contact()

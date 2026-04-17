@@ -44,7 +44,7 @@ class ChangedPasswordMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'mail.changed-password-mail',
+            markdown: 'mail.changed-password-mail',
             with : [
                 'user' => $this->user,
                 'contact' => $this->contact

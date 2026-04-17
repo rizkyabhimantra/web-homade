@@ -45,7 +45,7 @@ class UploudThePaymentProofMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'mail.uploud-the-payment-proof-mail',
+            markdown: 'mail.uploud-the-payment-proof-mail',
             with: [
                 'transaction' => $this->transaction,
                 'contact' => (new ContactService())->contact(),

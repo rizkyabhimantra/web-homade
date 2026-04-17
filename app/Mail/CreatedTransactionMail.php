@@ -47,7 +47,7 @@ class CreatedTransactionMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'mail.created-transaction-mail',
+            markdown: 'mail.created-transaction-mail',
             with: [
                 'transaction' => $this->transaction,
                 'contact' => (new ContactService())->contact(),
