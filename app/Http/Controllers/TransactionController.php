@@ -77,7 +77,7 @@ class TransactionController extends Controller
                 return view('profile.order.index', compact('response'));
             }
 
-            return$response = $this->responseData->create(
+            $response = $this->responseData->create(
                 'Successfully Getting Data!',
                 [
                     'pagination' => (new PaginationResource($transactions))->toArray($request),

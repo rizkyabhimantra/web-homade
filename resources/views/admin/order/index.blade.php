@@ -594,7 +594,7 @@ License: For each use you must have a valid license purchased only from above li
 									<div class="d-flex align-items-center ms-auto">
 										
 										<!--begin::Action wrapper-->
-										<form action="{{ route('admin.export-orders', [ 'filter_by' => 'yearly', 'category' => 'kitchen']) }}" method="post" class="d-flex align-items-center">
+										<form action="{{ route('admin.export-orders') }}" method="post" class="d-flex align-items-center">
 											@csrf
 											<button id="btnExportExcel" class="btn btn-sm btn-light-primary">
 												<i class="bi bi-file-earmark-spreadsheet fs-4"></i>
