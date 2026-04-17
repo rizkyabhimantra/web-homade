@@ -46,7 +46,7 @@ class TransactionController extends Controller
     {
         $search = $request->query('search', '');
         $category = $request->query('category', '');
-        $sort_by = $request->query('sort_by');
+        $sort_by = $request->query('sort_by', 'new_created');
 
         $status = $request->query('status');
         $status_delivery = $request->query('status_delivery');
@@ -77,7 +77,7 @@ class TransactionController extends Controller
                 return view('profile.order.index', compact('response'));
             }
 
-            $response = $this->responseData->create(
+            return$response = $this->responseData->create(
                 'Successfully Getting Data!',
                 [
                     'pagination' => (new PaginationResource($transactions))->toArray($request),

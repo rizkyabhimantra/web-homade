@@ -40,6 +40,7 @@ class TransactionService
         string|null $category,
         string|null $status,
         string|null $status_delivery,
+        string|null $sort_by = 'new_created',
         int $limit = 8,
         array|string|null $delivery_at,
         bool $is_query = false,
@@ -79,9 +80,9 @@ class TransactionService
                 return $query->whereDate('delivery_at', $delivery_at);
             })
 
-            // ->when($sort_by, function ($query, $sort_by) {
-            //     return $this->sort_by($query, $sort_by);
-            // })
+            ->when($sort_by, function ($query, $sort_by) {
+                return $this->sort_by($query, $sort_by);
+            })
 
             ->when($category, function ($query, $category) {
                 return $query->where('category', $category);
@@ -97,7 +98,7 @@ class TransactionService
     public function byCustomer(
         string|null $search,
         string|null $category,
-        string|null $sort_by,
+        string|null $sort_by = 'new_created',
         string|null $status,
         string|null $status_delivery,
         int $limit = 3,
@@ -740,13 +741,13 @@ class TransactionService
         // harga termurah, termahal, dibuat terlama, dibuat skrng
         switch ($sort_by) {
             case 'lowest_price':
-                return $query->orderBy('total_price', 'desc');
-            case 'highest_price':
                 return $query->orderBy('total_price');
+            case 'highest_price':
+                return $query->orderBy('total_price', 'desc');
             case 'old_created':
-                return $query->orderBy('created_at', 'desc');
-            case 'new_created':
                 return $query->orderBy('created_at');
+            case 'new_created':
+                return $query->orderBy('created_at', 'desc');
             default:
                 return $query;
         }
