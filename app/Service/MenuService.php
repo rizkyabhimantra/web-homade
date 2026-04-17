@@ -81,7 +81,7 @@ class MenuService
             ->get()
             ->filter(fn($menu) => $menu->total_order > 0);
         if ($populers->isEmpty()) {
-            return $this->all(limit: 3)->inRandomOrder();
+            return $this->all(limit: 3);
         }
         return $populers;
         // sementara gini dlu
