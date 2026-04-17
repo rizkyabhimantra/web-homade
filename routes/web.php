@@ -229,27 +229,23 @@ Route::name('mailable.')->prefix('mailable')->group(function () {
 
     // accepted-the-payment-proof-mail
     Route::get('/accepted-the-payment-proof-mail', function () {
-        $transaction = (new TransactionService())->all(null, null, null, null, null,1, null, true)->where('status', 'success')->first();
+        $transaction = (new TransactionService())->all(null, null, null, null, null, 1, null, true)->where('status', 'success')->first();
+        $transaction = (new TransactionService())->detail($transaction->id, false);
         return new AcceptedThePaymentProofMail($transaction);
     })->name('accepted-the-payment-proof-mail');
 
     // accepted-the-transaction-mail
-    Route::get('/accepted-the-transaction-mail', function () {
-        $transaction = (new TransactionService())->all(null, null, null, null, null,1, null, true)->where('status', 'pending')->first();
+    Route::get('/accepted-transaction-mail', function () {
+        $transaction = (new TransactionService())->all(null, null, null, null, null, 1, null, true)->where('status', 'pending')->first();
+        $transaction = (new TransactionService())->detail($transaction->id, false);
         return new AcceptedTransactionMail($transaction);
-    })->name('accepted-the-transaction-mail');
+    })->name('accepted-transaction-mail');
 
-    // changed-passowrd-mail
-    Route::get('/changed-passowrd-mail', function () {
+    // changed-password-mail
+    Route::get('/changed-password-mail', function () {
         $user = (new UserService())->all()->first();
         return new ChangedPasswordMail($user);
-    })->name('changed-passowrd-mail');
-
-    // change-transaction-mail
-    Route::get('/change-transaction-mail', function () {
-        $transaction = (new TransactionService())->all(null, null, null, null, null,1, null, true)->first();
-        return new ChangedTransactionInformationMail($transaction);
-    })->name('change-transaction-mail');
+    })->name('changed-password-mail');
 
     // contact-support-mail
     Route::get('/contact-support-mail', function () {
@@ -262,11 +258,12 @@ Route::name('mailable.')->prefix('mailable')->group(function () {
         return new ContactSupportMail($mailData);
     })->name('contact-support-mail');
 
-    // change-transaction-information-mail
-    Route::get('/change-transaction-information-mail', function () {
-        $transaction = (new TransactionService())->all(null, null, null, null, null,1, null, true)->first();
+    // changed-transaction-information-mail
+    Route::get('/changed-transaction-information-mail', function () {
+        $transaction = (new TransactionService())->all(null, null, null, null, null, 1, null, true)->first();
+        $transaction = (new TransactionService())->detail($transaction->id, false);
         return new ChangedTransactionInformationMail($transaction);
-    })->name('/change-transaction-information-mail');
+    })->name('/changed-transaction-information-mail');
 
     // created-account-mail
     Route::get('/created-account-mail', function () {
@@ -276,59 +273,67 @@ Route::name('mailable.')->prefix('mailable')->group(function () {
 
     // created-transaction-mail
     Route::get('/created-transaction-mail', function () {
-        $transaction = (new TransactionService())->all(null, null, null, null, null,1, null, true)->first();
+        $transaction = (new TransactionService())->all(null, null, null, null, null, 1, null, true)->first();
+        $transaction = (new TransactionService())->detail($transaction->id, false);
         return new CreatedTransactionMail($transaction);
     })->name('/created-transaction-mail');
 
     // rejected-payment-proof-mail
     Route::get('/rejected-payment-proof-mail', function () {
-        $transaction = (new TransactionService())->all(null, null, null, null, null,1, null, true)->whereHas('payment_proof', function ($q) {
+        $transaction = (new TransactionService())->all(null, null, null, null, null, 1, null, true)->whereHas('payment_proof', function ($q) {
             return $q->where('status', 'rejected');
         })
             ->first();
+        $transaction = (new TransactionService())->detail($transaction->id, false);
         return new RejectedPaymentProofMail($transaction);
     })->name('/rejected-payment-proof-mail');
 
     // rejected-transaction-mail
     Route::get('/rejected-transaction-mail', function () {
-        $transaction = (new TransactionService())->all(null, null, null, null, null,1, null, true)->where('status', 'LIKE', '%cancelled%')
+        $transaction = (new TransactionService())->all(null, null, null, null, null, 1, null, true)->where('status', '=', 'cancelled_by_admin')
             ->first();
+        $transaction = (new TransactionService())->detail($transaction->id, false);
         return new RejectedTransactionMail($transaction);
     })->name('/rejected-transaction-mail');
 
     // transaction-completed-mail
     Route::get('/transaction-completed-mail', function () {
-        $transaction = (new TransactionService())->all(null, null, null, null, null,1, null, true)->where('status', 'success')
+        $transaction = (new TransactionService())->all(null, null, null, null, null, 1, null, true)->where('status', 'success')
             ->first();
+        $transaction = (new TransactionService())->detail($transaction->id, false);
         return new TransactionCompletedMail($transaction);
     })->name('/transaction-completed-mail');
 
     // transaction-delivered-mail
     Route::get('/transaction-delivered-mail', function () {
-        $transaction = (new TransactionService())->all(null, null, null, null, null,1, null, true)->where('status_delivery', 'delivered')
+        $transaction = (new TransactionService())->all(null, null, null, null, null, 1, null, true)->where('status_delivery', 'delivered')
             ->first();
+        $transaction = (new TransactionService())->detail($transaction->id, false);
         return new TransactionDeliveredMail($transaction);
     })->name('/transaction-delivered-mail');
 
     // transaction-mail
     Route::get('/transaction-mail', function () {
-        $transaction = (new TransactionService())->all(null, null, null, null, null,1, null, true)->first();
+        $transaction = (new TransactionService())->all(null, null, null, null, null, 1, null, true)->first();
+        $transaction = (new TransactionService())->detail($transaction->id, false);
         return new TransactionMail($transaction);
     })->name('/transaction-mail');
 
     // transaction-on-delivery-mail
     Route::get('/transaction-on-delivery-mail', function () {
-        $transaction = (new TransactionService())->all(null, null, null, null, null,1, null, true)->where('status_delivery', 'on_the_way')
+        $transaction = (new TransactionService())->all(null, null, null, null, null, 1, null, true)->where('status_delivery', 'on_the_way')
             ->first();
+        $transaction = (new TransactionService())->detail($transaction->id, false);
         return new TransactionOnDeliveryMail($transaction);
     })->name('/transaction-on-delivery-mail');
 
     // uploud-the-payment-proof-mail
     Route::get('/uploud-the-payment-proof-mail', function () {
-        $transaction = (new TransactionService())->all(null, null, null, null, null,1, null, true)->whereHas('payment_proof', function ($q) {
+        $transaction = (new TransactionService())->all(null, null, null, null, null, 1, null, true)->whereHas('payment_proof', function ($q) {
             return $q->where('status', 'waiting_for_invoice');
         })
             ->first();
+        $transaction = (new TransactionService())->detail($transaction->id, false);
         return new UploudThePaymentProofMail($transaction);
     })->name('/uploud-the-payment-proof-mail');
 
