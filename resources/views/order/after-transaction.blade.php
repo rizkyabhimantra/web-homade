@@ -52,7 +52,7 @@
                         </div>
                         <div class="d-flex align-items-center justify-content-center flex-column w-100 mb-3">
                             <p class="fsc-2 mb-3 w-100 fw-bold">Note Opsional</p>
-                            <p class="fsc-2 mb-0 px-3 py-4 w-100 border-grey-1 rounded-4 h-100px fw-bold">{{ $response['data']['note'] }} </p>
+                            <p class="fsc-2 mb-0 px-3 py-4 w-100 border-grey-1 rounded-4 h-100px overflow-scroll fw-bold">{{ $response['data']['note'] }} </p>
                         </div>
 
                     </div>

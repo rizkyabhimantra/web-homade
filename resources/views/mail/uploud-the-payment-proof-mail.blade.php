@@ -1,13 +1,23 @@
-<div>
-    <!-- Knowing is not enough; we must apply. Being willing is not enough; we must do. - Leonardo da Vinci -->
+@include('components.header')
 
-    <h2>Berhasil Dalam Mengunggah Bukti Pembayaran</h2>
+<div class="d-flex w-100 min-h-100 p-15 px-5 px-md-15 bg-accent">
+    <div class="d-flex flex-column bg-white p-10 align-items-center justify-content-between w-100">
+    
+        <p class=" w-100 fsc-3 text-center fw-bold text-accent">Anda Telah Mengirim Bukti Pembayaran Untuk Pemesanan Anda</p>
 
-    {{ $transaction }}
+        <div class="d-flex w-100 h-100 flex-column align-items-center justify-content-center">
 
-    <h3>Contact</h3>
-    {{ $contact }}
-
-    <span>Apakah Ini Admin : {{ $is_admin ? 'Ya' : "tidak" }}</span>
-
+            <p class=" w-100 text-center fsc-2 mb-1"><span class="fsc-2 fw-bold">ID Pemesanan:</span> {{ $transaction['id'] }}</p>
+            <br>
+            <p class=" w-100 text-center fsc-2 mb-1"><span class="fsc-2 fw-bold">Subtotal:</span> {{ $transaction['subtotal'] }}</p>
+            <p class=" w-100 text-center fsc-2 mb-1"><span class="fsc-2 fw-bold">Ongkos Kirim:</span> {{ $transaction['shipping_cost'] }}</p>
+            <p class=" w-100 text-center fsc-2 mb-1"><span class="fsc-2 fw-bold">Total Harga:</span> {{ $transaction['total_price'] }}</p>
+                
+        </div>
+        
+        
+        <p class=" w-100 fsc-2 mb-1 text-center">{{ $contact['email'] }} | {{ $contact['customer_care_phone'] }}</p>
+    
+    
+    </div>
 </div>

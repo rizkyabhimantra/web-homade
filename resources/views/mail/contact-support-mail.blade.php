@@ -1,105 +1,21 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>Pesan Support Baru</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #f4f6f9;
-            padding: 30px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        .email-card {
-            max-width: 600px;
-            margin: 0 auto;
-            background-color: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            overflow: hidden;
-        }
-        .email-header {
-            background-color: #0d6efd; /* Primary Bootstrap */
-            color: #ffffff;
-            padding: 25px 20px;
-            text-align: center;
-        }
-        .email-body {
-            padding: 30px;
-        }
-        .info-label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #6c757d;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 5px;
-        }
-        .info-value {
-            font-size: 1.05rem;
-            color: #212529;
-            font-weight: 500;
-            margin-bottom: 20px;
-        }
-        .message-box {
-            background-color: #f8f9fa;
-            border-left: 4px solid #0d6efd;
-            padding: 20px;
-            border-radius: 4px;
-            color: #495057;
-            white-space: pre-wrap; /* Biar enter/newline dari textarea kebaca */
-            font-style: italic;
-        }
-        .email-footer {
-            background-color: #f8f9fa;
-            border-top: 1px solid #e9ecef;
-            padding: 15px;
-            text-align: center;
-            font-size: 0.85rem;
-            color: #adb5bd;
-        }
-        a { text-decoration: none; color: #0d6efd; }
-    </style>
-</head>
-<body>
-    <div class="email-card">
-        <div class="email-header">
-            <h4 class="mb-0 fw-bold">Pesan Masuk Customer</h4>
-        </div>
-        
-        <div class="email-body">
-            <p class="mb-4">Halo Tim Support,</p>
-            <p class="mb-4">Ada pesan baru yang masuk melalui formulir kontak di website. Berikut adalah detail dari pengirim:</p>
-            
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="info-label">Nama Pengirim</div>
-                    <div class="info-value">{{ $mailData['fullname'] }}</div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="info-label">Alamat Email</div>
-                    <div class="info-value">
-                        <a href="mailto:{{ $mailData['email'] }}">{{ $mailData['email'] }}</a>
-                    </div>
-                </div>
-            </div>
+@include('components.header')
 
-            <div class="info-label mt-2">Subjek Pesan</div>
-            <div class="info-value fw-bold">{{ $mailData['subject'] }}</div>
+<div class="d-flex w-100 min-h-100 p-15 px-5 px-md-15 bg-accent">
+    <div class="d-flex flex-column bg-white p-10 align-items-center justify-content-between w-100">
+    
+        <p class=" w-100 fsc-4 text-center fw-bold text-accent mb-0">Pesan Masuk Dari Customer</p>
+        <p class=" w-100 fsc-2 text-center fw-semibold">Ada customer yang mengirim pesan melalui sistem kontak admin di website homade</p>
 
-            <div class="info-label mt-4 mb-2">Isi Pesan:</div>
-            <div class="message-box">{{ $mailData['message'] }}</div>
-            
-            <div class="mt-4 pt-3 border-top">
-                <p class="small text-muted mb-0">
-                    <i class="bi bi-info-circle me-1"></i> <strong>Tips:</strong> Anda bisa langsung membalas email ini (Reply) untuk merespons pesan customer secara langsung.
-                </p>
+        <div class="d-flex w-100 h-100 flex-column align-items-center justify-content-center">
+
+            <p class="fsc-3 fw-semibold mb-1 w-100">Nama Pengirim: {{ $mailData['fullname'] }}</p>
+            <p class="fsc-3 fw-semibold mb-1 w-100">Alamat Email Pengirim: <a href="mailto:{{ $mailData['email'] }}">{{ $mailData['email'] }}</a></p>
+            <br>
+                
+            <div class="d-flex w-100 flex-column p-3 border-homade-1 rounded-2">
+                <p class="fsc-3 mb-1 w-100 fw-semibold">{{ $mailData['subject'] }}</p>
+                <p class="fsc-2 mb-1 w-100 h-200px overflow-scroll">{{ $mailData['message'] }} </p>
             </div>
-        </div>
-        
-        <div class="email-footer">
-            &copy; {{ date('Y') }} Sistem Notifikasi Katering.
         </div>
     </div>
-</body>
-</html>
+</div>
