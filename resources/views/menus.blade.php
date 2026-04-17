@@ -7,7 +7,6 @@
 <html lang="en">
     @include('components.header' )
 
-    @dd($response)
     <body class="d-flex flex-column">
         @include('components.navbarHead',[ "page" => "menu", "bg" => ""])
         
@@ -67,13 +66,20 @@
 
             <div class="d-flex w-100 flex-shrink-0 align-items-md-center justify-content-center">
                 <div class="d-flex w-90 flex-shrink-0 flex-column align-items-center align-items-lg-start">
-                    <p class="fsc-md-5 fsc-6 homade-underline">{{ !$category ? 'Menu' : '' }}{{ $category == "ayam" ? 'Ayam' : '' }}{{ $category == "ikan" ? 'Ikan & Seafood' : '' }}{{ $category == "nasi" ? 'Nasi' : '' }}{{ $category == "sapi" ? 'Sapi & Kambing' : '' }}</p>
+                    <p class="fsc-md-5 fsc-6 homade-underline">{{ $category }}</p>
                     <p class="fs-2">menu masakan {{ $category == "ayam" ? 'ayam' : '' }}{{ $category == "ikan" ? 'ikan & seafood' : '' }}{{ $category == "nasi" ? 'nasi' : '' }}{{ $category == "sapi" ? 'sapi & kambing' : '' }} enak ala homade</p>
                 </div>
             </div>
 
             <div class="d-flex w-100 flex-shrink-0 align-items-center flex-column justify-content-center">
                 
+                @if ($response['status_code'] == 404)
+                <div class="d-flex flex-column d-sm-grid grid-template-homade-menus w-90 align-items-center justify-content-center flex-shrink-0 gap-5">
+                    
+                    <p class="fsc-3">Menu Tidak Ditemukan</p>
+                    
+                </div>
+                @else
                 <div class="d-flex flex-column d-sm-grid grid-template-homade-menus w-90 align-items-center justify-content-center flex-shrink-0 gap-5">
 
                     @foreach ($response['data']['items'] ?? [] as $menu)
@@ -92,6 +98,7 @@
                     @endforeach
                     
                 </div>
+                @endif
 
                 <div class="d-flex align-items-center justify-content-between w-90">
                     <select name="limit" onchange="window.location.href='?limit=' + this.value" class="h-100 border-grey-1 outline-0 bg-transparent fs-4 py-2 px-2 rounded-2">
