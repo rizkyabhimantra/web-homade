@@ -54,6 +54,9 @@ class MenuController extends Controller
             if ($menus->isEmpty()) {
                 $response = $this->responseData->create(
                     "Tidak dapat menemukan menu",
+                    data : [
+                        'categories' => CategoryResource::collection($categories)->toArray($request),
+                    ],
                     status_code: 404,
                     status: "warning",
                     isJson: false
