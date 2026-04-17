@@ -55,15 +55,16 @@ class DetailTransactionResource extends JsonResource
 
             'items' => $this->orders->map(function ($order) {
                 return [
+                    'theme' => $order->menu_price->menu->theme->name,
                     'name' => $order->menu_price->menu->name,
                     'quantity' => $order->quantity,
+                    'note' => $order->note,
                     'total_price' => $order->total_price,
                     'price_at_purchase' => $order->price_at_purchase,
                     'vegetable' => $order->menu_price->menu->vegetable,
                     'side_dish' => $order->menu_price->menu->side_dish,
                     'chili_sauce' => $order->menu_price->menu->chili_sauce,
                     'image_url' => $order->menu_price->menu->image_url,
-                    'theme' => $order->menu_price->menu->theme->name,
                     'categories' => $order->menu_price->menu->menu_categories->map(function ($category) {
                         return $category->categories->name;
                     }),

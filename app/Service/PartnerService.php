@@ -20,7 +20,7 @@ class PartnerService
         bool $is_has_limit = true,
         bool $is_query = false,
     ) {
-        $partners =  Partner::query();
+        $partners =  Partner::query()->orderByDesc('created_at');
         
         $partners->when($search, function ($query, $search) {
             $search = strtolower($search);

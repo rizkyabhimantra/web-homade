@@ -27,7 +27,7 @@ class MenuService
         bool $is_query = false,
     ) {
         $status = strtolower($status);
-        $menus = Menu::query();
+        $menus = Menu::query()->orderByDesc('created_at');
 
         if ($status === 'all') {
             $menus->withTrashed();

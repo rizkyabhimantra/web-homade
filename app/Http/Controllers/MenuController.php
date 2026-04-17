@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CategoryResource;
 use App\Http\Resources\DetailMenuResource;
 use App\Http\Resources\MenuResource;
 use App\Http\Resources\MenuScheduleResource;
 use App\Http\Resources\PaginationResource;
 use App\Http\Resources\SelectMenuResource;
 use App\ResponseData;
+use App\Service\CategoryService;
 use App\Service\MenuService;
 use App\TransactionCategory;
 use App\Utils\ConvertDateSafely;
@@ -47,6 +49,8 @@ class MenuController extends Controller
                 $limit,
             );
 
+            $categories = (new CategoryService())->all();
+
             if ($menus->isEmpty()) {
                 $response = $this->responseData->create(
                     "Tidak dapat menemukan menu",
@@ -57,11 +61,12 @@ class MenuController extends Controller
                 return view('menus', compact('response'));
             }
 
-            $response = $this->responseData->create(
+           $response = $this->responseData->create(
                 'Berhasil Mendapatkan Menu - Menu',
                 [
                     'pagination' => (new PaginationResource($menus))->toArray($request),
                     'items' => MenuResource::collection($menus)->toArray($request),
+                    'categories' => CategoryResource::collection($categories)->toArray($request),
                 ],
                 isJson: false
             );

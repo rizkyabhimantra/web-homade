@@ -12,7 +12,7 @@ class CategoryService{
         string|null $status = 'active',
         bool $is_query = false,
     ){
-        $categories = Category::query();
+        $categories = Category::query()->orderByDesc('created_at');
 
         if($status === 'all'){
             $categories->withTrashed();
