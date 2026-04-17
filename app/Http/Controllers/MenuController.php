@@ -49,7 +49,7 @@ class MenuController extends Controller
                 $limit,
             );
 
-            $categories = (new CategoryService())->all();
+            $categories = (new CategoryService())->all(is_has_limit:false);
 
             if ($menus->isEmpty()) {
                 $response = $this->responseData->create(

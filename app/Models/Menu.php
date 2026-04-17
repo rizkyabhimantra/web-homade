@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\StatusDelivery;
+use App\StatusTransaction;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -43,5 +45,14 @@ class Menu extends Model
     public function weekly(){
         return $this->hasMany(MenuSchedule::class, 'id_menu')
         ->where('date_at', '>' , now());
+    }
+
+    public function successfuly_order(){
+        return $this->hasMany(Order::class, 'id_menu')
+        ->with('transaction')
+        ->whereHas('transaction' , function($query){
+            return $query->where('status', StatusTransaction::PAID)
+            ->orWhere('status_delivery', StatusDelivery::DELIVERED);
+        });
     }
 }
