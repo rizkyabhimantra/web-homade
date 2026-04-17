@@ -20,7 +20,7 @@ class AchievementService
         $is_query = false,
     ) {
 
-        $achievements = Achievement::query();
+        $achievements = Achievement::query()->orderByDesc('created_at');
 
         $achievements->when($search, function ($query, $search) {
             $search = strtolower($search);

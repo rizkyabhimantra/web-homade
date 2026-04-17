@@ -17,7 +17,7 @@ class PackageService{
         bool $is_query = false,
     ){
         $status = strtolower($status);
-        $packages = Package::query();
+        $packages = Package::query()->orderByDesc('created_at');
         
         $packages->withTrashed($status !== 'active')
         ->when($search, function($query, $search){

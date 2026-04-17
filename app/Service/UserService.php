@@ -31,7 +31,8 @@ class UserService
             ->when($search, function ($query, $search) {
                 $search = strtolower($search);
                 return $query->whereRaw('LOWER(name) LIKE', ["%$search%"]);
-            });
+            })->orderByDesc('created_at');
+
         if ($is_has_limit) {
             return $users->paginate($limit);
         }

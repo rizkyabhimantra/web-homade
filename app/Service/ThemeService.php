@@ -21,11 +21,11 @@ class ThemeService
         string|null $status = 'active',
         bool $is_query = false,
     ) {
-        $themes = Theme::query();
+        $themes = Theme::query()->orderByDesc('created_at');
 
-        if($status === 'all'){
+        if ($status === 'all') {
             $themes->withTrashed();
-        }else if($status === 'deleted'){
+        } else if ($status === 'deleted') {
             $themes->onlyTrashed();
         }
 
@@ -33,11 +33,11 @@ class ThemeService
             $search = strtolower($search);
             return $query->whereRaw('LOWER(name) LIKE ?', "%$search%");
         });
-        if($is_has_limit){
+        if ($is_has_limit) {
             return $themes->paginate($limit);
         }
 
-        if($is_query){
+        if ($is_query) {
             return $themes;
         }
 
@@ -47,11 +47,10 @@ class ThemeService
     public function detail(
         string $id,
         bool $is_for_management = false,
-    )
-    {
+    ) {
         return Theme::where('id', $id)
-        ->withTrashed($is_for_management)
-        ->first();
+            ->withTrashed($is_for_management)
+            ->first();
     }
 
     public function save(array $data)
@@ -77,8 +76,24 @@ class ThemeService
         $theme->delete();
     }
 
-    public function restore(Theme $theme){
+    public function restore(Theme $theme)
+    {
         $theme->restore();
+    }
+
+    private function sort_by(
+        mixed $query,
+        string $sort_by
+    ) {
+        // harga termurah, termahal, dibuat terlama, dibuat skrng
+        switch ($sort_by) {
+            case 'old_created':
+                return $query->orderBy('created_at');
+            case 'new_created':
+                return $query->orderBy('created_at', 'desc');
+            default:
+                return $query;
+        }
     }
 
 }

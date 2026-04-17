@@ -18,7 +18,7 @@ class PaymentMethodService
 
     public function all(string|null $search = null, $limit = 8, bool $is_has_limit = false, bool $is_query = false)
     {
-        $query = PaymentMethod::query();
+        $query = PaymentMethod::query()->orderByDesc('created_at');
 
         if ($search) {
             $query->where('bank_name', 'LIKE', "%{$search}%")

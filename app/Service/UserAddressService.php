@@ -15,6 +15,7 @@ class UserAddressService
     {
         // maximal memiliki 3 alamat saja
         return UserAddress::where('id_user', auth()->user()->id)
+            ->orderByDesc('created_at')
             ->orderBy('is_main_address', 'desc')
             ->get();
     }
