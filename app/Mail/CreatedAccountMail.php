@@ -40,7 +40,7 @@ class CreatedAccountMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'mail.created-account-mail',
+            view: 'mail.created-account-mail',
             with: [ 'user' => $this->user ]
         );
     }

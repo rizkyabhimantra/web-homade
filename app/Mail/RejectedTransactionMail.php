@@ -44,7 +44,7 @@ class RejectedTransactionMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'mail.rejected-transaction-mail',
+            view: 'mail.rejected-transaction-mail',
             with: [
                 'transaction' => $this->transaction,
                 'contact' => (new ContactService())->contact(),

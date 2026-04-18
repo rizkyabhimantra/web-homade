@@ -41,7 +41,7 @@ class RejectedPaymentProofMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'mail.rejected-payment-proof-mail',
+            view: 'mail.rejected-payment-proof-mail',
             with: [
                 'transaction' => $this->transaction,
                 'contact' => (new ContactService())->contact(),

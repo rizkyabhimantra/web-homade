@@ -41,7 +41,7 @@ class AcceptedThePaymentProofMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'mail.accepted-the-payment-proof-mail',
+            view: 'mail.accepted-the-payment-proof-mail',
             with : [
                 'transaction' => $this->transaction,
                 'contact' => (new ContactService())->contact(),

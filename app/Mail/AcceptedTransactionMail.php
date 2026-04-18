@@ -41,7 +41,7 @@ class AcceptedTransactionMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'mail.accepted-transaction-mail',
+            view: 'mail.accepted-transaction-mail',
             with: [
                 'transaction' => $this->transaction,
                 'contact' => (new ContactService())->contact()
