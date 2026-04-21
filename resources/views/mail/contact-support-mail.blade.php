@@ -1,21 +1,51 @@
-@include('components.header')
-
-<div class="d-flex w-100 min-h-100 p-15 px-5 px-md-15 bg-accent">
-    <div class="d-flex flex-column bg-white p-10 align-items-center justify-content-between w-100">
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice Pemesanan Homade</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #121212; font-family: Arial, Helvetica, sans-serif; color: #ffffff;">
     
-        <p class=" w-100 fsc-4 text-center fw-bold text-accent mb-0">Pesan Masuk Dari Customer</p>
-        <p class=" w-100 fsc-2 text-center fw-semibold">Ada customer yang mengirim pesan melalui sistem kontak admin di website homade</p>
-
-        <div class="d-flex w-100 h-100 flex-column align-items-center justify-content-center">
-
-            <p class="fsc-3 fw-semibold mb-1 w-100">Nama Pengirim: {{ $mailData['fullname'] }}</p>
-            <p class="fsc-3 fw-semibold mb-1 w-100">Alamat Email Pengirim: <a href="mailto:{{ $mailData['email'] }}">{{ $mailData['email'] }}</a></p>
-            <br>
+    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #121212; padding: 40px 20px;">
+        <tr>
+            <td align="center">
                 
-            <div class="d-flex w-100 flex-column p-3 border-homade-1 rounded-2">
-                <p class="fsc-3 mb-1 w-100 fw-semibold">{{ $mailData['subject'] }}</p>
-                <p class="fsc-2 mb-1 w-100 h-200px overflow-scroll">{{ $mailData['message'] }} </p>
-            </div>
-        </div>
-    </div>
-</div>
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 500px; background-color: #1a1a1a; border: 1px solid #444444; border-radius: 12px; overflow: hidden;">
+                    <tr>
+                        <td align="center" style="padding: 40px 30px;">
+                            
+                            <img src="https://homade.id/wp-content/uploads/2026/02/Logo-Primer-White-Font-hm.png" alt="Homade Logo" width="130" style="display: block; border: 0; max-width: 100%; height: auto; color: #ffffff; font-size: 20px; font-weight: bold; text-align: center;">
+
+                            <h2 style="margin: 30px 0; font-size: 18px; font-weight: normal; text-align: center; color: #ffffff; line-height: 1.5;">
+                                Ada Pesan Masuk Dari Customer
+                            </h2>
+                            
+                            <table border="0" cellpadding="12" cellspacing="0" width="100%" style="font-size: 14px; color: #cccccc; margin-bottom: 35px;">
+                                <tr>
+                                    <td align="left" width="50%" style="border-bottom: 1px solid #333333;">Nama Pengirim</td>
+                                    <td align="right" width="50%" style="border-bottom: 1px solid #333333; color: #ffffff;">{{ $mailData['fullname'] }}</td>
+                                </tr>
+
+                                <tr>
+                                    <td align="left" width="50%" style="border-bottom: 1px solid #333333;">Email Pengirim</td>
+                                    <td align="right" width="50%" style="border-bottom: 1px solid #333333; color: #ffffff;"><a style="color: #fff;" href="mailto:{{ $mailData['email'] }}">{{ $mailData['email'] }}</a></td>
+                                </tr>
+                            </table>
+
+                            <h2 style="margin: 30px 0; font-size: 18px; font-weight: bold; text-align: center; color: #ffffff; line-height: 1.5;">
+                                {{ $mailData['subject'] }}
+                            </h2>
+
+                            <h2 style="margin: 30px 0; font-size: 14px; font-weight: normal; text-align: center; color: #ffffff; line-height: 1.5;">
+                                {{ $mailData['message'] }}
+                            </h2>
+
+                        </td>
+                    </tr>
+                </table>
+                </td>
+        </tr>
+    </table>
+    </body>
+</html>

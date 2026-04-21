@@ -183,7 +183,7 @@ class MainController extends Controller
 
     private function gettingPeriod(Request $request)
     {
-        $period = strtolower($request->query('period', 'today'));
+        $period = strtolower($request->query('period', 'weekly'));
         $allowed_periods = ['today', 'weekly', 'monthly', 'yearly'];
 
         // Validasi periode, default 'today'
