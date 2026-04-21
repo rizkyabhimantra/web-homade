@@ -16,7 +16,7 @@ class Menu extends Model
     {
         return $this->hasMany(MenuCategory::class, foreignKey: 'id_menu')
             ->with('categories')
-            ->whereHas('categories', function($query){
+            ->whereHas('categories', function ($query) {
                 $query->whereNull('deleted_at');
             })
             ->select(['id', 'id_menu', 'id_category']);
@@ -42,17 +42,23 @@ class Menu extends Model
         return $this->hasMany(MenuSchedule::class, 'id_menu');
     }
 
-    public function weekly(){
+    public function weekly()
+    {
         return $this->hasMany(MenuSchedule::class, 'id_menu')
-        ->where('date_at', '>' , now());
+            ->where('date_at', '>', now());
     }
 
-    public function successfuly_order(){
+    public function successfuly_order_weekly()
+    {
         return $this->hasMany(Order::class, 'id_menu')
-        ->with('transaction')
-        ->whereHas('transaction' , function($query){
-            return $query->where('status', StatusTransaction::PAID)
-            ->orWhere('status_delivery', StatusDelivery::DELIVERED);
-        });
+            ->whereHas('transaction', function ($query) {
+                // Menggunakan parameter grouping supaya OR tidak merusak WHERE lainnya
+                $query->where(function ($q) {
+                    $q->where('status', StatusTransaction::PAID)
+                        ->orWhere('status_delivery', StatusDelivery::DELIVERED);
+                })
+                    // Filter 7 hari terakhir (6 hari lalu + hari ini)
+                    ->whereBetween('created_at', [now()->subDays(6)->startOfDay(), now()->endOfDay()]);
+            });
     }
 }

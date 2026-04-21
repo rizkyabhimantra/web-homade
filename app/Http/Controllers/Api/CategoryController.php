@@ -28,9 +28,8 @@ class CategoryController extends Controller
         try {
 
             $search = $request->query('search');
-            $limit = (int) $request->query('limit', 3);
 
-            $categories = $this->categoryService->all($search, $limit);
+            $categories = $this->categoryService->all($search, is_has_limit: false);
 
             if ($categories->isEmpty()) {
                 return $this->responseData->create(
@@ -42,10 +41,7 @@ class CategoryController extends Controller
 
             return $this->responseData->create(
                 'Berhasil mendapatkan category',
-                [
-                    'pagination' => new PaginationResource($categories),
-                    'categories' => CategoryResource::collection($categories),
-                ],
+                CategoryResource::collection($categories)
             );
 
         } catch (Exception $e) {

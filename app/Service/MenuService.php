@@ -74,8 +74,17 @@ class MenuService
     public function getWeeklyPopuler()
     {
         // ini dapet bisa dikategorikan populer dari mana?
+        // di kategorikan berdasarkan menu yang paling banyak terjual
+        $populers = Menu::withCount('successfuly_order_weekly as total_order')
+            ->orderBy('total_order', 'desc')
+            ->limit(3)
+            ->get()
+            ->filter(fn($menu) => $menu->total_order > 0);
+        if ($populers->isEmpty()) {
+            return $this->all(limit: 3);
+        }
+        return $populers;
         // sementara gini dlu
-        return $this->all(limit: 3);
     }
 
     public function searchByID(

@@ -26,9 +26,8 @@ class ThemeController extends Controller
     {
         try {
             $search = $request->query('search');
-            $limit = (int) $request->query('limit', 3);
 
-            $themes = $this->themeService->all($search, $limit);
+            $themes = $this->themeService->all($search, is_has_limit:false);
 
             if ($themes->isEmpty()) {
                 return $this->responseData->create(
@@ -40,10 +39,7 @@ class ThemeController extends Controller
 
            return $this->responseData->create(
                 'Berhasil mendapatkan Tema',
-                [
-                    'pagination' => new PaginationResource($themes),
-                    'themes' => ThemeResource::collection($themes),
-                ],
+                ThemeResource::collection($themes),
             );
         } catch (Exception $e) {
             Log::error($e->getMessage());
