@@ -1,3 +1,13 @@
+
+
+@php
+    $data = $response['data'];
+    $menu = $data['detail_menu'];
+    $themes = $data['themes'];
+    $categories = $data['categories'];
+    $packages = $data['packages'];
+@endphp
+
 <!DOCTYPE html>
 <html lang="en">
 	<!--begin::Head-->
@@ -54,7 +64,7 @@
 						<!--begin::Mobile logo-->
 						<div class="d-flex align-items-center flex-grow-1 flex-lg-grow-0">
 							<a href="index.html" class="d-lg-none">
-								<img alt="Logo" src="assets/media/logos/Logo-Primer.svg" class="h-35px" />
+								<img alt="Logo" src="{{asset('assets/media/logos/Logo-Primer.svg')}}" class="h-35px" />
 							</a>
 						</div>
 						<!--end::Mobile logo-->
@@ -297,7 +307,6 @@
 													<!--end::Section-->
 													<!--begin::Illustration-->
 													<div class="text-center px-4">
-														<img class="mw-100 mh-200px" alt="image" src="assets/media/illustrations/sketchy-1/5.png" />
 													</div>
 													<!--end::Illustration-->
 												</div>
@@ -568,7 +577,7 @@
 										<ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1 d-none d-md-flex">
 											<!--begin::Item-->
 											<li class="breadcrumb-item text-muted">
-												<a href="index.html" class="">Home</a>
+												<a href="{{ route('admin.dashboard') }}" class="">Home</a>
 											</li>
 											<!--end::Item-->
 
@@ -597,7 +606,9 @@
 							<div id="kt_app_content" class="app-content flex-column-fluid">
 								<!--begin::Content container-->
 								<div id="kt_app_content_container" class="app-container container-fluid">
-									<form action="">
+									<form action="{{ route('admin.edit-menu', [ 'id' => $menu['id'] ] ) }}" method="POST" enctype="multipart/form-data">
+                                        @csrf
+                                        @method('PUT')
 										<!--begin::Row Breadcrumb for Mobile View-->
 										<div class="row mb-5 mb-xl-10 d-md-none">
 											<div class="col-12">
@@ -606,7 +617,7 @@
 												<ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1 d-md-none">
 													<!--begin::Item-->
 													<li class="breadcrumb-item text-muted">
-														<a href="index.html" class="">Home</a>
+														<a href="{{ route('admin.dashboard') }}" class="">Home</a>
 													</li>
 													<!--end::Item-->
 
@@ -632,7 +643,7 @@
 											<div class="col-md-12">
 												<div class="d-flex flex-stack flex-wrap">
 													<h3 class="m-md-0">Buat Menu</h3>
-													<a href="menu.html" class="btn btn-light-primary">
+													<a href="{{ route('admin.menus') }}" class="btn btn-light-primary">
 														<i class="bi bi-table fs-4"></i>
 														Daftar Menu
 													</a>
@@ -660,68 +671,63 @@
 														<!--begin::Image input placeholder-->
 														<style>
 															.image-input-placeholder {
-																background-image: url('assets/media/svg/files/blank-image.svg');
+																background-image: url('{{ $menu['image_url'] }}');
 															}
 
 															[data-bs-theme="dark"] .image-input-placeholder {
-																background-image: url('assets/media/svg/files/blank-image-dark.svg');
+																background-image: url('{{ $menu['image_url'] }}');
 															}
 														</style>
 														<!--end::Image input placeholder-->
 
-														<!--begin::Image input-->
-														<div class="image-input image-input-empty image-input-outline image-input-placeholder mb-3"
-															data-kt-image-input="true">
-															<!--begin::Preview existing avatar-->
-															<div class="image-input-wrapper w-150px h-150px"></div>
-															<!--end::Preview existing avatar-->
+                                                        <!--begin::Image input-->
+                                                        <div class="mb-3">
+                                                            <div class="position-relative d-inline-block mb-3">
+                                                                <img 
+                                                                    id="image-preview"
+                                                                    src="{{ $menu['image_url'] }}" 
+                                                                    alt="Menu Image"
+                                                                    class="rounded shadow-sm object-fit-cover border-4 border-white border"
+                                                                    style="width: 150px; height: 150px; cursor: pointer;"
+                                                                    onclick="document.getElementById('image-upload').click()"
+                                                                    title="Klik untuk ganti gambar"
+                                                                >
 
-															<!--begin::Label-->
-															<label
-																class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
-																data-kt-image-input-action="change" data-bs-toggle="tooltip"
-																aria-label="Change avatar"
-																data-bs-original-title="Change avatar"
-																data-kt-initialized="1">
-																<!--begin::Icon-->
-																<i class="ki-duotone ki-pencil fs-7"><span
-																		class="path1"></span><span class="path2"></span></i>
-																<!--end::Icon-->
+                                                                <label 
+                                                                    for="image-upload"
+                                                                    class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow position-absolute"
+                                                                    style="top: 0; right: 0; cursor: pointer; transform: translate(50%, -50%)"
+                                                                    title="Ganti gambar"
+                                                                >
+                                                                    <img src="{{ asset('icons/edit.svg') }}" alt="" class="h-50">
+                                                                </label>
 
-																<!--begin::Inputs-->
-																<input type="file" name="avatar" accept=".png, .jpg, .jpeg">
-																<input type="hidden" name="avatar_remove">
-																<!--end::Inputs-->
-															</label>
-															<!--end::Label-->
+                                                                <span 
+                                                                    id="image-cancel"
+                                                                    class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow position-absolute d-none"
+                                                                    style="bottom: 0; right: 0; cursor: pointer; transform: translate(50%, 50%)"
+                                                                    title="Batalkan perubahan"
+                                                                    onclick="cancelImage()"
+                                                                >
+                                                                    <img src="{{ asset('icons/close.svg') }}" alt="" class="h-75">
+                                                                </span>
+                                                            </div>
 
-															<!--begin::Cancel-->
-															<span
-																class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
-																data-kt-image-input-action="cancel" data-bs-toggle="tooltip"
-																aria-label="Cancel avatar"
-																data-bs-original-title="Cancel avatar"
-																data-kt-initialized="1">
-                                                                <img src="{{ asset('icons/edit.svg') }}" alt="" class="h-100">
-															</span>
-															<!--end::Cancel-->
+                                                            <input 
+                                                                type="file" 
+                                                                id="image-upload"
+                                                                name="image" 
+                                                                accept=".png, .jpg, .jpeg"
+                                                                class="d-flex"
+                                                                onchange="previewImage(this)"
+                                                            >
 
-															<!--begin::Remove-->
-															<span
-																class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow"
-																data-kt-image-input-action="remove" data-bs-toggle="tooltip"
-																aria-label="Remove avatar"
-																data-bs-original-title="Remove avatar"
-																data-kt-initialized="1">
-                                                                <img src="{{ asset('icons/close.svg') }}" alt="" class="h-100">
-															</span>
-															<!--end::Remove-->
-														</div>
-														<!--end::Image input-->
-
-														<!--begin::Description-->
-														<div class="text-muted fs-7">Set the category thumbnail image. Only *.png, *.jpg and *.jpeg image files are accepted</div>
-														<!--end::Description-->
+                                                            <div class="text-muted fs-7 text-center">
+                                                                Klik gambar untuk mengganti. Hanya *.png, *.jpg dan *.jpeg yang diterima.
+                                                            </div>
+                                                        </div>
+                                                        <!--end::Image input-->
+                                                        
 													</div>
 													<!--end::Card body-->
 												</div>
@@ -743,20 +749,29 @@
 														<!--begin::Input group-->
 														<div class="mb-5 mb-xl-10">
 															<label class="form-label">Kategori</label>
-															<select class="form-select" aria-label="Kategori" aria-placeholder="Kategori">
-																<option value="1">Semua</option>
-																<option value="2">Option 1</option>
-																<option value="3">Option 2</option>
-															</select>
+															<div class="p-2 border rounded overflow-scroll d-flex flex-column gap-4" style="max-height: 150px;">
+                                                                @foreach($categories as $cat)
+                                                                    <div class="form-check d-flex gap-3">
+                                                                        <input class="form-check-input bg-danger border-danger" type="checkbox" name="category_ids[]" value="{{ $cat['id'] }}" id="cat_{{ $cat['id'] }}" 
+                                                                            {{ in_array($cat['id'], $menu['categories']->toArray()) ? 'checked' : '' }}>
+                                                                        <label class="form-check-label" for="cat_{{ $cat['id'] }}">
+                                                                            {{ $cat['name'] }}
+                                                                        </label>
+                                                                    </div>
+                                                                @endforeach
+                                                            </div>
 														</div>
 														<!--end::Input group-->
 														<!--begin::Input group-->
 														<div class="mb-0">
 															<label class="form-label">Tema</label>
-															<select class="form-select" aria-label="Tema" aria-placeholder="Tema">
-																<option value="1">Semua</option>
-																<option value="2">Option 1</option>
-																<option value="3">Option 2</option>
+															<select class="form-select" aria-label="Tema" aria-placeholder="Tema" id="theme_id" name="theme_id">
+																<option value="">Pilih Menu</option>
+                                                                 @foreach($themes as $theme)
+                                                                    <option value="{{ $theme['id'] }}" {{  ($menu['theme_id'] )== $theme['id'] ? 'selected' : '' }}>
+                                                                        {{ $theme['name'] }}
+                                                                    </option>
+                                                                @endforeach
 															</select>
 														</div>
 														<!--end::Input group-->
@@ -785,10 +800,12 @@
 													<div class="card-body pt-0">
 														<!--begin::Input group-->
 														<div class="mb-0">
-															<select class="form-select" aria-label="status-menu" aria-placeholder="Status">
-																<option value="1">Aktif</option>
-																<option value="2">Tidak Aktif</option>
-															</select>
+                                                            <div class="form-check form-switch mb-0">
+                                                                <input class="form-check-input bg-danger border-danger" type="checkbox" role="switch" id="is_active" name="is_active" {{ old('status_active', 'active') === 'active' ? 'checked' : '' }}
+                                                                    onchange="handler_status_active(this)"
+                                                                >
+                                                                <input type="hidden" name="status_active" id="status_active" value="{{ old('status_active') ? old('status_active') : 'active' }}">
+                                                            </div>
 														</div>
 														<!--end::Input group-->
 													</div>
@@ -805,7 +822,7 @@
 													<div class="card-header">
 														<!--begin::Card title-->
 														<div class="card-title">
-															<h2>General</h2>
+															<h2>Detail</h2>
 														</div>
 														<!--end::Card title-->
 													</div>
@@ -817,7 +834,7 @@
 														<div class="mb-5 mb-xl-10">
 															<label class="form-label required">Nama Menu</label>
 															<div class="input-group">
-																<input type="text" class="form-control" required />
+																<input type="text" class="form-control" name="name" value="{{ $menu['name'] }}" required />
 															</div>
 														</div>
 														<!--end::Input group-->
@@ -826,7 +843,7 @@
 														<div class="mb-5 mb-xl-10">
 															<label class="form-label required">Sayuran</label>
 															<div class="input-group">
-																<input type="text" class="form-control" required />
+																<input type="text" name="vegetable" value="{{ $menu['addon']['vegetable'] }}" class="form-control" required />
 															</div>
 														</div>
 														<!--end::Input group-->
@@ -835,7 +852,7 @@
 														<div class="mb-5 mb-xl-10">
 															<label class="form-label required">Lauk Pendamping</label>
 															<div class="input-group">
-																<input type="text" class="form-control" required />
+																<input type="text" name="side_dish" value="{{ $menu['addon']['side_dish'] }}" class="form-control" required />
 															</div>
 														</div>
 														<!--end::Input group-->
@@ -844,19 +861,40 @@
 														<div class="mb-5 mb-xl-10">
 															<label class="form-label required">Sambal</label>
 															<div class="input-group">
-																<input type="text" class="form-control" required />
+																<input type="text" name="sauce" value="{{ $menu['addon']['sauce'] }}" class="form-control" required />
 															</div>
 														</div>
 														<!--end::Input group-->
 
 														<!--begin::Input group-->
-														<div class="mb-0">
-															<label class="form-label required">Deskripsi</label>
+														<div class="mb-5 mb-xl-10">
+															<label class="form-label">Buah Buahan</label>
 															<div class="input-group">
-																<textarea class="form-control" rows="12" required></textarea>
+																<input type="text" name="fruit" value="{{ $menu['addon']['fruit'] }}" class="form-control" />
 															</div>
 														</div>
 														<!--end::Input group-->
+
+														<!--begin::Input group-->
+														<div class="mb-5 mb-xl-10">
+															<label class="form-label required">Deskripsi</label>
+															<div class="input-group">
+																<textarea class="form-control" rows="4" name="description" minlength="10" required>{{ $menu['description'] }}</textarea>
+															</div>
+														</div>
+														<!--end::Input group-->
+
+                                                        @foreach ($packages as $index=>$package)
+														<!--begin::Input group-->
+														<div class="mb-5 mb-xl-10">
+															<label class="form-label required">Harga {{ $package['name'] }}</label>
+															<div class="input-group">
+                                                                <input type="hidden" class="form-control form-control-sm" name="packages[{{ $index }}][package_id]" value="{{ $package['id'] }}">
+                                                                <input type="number" class="form-control rounded-2" name="packages[{{ $index }}][price]" value="{{ old("packages[$index][price]", 0) }}" required />															</div>
+														</div>
+														<!--end::Input group-->
+                                                        @endforeach
+
 													</div>
 													<!--end::Card body-->
 												</div>
@@ -878,6 +916,23 @@
 										</div>
 										<!--end::Row-->
 									</form>
+                                    @if ($menu['deleted_at'])
+                                        <form action="{{ route('admin.restore-menu', [ 'id' => $menu['id'] ]) }}" method="post" class="w-100 d-flex justify-content-end">
+                                        @csrf
+                                        @method('patch')
+                                            <div class="card-footer bg-white text-end py-3 px-4">
+                                                <button type="submit" class="btn btn-secondary d-flex align-items-center gap-3"><img src="{{ asset('icons/history.svg') }}" alt="" class="h-12em"> Kembalikan Menu</button>
+                                            </div>
+                                    </form>
+                                    @else        
+                                        <form action="{{ route('admin.delete-menu', [ 'id' => $menu['id'] ]) }}" method="post" class="w-100 d-flex justify-content-end">
+                                            @csrf
+                                            @method('delete')
+                                            <div class="card-footer bg-white text-end py-3 px-4">
+                                                    <button type="submit" class="btn bg-danger-subtle d-flex align-items-center gap-3 text-danger"><img src="{{ asset('icons/trash.svg') }}" alt="" class="h-12em img-accent"> Hapus Menu</button>
+                                                </div>
+                                            </form>
+                                        @endif
 								</div>
 								<!--end::Content container-->
 							</div>
@@ -916,10 +971,7 @@
 
 		<!--begin::Scrolltop-->
 		<div id="kt_scrolltop" class="scrolltop" data-kt-scrolltop="true">
-			<i class="ki-duotone ki-arrow-up">
-				<span class="path1"></span>
-				<span class="path2"></span>
-			</i>
+			<img src="{{ asset('icons/arrow-up.svg') }}" alt="" class="img-white">
 		</div>
 		<!--end::Scrolltop-->
 
@@ -945,7 +997,6 @@
 						<div class="modal-body py-5 px-10">
 							<div class="row g-5 g-md-10">
 								<div class="col-12 text-center">
-									<img src="assets/media/img/alat/Road-Roller.jpg" alt="" class="h-400px">
 								</div>
 								<div class="col-12">
 									<h3 class="text-gray-800">
@@ -1436,240 +1487,44 @@
 		<script src="{{asset('assets/plugins/custom/formrepeater/formrepeater.bundle.js')}}"></script>
 		<script src="{{asset('assets/plugins/custom/jstree/jstree.bundle.js')}}"></script>
 		<!--end::Vendors Javascript-->
-
-		<!--begin::Custom Javascript(used for this page only)-->
-		<script>
-			"use strict";
-
-			KTUtil.onDOMContentLoaded(function () {
-				const selectStatus = document.querySelector('select[aria-label="status-menu"]');
-				const indicator = document.getElementById('kt_status_menu');
-
-				function updateStatusIndicator() {
-					const value = selectStatus.value;
-
-					// reset class warna
-					indicator.classList.remove('bg-success', 'bg-danger');
-
-					if (value === "1") {
-						indicator.classList.add('bg-success'); // Aktif → hijau
-					} else {
-						indicator.classList.add('bg-danger'); // Tidak Aktif → merah
-					}
-				}
-
-				// saat berubah
-				selectStatus.addEventListener('change', updateStatusIndicator);
-
-				// trigger saat load (default value)
-				updateStatusIndicator();
-			});
-
-		</script>
-		<!--end::Custom Javascript-->
 		
+        <script defer>
+            function handler_status_active(e) {
+                document.getElementById('status_active').value = e.checked? 'active' : 'non-active';
+                document.getElementById('kt_status_menu').classList.add(e.checked? 'bg-success' : 'bg-danger')
+                document.getElementById('kt_status_menu').classList.remove(e.checked? 'bg-danger' : 'bg-success')
+            }
+        </script>
+
+        <script>
+            const originalImageUrl = '{{ $menu['image_url'] }}';
+
+            function previewImage(input) {
+                if (input.files && input.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        document.getElementById('image-preview').src = e.target.result;
+                        document.getElementById('image-cancel').classList.remove('d-none');
+                    };
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+
+            function cancelImage() {
+                document.getElementById('image-preview').src = originalImageUrl;
+                document.getElementById('image-cancel').classList.add('d-none');
+                document.getElementById('image-upload').value = '';
+            }
+        </script>
+        
+
 	</body>
 	<!--end::Body-->
 </html>
 
 
-    @php
-        $data = $response['data'];
-        $menu = $data['detail_menu'];
-        $themes = $data['themes'];
-        $categories = $data['categories'];
-        $packages = $data['packages'];
-        
-        // Memastikan categories menu benar-benar menjadi array biasa, bukan collection
-    @endphp
-
-    <div class="container py-4">
-        
-        <div class="row mb-4">
-            <div class="col-12 d-flex justify-content-between align-items-center">
-                <div>
-                    <h3 class="fw-bold"> Edit Menu Catering</h3>
-                    <p class="text-muted mb-0">Perbarui informasi dan gambar menu.</p>
-                    <a class="text-accent" href="{{ route('admin.menus') }}">back</a>
-                </div>
-            </div>
-        </div>
-
-        <form action="{{ route('admin.edit-menu', [ 'id' => $menu['id'] ] ) }}" method="POST" enctype="multipart/form-data">
-            @csrf
-            @method('PUT')
-            
-            <div class="border-0 ">
-                <div class="card-body p-4">
-                    <div class="row">
-                        <div class="col-md-4 mb-4 mb-md-0">
-                            <label class="form-label fw-bold">Preview Gambar Saat Ini</label>
-                            
-                            <div class="position-relative mb-3">
-                                <img src="{{ $menu['image_url'] }}" 
-                                     alt="{{ $menu['name'] }}" 
-                                     class="img-fluid rounded shadow-sm w-100 object-fit-cover" 
-                                     style="max-height: 250px;"
-                                     onerror="this.onerror=null; this.src='https://placehold.co/400x250/FFEEEE/DC3545?text=Gambar+Rusak'; document.getElementById('img-warning').classList.remove('d-none');">
-                                
-                                <div id="img-warning" class="position-absolute top-0 start-0 m-2 badge bg-danger d-none shadow-sm">
-                                    <i class="bi bi-exclamation-triangle"></i> Gagal memuat gambar
-                                </div>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label for="image" class="form-label text-muted small">Upload Gambar Baru (Opsional)</label>
-                                <input class="form-control form-control-sm" type="file" id="image" name="image" accept="image/*" onchange="previewImage(this)">                            </div>
-
-                            <div class="p-3 bg-light rounded border">
-                                <div class="form-check form-switch mb-0">
-                                    <input class="form-check-input bg-danger border-danger" type="checkbox" role="switch" id="is_active" name="is_active" {{ old('status_active',$menu['is_active'] ? 'active' : 'non-active') === 'active' ? 'checked' : '' }}
-                                        onchange="handler_status_active(this)"
-                                    >
-                                    <input type="hidden" name="status_active" id="status_active" value="{{ old('status_active') ?? $menu['is_active'] ? 'active' : 'non-active' }}">
-                                    <label class="form-check-label fw-bold ms-2 text-black" for="is_active">Tampilkan di Website</label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-8">
-                            <div class="mb-3">
-                                <label for="name" class="form-label fw-bold">Nama Menu</label>
-                                <input type="text" class="form-control" id="name" name="name" value="{{ $menu['name'] }}" required>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="description" class="form-label fw-bold">Deskripsi</label>
-                                <textarea class="form-control" id="description" name="description" rows="3" required>{{ $menu['description'] }}</textarea>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="theme_id" class="form-label fw-bold"><i class="bi bi-palette"></i> Theme</label>
-                                    <select class="form-select" id="theme_id" name="theme_id" required>
-                                        <option value="">Pilih Theme...</option>
-                                        @foreach($themes as $theme)
-                                            <option value="{{ $theme['id'] }}" {{  ($menu['theme_id'] )== $theme['id'] ? 'selected' : '' }}>
-                                                {{ $theme['name'] }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-bold"><i class="bi bi-tags"></i> Kategori</label>
-                                    <div class="p-2 border rounded bg-light overflow-scroll d-flex flex-column gap-4 py-3" style="max-height: 150px;">
-                                        @foreach($categories as $cat)
-                                            <div class="form-check d-flex gap-3">
-                                                <input class="form-check-input bg-danger border-danger" type="checkbox" name="category_ids[]" value="{{ $cat['id'] }}" id="cat_{{ $cat['id'] }}" 
-                                                    {{ in_array($cat['id'], $menu['categories']->toArray()) ? 'checked' : '' }}>
-                                                <label class="form-check-label" for="cat_{{ $cat['id'] }}">
-                                                    {{ $cat['name'] }}
-                                                </label>
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-
-                         <div class="mt-3 p-3 border rounded">
-                                <h6 class="fw-bold mb-3"><i class="bi bi-plus-circle-dotted"></i> Addons / Pelengkap</h6>
-                                <div class="row gap-2">
-                                    <div class="col-md-4 mb-2 mb-md-0">
-                                        <label class="form-label small text-muted">Lauk Sampingan</label>
-                                        <input type="text" class="form-control form-control-sm" name="side_dish" value="{{ $menu['addon']['side_dish'] ?? '' }}">
-                                    </div>
-                                    <div class="col-md-4 mb-2 mb-md-0">
-                                        <label class="form-label small text-muted">Sayuran / Lalapan</label>
-                                        <input type="text" class="form-control form-control-sm" name="vegetable" value="{{ $menu['addon']['vegetable'] ?? '' }}">
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label class="form-label small text-muted">Saus / Sambal</label>
-                                        <input type="text" class="form-control form-control-sm" name="sauce" value="{{ $menu['addon']['sauce'] ?? '' }}">
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label class="form-label small text-muted">Buah - Buahan</label>
-                                        <input type="text" class="form-control form-control-sm" name="fruit" value="{{ $menu['addon']['fruit'] ?? '' }}">
-                                    </div>
-                                </div>
-                            </div>
-
-                        <div class="mt-3 p-3 border rounded">
-                                <h6 class="fw-bold mb-3"><i class="bi bi-plus-circle-dotted"></i> Paket - Paket Yang Akan Hadir</h6>
-                                <div class="row">
-                                    @foreach ($menu['packages'] as $index=>$package)
-                                        <div class="col-md-4 mb-2 mb-md-0">
-                                            <label class="form-label small text-muted">{{ $package['name'] }} (price)</label>
-                                            <input type="hidden" class="form-control form-control-sm" name="packages[{{ $index }}][package_id]" value="{{ $package['package_id'] }}">
-                                            <input type="text" class="form-control form-control-sm" name="packages[{{ $index }}][price]" value="{{ $package['price']  }}">
-                                        </div>
-                                        @php
-                                            $packages = array_filter($packages, function($p) use($package){
-                                                return $p['id'] != $package['package_id'];
-                                            });
-                                        @endphp
-                                    @endforeach
-                                    @foreach ($packages as $index=>$package)
-                                    @php
-                                        $current_package_index = $index + count($menu['packages'])
-                                    @endphp
-                                        <div class="col-md-4 mb-2 mb-md-0">
-                                            <label class="form-label small text-muted">{{ $package['name'] }} (price)</label>
-                                            <input type="hidden" class="form-control form-control-sm" name="packages[{{ $current_package_index }}][package_id]" value="{{ $package['id'] }}">
-                                            <input type="text" class="form-control form-control-sm" name="packages[{{ $current_package_index }}][price]" value="{{ 0 }}">
-                                        </div>
-                                    @endforeach
-                                </div>
-                            </div>
-                    </div>
-                </div>
-                <div class="card-footer bg-white text-end py-3 px-4">
-                    <button type="submit" class="bg-accent fw-bold px-6 py-4 d-flex gap-3 align-items-center rounded-2 text-white"><i class="bi bi-save me-1 text-white"></i> Simpan Perubahan</button>
-                </div>
-            </div>
-        </form>
-        @if ($menu['deleted_at'])
-        <form action="{{ route('admin.restore-menu', [ 'id' => $menu['id'] ]) }}" method="post">
-           @csrf
-           @method('patch')
-            <div class="card-footer bg-white text-end py-3 px-4">
-                   <button type="submit" class="btn btn-secondary d-flex align-items-center gap-3"><img src="{{ asset('icons/history.svg') }}" alt="" class="h-12em"> Kembalikan Menu</button>
-               </div>
-       </form>
-       @else        
-        <form action="{{ route('admin.delete-menu', [ 'id' => $menu['id'] ]) }}" method="post">
-            @csrf
-            @method('delete')
-             <div class="card-footer bg-white text-end py-3 px-4">
-                    <button type="submit" class="btn bg-danger-subtle d-flex align-items-center gap-3 text-danger"><img src="{{ asset('icons/trash.svg') }}" alt="" class="h-12em img-accent"> Hapus Menu</button>
-                </div>
-            </form>
-        @endif
-    </div>
-        
-    <script defer>
-        function handler_status_active(e) {
-            document.getElementById('status_active').value = e.checked? 'active' : 'non-active';
-        }
-    </script>
-
-    <script>
-        function previewImage(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    document.querySelector('img[alt="{{ $menu['name'] }}"]').src = e.target.result;
-                    document.getElementById('img-warning').classList.add('d-none');
-                };
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-    </script>
-
-    @if (session()->has('response'))
-    <script>
-        alert({{ session()->get('response')['message'] }})
-    </script>
-    @endif
+@if (session()->has('response'))
+<script>
+    alert({{ session()->get('response')['message'] }})
+</script>
+@endif

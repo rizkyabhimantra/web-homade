@@ -18,7 +18,7 @@ License: For each use you must have a valid license purchased only from above li
 	</head>
 	<!--end::Head-->
 
-
+@dd($response)
 
 	<!--begin::Body-->
 	<body 
@@ -45,7 +45,7 @@ License: For each use you must have a valid license purchased only from above li
 				<!--begin::Header-->
 				<div 
 					id="kt_app_header" 
-					class="app-header bg-transparent" 
+					class="app-header" 
 					data-kt-sticky="true" 
 					data-kt-sticky-activate="{default: true, lg: true}" 
 					data-kt-sticky-name="app-header-minimize" 
@@ -556,6 +556,162 @@ License: For each use you must have a valid license purchased only from above li
 						<!--begin::Content wrapper-->
 						<div class="d-flex flex-column flex-column-fluid">
 
+						<!--begin::Toolbar-->
+						<div id="kt_app_toolbar" class="app-toolbar py-3">
+							<!--begin::Toolbar container-->
+							<div id="kt_app_toolbar_container" class="app-container  container-fluid d-flex flex-stack ">
+
+								<!--begin::Title & Breadcrumb-->
+								<div 
+									data-kt-swapper="true" 
+									data-kt-swapper-mode="{default: 'prepend', lg: 'prepend'}"
+									data-kt-swapper-parent="{default: '#kt_app_content_container', lg: '#kt_app_toolbar_container'}"
+									class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
+						
+									<!--begin::Breadcrumb-->
+									<ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1 d-none d-md-flex">
+										<!--begin::Item-->
+										<li class="breadcrumb-item text-muted">Dashboard</li>
+										<!--end::Item-->
+									</ul>
+									<!--end::Breadcrumb-->
+
+								</div>
+								<!--end::Title & Breadcrumb-->
+
+								<!--begin::Action group-->
+								<div class="d-flex align-items-center ms-auto">
+									
+									<!--begin::Action wrapper-->
+									<form action="{{ route('admin.export-orders') }}" method="post" class="d-flex align-items-center">
+										@csrf
+										<button id="btnExportExcel" class="btn btn-sm btn-light-primary">
+											<i class="bi bi-file-earmark-spreadsheet fs-4"></i>
+											Export (Excel)
+										</button>
+									</form>
+									<!--end::Action wrapper-->
+
+									<!--begin::Action wrapper-->
+									<div class="d-flex align-items-center">
+										<!--begin::Separartor-->
+										<div class="bullet bg-secondary h-35px w-1px mx-5"></div>
+										<!--end::Separartor-->
+
+										<button class="btn btn-sm btn-dark" id="kt_drawer_filter_global_button">
+											<i class="bi bi-funnel fs-4"></i>
+											Filter
+										</button>
+									</div>
+									<!--end::Action wrapper-->
+
+								</div>
+								<!--end::Action group-->
+						
+							</div>
+							<!--end::Toolbar container-->
+						</div>
+						<!--end::Toolbar-->
+						
+						<div class="d-flex w-100 h-100 flex-column flex-shrink-0 p-5">
+
+							<div class="row g-5 g-xl-8">
+	
+								<div class="col-xl-3">
+									<!--begin::Statistics Widget 5-->
+									<a href="{{route('admin.orders')}}" class="card bg-body hoverable card-xl-stretch mb-xl-8">
+										<!--begin::Body-->
+										<div class="card-body">
+											<img src="{{ asset('icons/document.svg') }}" alt="">
+											<div class="text-default fw-bold fs-2 mb-2 mt-5">{{ $response['data']['transaction_summary']['total'] }}</div>
+											<div class="fw-semibold text-default">Total Pesanan</div>
+										</div>
+										<!--end::Body-->
+									</a>
+									<!--end::Statistics Widget 5-->
+								</div>
+								<div class="col-xl-3">
+									<!--begin::Statistics Widget 5-->
+									<a href="{{route('admin.orders')}}" class="card bg-dark hoverable card-xl-stretch mb-xl-8">
+										<!--begin::Body-->
+										<div class="card-body bg-light-accent rounded-2">
+											<img src="{{ asset('icons/clock-filled.svg') }}" alt="" class="img-accent">
+											<div class="text-default fw-bold fs-2 mb-2 mt-5">{{ $response['data']['transaction_summary']['waiting_for_confirmation_payment_proof'] }}</div>
+											<div class="fw-semibold text-default">Waiting Confirmation</div>
+										</div>
+										<!--end::Body-->
+									</a>
+									<!--end::Statistics Widget 5-->
+								</div>
+								<div class="col-xl-3">
+									<!--begin::Statistics Widget 5-->
+									<a href="{{route('admin.orders')}}" class="card hoverable card-xl-stretch mb-xl-8">
+										<!--begin::Body-->
+										<div class="card-body bg-light-blue rounded-2">
+											<img src="{{ asset('icons/food.svg') }}" alt="" class="img-blue">
+											<div class="text-default fw-bold fs-2 mb-2 mt-5">{{ $response['data']['transaction_summary']['process'] }}</div>
+											<div class="fw-semibold text-default">Proses</div>
+										</div>
+										<!--end::Body-->
+									</a>
+									<!--end::Statistics Widget 5-->
+								</div>
+								<div class="col-xl-3">
+									<!--begin::Statistics Widget 5-->
+									<a href="{{route('admin.orders')}}" class="card hoverable card-xl-stretch mb-5 mb-xl-8">
+										<!--begin::Body-->
+										<div class="card-body bg-light-green rounded-2">
+											<img src="{{ asset('icons/check-circle.svg') }}" alt="" class="img-green">
+											<div class="text-default fw-bold fs-2 mb-2 mt-5">{{ $response['data']['transaction_summary']['delivered'] }}</div>
+											<div class="fw-semibold text-default">Delivered</div>
+										</div>
+										<!--end::Body-->
+									</a>
+									<!--end::Statistics Widget 5-->
+								</div>
+							</div>
+
+							<div class="d-flex w-100 h-400px rounded-2 bg-white flex-column">
+
+								<div class="d-flex w-100 flex-shrink-0">
+								
+									<!--begin::Charts Widget 2-->
+									<div class="card card-xl-stretch mb-5 mb-xl-8 w-100">
+										<!--begin::Header-->
+										<div class="card-header border-0 pt-5">
+											<h3 class="card-title align-items-start flex-column">
+												<span class="card-label fw-bold fs-3 mb-1">Recent Orders</span>
+												<span class="text-muted fw-semibold fs-7">More than 500 new orders</span>
+											</h3>
+											<!--begin::Toolbar-->
+											<div class="card-toolbar" data-kt-buttons="true">
+												<a class="btn btn-sm btn-color-muted btn-active btn-active-primary active px-4 me-1" id="kt_charts_widget_2_year_btn">Year</a>
+												<a class="btn btn-sm btn-color-muted btn-active btn-active-primary px-4 me-1" id="kt_charts_widget_2_month_btn">Month</a>
+												<a class="btn btn-sm btn-color-muted btn-active btn-active-primary px-4" id="kt_charts_widget_2_week_btn">Week</a>
+											</div>
+											<!--end::Toolbar-->
+										</div>
+										<!--end::Header-->
+										<!--begin::Body-->
+										<div class="card-body">
+											<!--begin::Chart-->
+											<div id="kt_charts_widget_2_chart" style="height: 350px"></div>
+											<!--end::Chart-->
+										</div>
+										<!--end::Body-->
+									</div>
+									<!--end::Charts Widget 2-->
+
+								</div>
+
+								<div class="d-flex w-100 h-100 bg-primary-subtle"></div>
+
+
+							</div>
+
+						</div>
+
+
 						</div>
 						<!--end::Content wrapper-->
 						<!--begin::Footer-->
@@ -611,6 +767,8 @@ License: For each use you must have a valid license purchased only from above li
 		<!--end::Vendors Javascript-->
 
 		<!--begin::Custom Javascript(used for this page only)-->
+		<script src="{{asset('assets/js/custom/widgets.js')}}"></script>
+
 		<script>
 			"use strict";
 

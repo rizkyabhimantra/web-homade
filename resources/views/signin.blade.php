@@ -114,7 +114,7 @@ License: For each use you must have a valid license purchased only from above li
 									<div class="d-flex flex-stack flex-wrap gap-3 fs-base fw-semibold mb-10">
 										<div></div>
 										<!--begin::Link-->
-										<a href="authentication/layouts/fancy/reset-password.html" class="text-white" data-kt-translate="sign-in-forgot-password">Lupa Password ?</a>
+										<a href="{{ route('user.forgot-password-page') }}" class="text-white" data-kt-translate="sign-in-forgot-password">Lupa Password ?</a>
 										<!--end::Link-->
 									</div>
 									<!--end::Wrapper-->
