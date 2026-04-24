@@ -579,30 +579,7 @@ License: For each use you must have a valid license purchased only from above li
 
 								<!--begin::Action group-->
 								<div class="d-flex align-items-center ms-auto">
-									
-									<!--begin::Action wrapper-->
-									<form action="{{ route('admin.export-orders') }}" method="post" class="d-flex align-items-center">
-										@csrf
-										<button id="btnExportExcel" class="btn btn-sm btn-light-primary">
-											<i class="bi bi-file-earmark-spreadsheet fs-4"></i>
-											Export (Excel)
-										</button>
-									</form>
-									<!--end::Action wrapper-->
-
-									<!--begin::Action wrapper-->
-									<div class="d-flex align-items-center">
-										<!--begin::Separartor-->
-										<div class="bullet bg-secondary h-35px w-1px mx-5"></div>
-										<!--end::Separartor-->
-
-										<button class="btn btn-sm btn-dark" id="kt_drawer_filter_global_button">
-											<i class="bi bi-funnel fs-4"></i>
-											Filter
-										</button>
-									</div>
-									<!--end::Action wrapper-->
-
+									{{-- halo ini disuruh hapus sama radit, katanya export blm ada dan filternya jg gak ada - labubu--}}
 								</div>
 								<!--end::Action group-->
 						

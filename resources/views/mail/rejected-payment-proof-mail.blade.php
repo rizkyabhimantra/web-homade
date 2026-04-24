@@ -36,7 +36,7 @@
                                 </tr>
                                 <tr>
                                     <td align="left">Status</td>
-                                    <td align="right" style="color: #ffffff;">{{ $status ?? 'Waiting For Invoice' }}</td>
+                                    <td align="right" style="color: #ffffff;">{{ $transaction->status ?? 'Waiting For Invoice' }}</td>
                                 </tr>
                             </table>
 
