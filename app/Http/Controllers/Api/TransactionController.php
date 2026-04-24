@@ -8,8 +8,11 @@ use App\Http\Resources\PaginationResource;
 use App\Http\Resources\TransactionResource;
 use App\ResponseData;
 use App\Service\MenuService;
+use App\Service\PaymentMethodService;
 use App\Service\TransactionService;
 use App\Service\UserAddressService;
+use App\StatusTransaction;
+use App\TransactionPaymentProofStatus;
 use App\Utils\TransactionHelper;
 use ErrorException;
 use Illuminate\Http\Request;
@@ -87,8 +90,10 @@ class TransactionController extends Controller
             );
         }
     }
-    public function detailTransaction(string $id)
-    {
+    public function detailTransaction(
+        Request $request,
+        string $id
+    ) {
         try {
             $transaction = $this->transactionService->detail($id);
 
@@ -100,9 +105,19 @@ class TransactionController extends Controller
                 );
             }
 
+            $payment_methods = [];
+
+            if (StatusTransaction::tryFrom($transaction->status) === StatusTransaction::PENDING && !$transaction->payment_proof || $transaction->payment_proof && TransactionPaymentProofStatus::tryFrom($transaction->payment_proof->status) === TransactionPaymentProofStatus::REJECTED) {
+                $payment_methods = (new PaymentMethodService())->all();
+            }
+
             return $this->responseData->create(
                 'Berhasil menemukan transaksi!',
-                new DetailTransactionResource($transaction),
+                [
+                    'transaction' => (new DetailTransactionResource($transaction))->toArray($request),
+                    'payment_methods' => $payment_methods,
+                ],
+                isJson: false
             );
 
         } catch (Exception $e) {
