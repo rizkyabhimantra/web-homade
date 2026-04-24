@@ -11,43 +11,29 @@ use Illuminate\Support\Facades\DB;
 
 class ThemePackageCategorieSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-
         DB::table('themes')->delete();
-        DB::table( 'categories')->delete();
+        DB::table('categories')->delete();
         DB::table('packages')->delete();
 
         $themes = [
-            [
-                "name" => "Japanese",
-                "description" => "Temukan kenikmataan dan keunikan dari makanan khas jepang."
-            ],
-            [
-                "name" => "Javanese",
-                "description" => "Makanan yang unik dan tradisional, cocok unutk dinikmati bersama keluarga atau pasangan kalian!.",
-            ],
+            ["name" => "Sunda", "description" => "Hidangan khas tanah pasundan yang segar dan nikmat."],
+            ["name" => "Klaten", "description" => "Kelezatan hidangan tradisional khas Klaten."],
+            ["name" => "Chinese", "description" => "Hidangan oriental dengan cita rasa autentik."],
+            ["name" => "Betawi", "description" => "Rasa otentik dari hidangan khas ibu kota."],
+            ["name" => "Banyuwangi", "description" => "Hidangan khas Banyuwangi yang kaya rempah."],
+            ["name" => "Asia", "description" => "Menu perpaduan benua Asia yang menggugah selera."],
+            ["name" => "Madiun", "description" => "Sajian khas Madiun yang lezat dan otentik."],
+            ["name" => "Padang", "description" => "Kelezatan rempah dan bumbu masakan khas Minang."]
         ];
 
         $categories = [
-            [
-                "name" => "Nasi"
-            ],
-            [
-                "name" => "Ayam"
-            ],
-            [
-                "name" => "Seafood"
-            ],
-            [
-                "name" => "Sapi"
-            ],
-            [
-                "name" => "Kambing"
-            ]
+            ["name" => "Nasi"],
+            ["name" => "Ayam"],
+            ["name" => "Seafood"],
+            ["name" => "Sapi"],
+            ["name" => "Kambing"]
         ];
 
         $packages = [
@@ -75,11 +61,9 @@ class ThemePackageCategorieSeeder extends Seeder
         foreach($themes as $theme){
             Theme::create($theme);
         }
-
         foreach($categories as $category){
             Category::create($category);
         }
-        
         foreach($packages as $package){
             Package::create($package);
         }

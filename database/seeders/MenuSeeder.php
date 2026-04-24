@@ -9,157 +9,165 @@ use App\Models\MenuPrice;
 use App\Models\MenuSchedule;
 use App\Models\Package;
 use App\Models\Theme;
+use Carbon\Carbon;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class MenuSeeder extends Seeder
 {
-
-    private $currentMenu = [];
-
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
+        // Ambil semua data master dan set key berdasarkan nama, 
+        // agar tidak random lagi dan mudah dicocokkan.
+        $themes = Theme::all()->keyBy('name');
+        $categories = Category::all()->keyBy('name');
+        $packages = Package::all();
+
+        // 14 Menu dari Excel, dirancang statis agar related dengan theme & category
         $menus = [
+            // --- HARI KE-1 ---
             [
-                "name" => "Nasi Kuning Ayam Goreng Lengkuas",
-                "description" => "-",
-                "vegetable" => "Lalapan",
-                "side_dish" => "Tempe orek Kering, Telur Dadar Iris",
-                "chili_sauce" => "Sambal Goreng",
-                "date_at" => now(),
+                "name" => "Ayam Acar Kuning",
+                "description" => "Ayam dengan bumbu acar kuning segar khas Sunda.",
+                "vegetable" => "Tumis Kangkung",
+                "side_dish" => "Tempe Goreng Tepung",
+                "chili_sauce" => "Sambal Bawang",
+                "theme" => "Sunda",
+                "categories" => ["Ayam"]
             ],
             [
-                "name" => "Nasi Kuning Tongkol Balado Suwir",
-                "description" => "-",
+                "name" => "Pesmol Ikan Kembung",
+                "description" => "Ikan kembung goreng dengan bumbu pesmol.",
                 "vegetable" => "Lalapan",
-                "side_dish" => "Tempe orek Kering, Telur Dadar Iris",
-                "chili_sauce" => "Sambal Goreng",
-                "date_at" => now(),
+                "side_dish" => "Tahu Goreng",
+                "chili_sauce" => "Sambal Terasi",
+                "theme" => "Sunda",
+                "categories" => ["Seafood"] // Valid, nggak random
             ],
+            // --- HARI KE-2 ---
             [
-                "name" => "Mie Goreng Ayam (Mie Pengganti Nasi)",
-                "description" => "-",
+                "name" => "Sop Ayam Ala Pak Min",
+                "description" => "Sop ayam bening dengan kaldu gurih.",
                 "vegetable" => "Acar",
-                "side_dish" => "Telor Ceplok",
-                "chili_sauce" => "Saus Sachet",
-                "date_at" => now()->addDays(1),
+                "side_dish" => "Tempe Mendoan",
+                "chili_sauce" => "Sambal Soto",
+                "theme" => "Klaten",
+                "categories" => ["Ayam"]
+            ],
+            [
+                "name" => "Ayam Bakar Klaten",
+                "description" => "Ayam bakar manis gurih khas daerah Klaten.",
+                "vegetable" => "Lalapan",
+                "side_dish" => "Perkedel, Keripik Tempe",
+                "chili_sauce" => "Sambal Bajak",
+                "theme" => "Klaten",
+                "categories" => ["Ayam"]
+            ],
+            // --- HARI KE-3 ---
+            [
+                "name" => "Ayam Saus Asam Manis",
+                "description" => "Ayam fillet goreng tepung dengan saus asam manis oriental.",
+                "vegetable" => "Cah Buncis Bawang Putih",
+                "side_dish" => "Jamur Goreng Tepung",
+                "chili_sauce" => "Chili Oil",
+                "theme" => "Chinese",
+                "categories" => ["Ayam"]
+            ],
+            [
+                "name" => "Gurame Lada Hitam",
+                "description" => "Ikan gurame fillet saus lada hitam.",
+                "vegetable" => "Tumis Pokcoy",
+                "side_dish" => "Tahu Sutra Goreng",
+                "chili_sauce" => "Chili Oil",
+                "theme" => "Chinese",
+                "categories" => ["Seafood"]
+            ],
+            // --- HARI KE-4 ---
+            [
+                "name" => "Nasi Uduk Ayam Goreng Kuning",
+                "description" => "Nasi uduk gurih disajikan dengan ayam goreng.",
+                "vegetable" => "Lalapan",
+                "side_dish" => "Bakwan Sayur",
+                "chili_sauce" => "Sambal Bu Rudi",
+                "theme" => "Betawi",
+                "categories" => ["Nasi", "Ayam"] // Multi-category!
+            ],
+            [
+                "name" => "Ayam Penyet Cabe Ijo",
+                "description" => "Ayam penyet pedas nampol dengan sambal cabe ijo.",
+                "vegetable" => "Lalapan",
+                "side_dish" => "Tempe Goreng",
+                "chili_sauce" => "Sambal Penyet Ijo",
+                "theme" => "Betawi",
+                "categories" => ["Ayam"]
+            ],
+            // --- HARI KE-5 ---
+            [
+                "name" => "Nasi Tempong Ayam Goreng",
+                "description" => "Nasi tempong pedas khas Banyuwangi.",
+                "vegetable" => "Sayur Rebus",
+                "side_dish" => "Tahu Tempe Goreng",
+                "chili_sauce" => "Sambal Tempong",
+                "theme" => "Banyuwangi",
+                "categories" => ["Nasi", "Ayam"]
             ],
             [
                 "name" => "Ayam Cabe Garam",
-                "description" => "-",
+                "description" => "Ayam fillet krispi bumbu cabe garam.",
                 "vegetable" => "Salad Jepang",
                 "side_dish" => "Scrambled Egg",
                 "chili_sauce" => "Chili Oil",
-                "date_at" => now()->addDays(1),
+                "theme" => "Asia",
+                "categories" => ["Ayam"]
+            ],
+            // --- HARI KE-6 ---
+            [
+                "name" => "Ayam Goreng Kecombrang",
+                "description" => "Ayam goreng wangi kecombrang khas Madiun.",
+                "vegetable" => "Sayur Pecel Madiun",
+                "side_dish" => "Rempeyek",
+                "chili_sauce" => "Sambal Pecel",
+                "theme" => "Madiun",
+                "categories" => ["Ayam"]
             ],
             [
-                "name" => "Ayam Brokoli",
-                "description" => "-",
-                "vegetable" => "brokoli",
-                "side_dish" => "Scrambled Egg",
-                "chili_sauce" => "Chili Oil",
-                "date_at" => now()->addDays(2),
-            ],
-            [
-                "name" => "Ayam Panggang",
-                "description" => "-",
-                "vegetable" => "Brokoli",
-                "side_dish" => "Scrambled Egg",
-                "chili_sauce" => "Chili Oil",
-                "date_at" => now()->addDays(2),
-            ],
-            [
-                "name" => "Ikan mas",
-                "description" => "-",
-                "vegetable" => "Salad Jepang",
-                "side_dish" => "Scrambled Egg",
-                "chili_sauce" => "Sachet",
-                "date_at" => now()->addDays(3),
-            ],
-            [
-                "name" => "Mie Ayam Panggang",
-                "description" => "-",
-                "vegetable" => "Salad Jepang",
-                "side_dish" => "Scrambled Egg",
-                "chili_sauce" => "Sachet",
-                "date_at" => now()->addDays(3),
-            ],
-            [
-                "name" => "(Seafood) Cumi Bakar",
-                "description" => "-",
-                "vegetable" => "Kangkung",
-                "side_dish" => "Ayam panggang",
-                "chili_sauce" => "Chili Oil",
-                "date_at" => now()->addDays(4),
-            ],
-            [
-                "name" => "(Seafood) Cumi Rebus",
-                "description" => "-",
-                "vegetable" => "Kangkung",
-                "side_dish" => "Telur Ceplok",
-                "chili_sauce" => "Chili Oil",
-                "date_at" => now()->addDays(4),
-            ],
-            [
-                "name" => "Sapi Panggang",
-                "description" => "-",
-                "vegetable" => "Sawi",
-                "side_dish" => "Scrambled Egg",
-                "chili_sauce" => "Sachet",
-                "date_at" => now()->addDays(5),
-            ],
-            [
-                "name" => "Kambing Panggang",
-                "description" => "-",
-                "vegetable" => "Sawi",
-                "side_dish" => "Scrambled Egg",
-                "chili_sauce" => "Chili Oil",
-                "date_at" => now()->addDays(5),
-            ],
-            [
-                "name" => "Bakmie Jawa",
-                "description" => "-",
-                "vegetable" => "Sawi",
-                "side_dish" => "Scrambled Egg",
-                "chili_sauce" => "Sachet",
-                "date_at" => now()->addDays(6),
-            ],
-            [
-                "name" => "Bakmie Sumatera",
-                "description" => "-",
-                "vegetable" => "Sawi",
-                "side_dish" => "Scrambled Egg",
-                "chili_sauce" => "Chili Oil",
-                "date_at" => now()->addDays(6),
-            ],
-             [
-                "name" => "Ayam Suwir",
-                "description" => "-",
+                "name" => "Nila Penyet Cabe Ijo",
+                "description" => "Ikan Nila goreng disajikan dengan kremes dan sambal.",
                 "vegetable" => "Lalapan",
-                "side_dish" => "Tempe orek Kering, Telur Dadar Iris",
-                "chili_sauce" => "Sachet",
-                "date_at" => now()->addDays(7),
+                "side_dish" => "Tempe Goreng",
+                "chili_sauce" => "Sambal Ijo",
+                "theme" => "Betawi",
+                "categories" => ["Seafood"]
             ],
-             [
-                "name" => "Nasi Goreng",
-                "description" => "-",
-                "vegetable" => "Lalapan",
-                "side_dish" => "Tempe orek Kering, Telur Dadar Iris, Ayam panggang",
-                "chili_sauce" => "Sachet",
-                "date_at" => now()->addDays(7),
+            // --- HARI KE-7 ---
+            [
+                "name" => "Gulai Ayam",
+                "description" => "Gulai ayam dengan kuah santan kental.",
+                "vegetable" => "Rebusan Daun Singkong",
+                "side_dish" => "Telur Dadar",
+                "chili_sauce" => "Sambal Ijo",
+                "theme" => "Padang",
+                "categories" => ["Ayam"]
             ],
+            [
+                "name" => "Gulai Daging",
+                "description" => "Gulai daging empuk khas masakan Padang.",
+                "vegetable" => "Sayur Nangka",
+                "side_dish" => "Perkedel Kentang",
+                "chili_sauce" => "Sambal Merah",
+                "theme" => "Padang",
+                "categories" => ["Sapi"]
+            ]
         ];
 
-        foreach ($menus as $menu) {
-            $packages = Package::inRandomOrder()->limit(3)->get('id');
-            $categories = Category::inRandomOrder()->limit(2)->get('id');
-            $themeID = Theme::inRandomOrder()->value('id');
-
+        // Eksekusi Pembuatan Data
+        foreach ($menus as $index => $menu) {
+            
+            // Dapatkan ID Tema berdasarkan nama
+            $theme = $themes->get($menu['theme']);
+            
             $newMenu = Menu::create([
-                "id_theme" => $themeID,
+                "id_theme" => $theme ? $theme->id : $themes->first()->id, // Fallback jika typo
                 "name" => $menu['name'],
                 "description" => $menu['description'],
                 "vegetable" => $menu['vegetable'],
@@ -170,15 +178,20 @@ class MenuSeeder extends Seeder
                 "updated_at" => now()
             ]);
 
-            foreach ($categories as $category) {
-                MenuCategory::create([
-                    "id_category" => $category->id,
-                    "id_menu" => $newMenu->id,
-                    "created_at" => now(),
-                    "updated_at" => now()
-                ]);
+            // Dapatkan ID Kategori yang RELEVAN, lalu tempelkan
+            foreach ($menu['categories'] as $catName) {
+                $cat = $categories->get($catName);
+                if ($cat) {
+                    MenuCategory::create([
+                        "id_category" => $cat->id,
+                        "id_menu" => $newMenu->id,
+                        "created_at" => now(),
+                        "updated_at" => now()
+                    ]);
+                }
             }
 
+            // Harga paket (Tetap Random Harga, tapi id package pasti valid)
             foreach ($packages as $package) {
                 MenuPrice::create([
                     "id_menu" => $newMenu->id,
@@ -188,11 +201,16 @@ class MenuSeeder extends Seeder
                     "updated_at" => now(),
                 ]);
             }
+
+            // PENJADWALAN OTOMATIS: 
+            // Karena ada 14 menu, `floor($index / 2)` akan mengatur 2 Menu per 1 hari (0, 0, 1, 1, 2, 2, dst)
+            $dayOffset = floor($index / 2);
+            
             MenuSchedule::create([
                 "id_menu" => $newMenu->id,
-                "date_at" => $menu['date_at'],
+                "date_at" => Carbon::now()->addDays($dayOffset)->toDateString(),
                 "created_at" => now(),
-                "updated_at" => now(),
+                "updated_at" => now()
             ]);
         }
     }

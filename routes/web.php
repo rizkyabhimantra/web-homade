@@ -29,6 +29,8 @@ use App\Mail\UploudThePaymentProofMail;
 use App\Notifications\ResetPasswordNotification;
 use App\Service\TransactionService;
 use App\Service\UserService;
+use App\StatusDelivery;
+use App\StatusTransaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Maatwebsite\Excel\Facades\Excel;
@@ -225,7 +227,8 @@ Route::middleware([
 
 // preview for mail
 
-Route::name('mailable.')->prefix('mailable')->group(function () {
+Route::name('mailable.')->prefix('mailable')->middleware([WebMiddleware::class, AdminMiddleware::class])
+->group(function () {
 
     // accepted-the-payment-proof-mail
     Route::get('/accepted-the-payment-proof-mail', function () {
@@ -321,7 +324,7 @@ Route::name('mailable.')->prefix('mailable')->group(function () {
 
     // transaction-on-delivery-mail
     Route::get('/transaction-on-delivery-mail', function () {
-        $transaction = (new TransactionService())->all(null, null, null, null, null, 1, null, true)->where('status_delivery', 'on_the_way')
+        $transaction = (new TransactionService())->all(null, null, null, null, null, 1, null, true)
             ->first();
         $transaction = (new TransactionService())->detail($transaction->id, false);
         return new TransactionOnDeliveryMail($transaction);
@@ -329,9 +332,8 @@ Route::name('mailable.')->prefix('mailable')->group(function () {
 
     // uploud-the-payment-proof-mail
     Route::get('/uploud-the-payment-proof-mail', function () {
-        $transaction = (new TransactionService())->all(null, null, null, null, null, 1, null, true)->whereHas('payment_proof', function ($q) {
-            return $q->where('status', 'waiting_for_invoice');
-        })
+        $transaction = (new TransactionService())->all(null, null, null, null, null, 1, null, true)
+        ->where('status', StatusTransaction::PENDING)
             ->first();
         $transaction = (new TransactionService())->detail($transaction->id, false);
         return new UploudThePaymentProofMail($transaction);
