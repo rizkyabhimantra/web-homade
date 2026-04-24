@@ -168,7 +168,7 @@ class PaymentMethodController extends Controller
                 $response = $this->responseData->create('Data tidak ditemukan', status: 'warning', status_code: 404, isJson: false);
                 return redirect()->back()->with(compact('response'));
             }
-
+            $deleted = $this->paymentMethodService->delete($payment);
             $response = $this->responseData->create('Metode Pembayaran berhasil dihapus!', isJson: false);
             return redirect()->route('admin.payment-methods')->with(compact('response'));
         } catch (Exception $e) {
