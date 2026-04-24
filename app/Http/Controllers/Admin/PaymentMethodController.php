@@ -82,6 +82,7 @@ class PaymentMethodController extends Controller
                     'account_owner' => 'required|string|max:100',
                     'account_number' => 'required|numeric',
                     'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
+                    'is_active' => 'nullable|boolean'
                 ],
                 [
                     'required' => ':attribute dibutuhkan!',

@@ -58,7 +58,7 @@ class PaymentMethodService
                 }
             }
 
-            $data['is_active'] = isset($data['is_active']) ? true : false;
+            $data['is_active'] = isset($data['is_active']) ? $data['is_active']  &&  (bool) $data['is_active'] : false;
 
             $payment = PaymentMethod::create($data);
 
