@@ -718,7 +718,7 @@
                                                                 id="image-upload"
                                                                 name="image" 
                                                                 accept=".png, .jpg, .jpeg"
-                                                                class="d-flex"
+                                                                class="d-none"
                                                                 onchange="previewImage(this)"
                                                             >
 

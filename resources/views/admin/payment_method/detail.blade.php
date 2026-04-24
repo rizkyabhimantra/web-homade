@@ -1,54 +1,501 @@
-@include('components.header')
-<div class="container py-4">
-    <a href="{{ route('admin.payment-methods') }}" class="text-decoration-none text-muted mb-3 d-inline-block"><i class="bi bi-arrow-left"></i> Back</a>
-    <div class="card border-0 shadow-sm">
-        <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-            <h5 class="fw-bold mb-0">Detail - {{ $response['data']->bank_name }}</h5>
-            <button type="submit" form="formEdit" class="btn btn-success btn-sm fw-bold">Simpan Perubahan</button>
-        </div>
-        <div class="card-body p-4">
-            <form id="formEdit" action="{{ route('admin.edit-payment-method', $response['data']->id) }}" method="POST" enctype="multipart/form-data">
-                @csrf @method('put')
-                <div class="row g-4">
-                    <div class="col-md-4 text-center">
-                        <div class="border rounded bg-white p-2 mb-2 d-flex justify-content-center">
-                            @if($response['data']->image_url)
-                                <img src="{{ $response['data']->image_url }}" class="img-fluid rounded" style="max-height: 130px;">
-                            @else
-                                <span class="text-muted small my-5">Tidak ada gambar</span>
-                            @endif
-                        </div>
-                        <input type="file" name="image" class="form-control form-control-sm mb-3" accept="image/*">
-                        
-                        <div class="form-check form-switch d-flex justify-content-center gap-2 mb-3">
-                            <label class="form-check-label fw-bold" for="statusSwitch">Status</label>
-                            <input class="form-check-input" type="checkbox" id="statusSwitch" name="is_active" value="1" {{ $response['data']->is_active ? 'checked' : '' }}>
-                        </div>
-                        
-                        <button type="button" class="btn btn-outline-danger btn-sm w-100 fw-bold" onclick="if(confirm('Yakin hapus data ini?')) document.getElementById('formDelete').submit();">Hapus</button>
-                    </div>
-                    <div class="col-md-8">
-                        <div class="mb-3">
-                            <label class="form-label small fw-bold">Nama Bank / E-Wallet</label>
-                            <input type="text" name="bank_name" class="form-control" required value="{{ $response['data']->bank_name }}">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label small fw-bold">Nama Pemilik Rekening</label>
-                            <input type="text" name="account_owner" class="form-control" required value="{{ $response['data']->account_owner }}">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label small fw-bold">Nomor Rekening</label>
-                            <input type="number" name="account_number" class="form-control" required value="{{ $response['data']->account_number }}">
-                        </div>
-                    </div>
-                </div>
-            </form>
-            <form id="formDelete" action="{{ route('admin.delete-payment-method', $response['data']->id) }}" method="POST" class="d-none">
-                @csrf @method('delete')
-            </form>
-        </div>
-    </div>
-</div>
-@include('components.navbarFoot', ["page" => "payment"])
-<script src="assets/plugins/global/plugins.bundle.js"></script>
-<script src="assets/js/scripts.bundle.js"></script>
+@php
+    $payment = $response['data'];
+@endphp
+
+<!DOCTYPE html>
+<html lang="en">
+	<!--begin::Head-->
+	@include('components.header')
+	<head>
+		<link href="{{ asset('assets/css/custom.css') }}" rel="stylesheet" type="text/css" />
+	</head>
+	<!--end::Head-->
+
+	<!--begin::Body-->
+	<body 
+		id="kt_app_body" 
+		data-kt-app-layout="dark-sidebar" 
+		data-kt-app-header-fixed="true" 
+		data-kt-app-sidebar-enabled="true" 
+		data-kt-app-sidebar-fixed="true" 
+		data-kt-app-sidebar-hoverable="true" 
+		data-kt-app-sidebar-push-header="true" 
+		data-kt-app-sidebar-push-toolbar="true" 
+		data-kt-app-sidebar-push-footer="true" 
+
+		data-kt-app-toolbar-enabled="true" 
+		data-kt-app-toolbar-fixed="true"
+		data-kt-app-toolbar-fixed-mobile="true"
+
+		class="app-default">
+		
+		<!--begin::App-->
+		<div class="d-flex flex-column flex-root app-root" id="kt_app_root">
+			<!--begin::Page-->
+			<div class="app-page flex-column flex-column-fluid" id="kt_app_page">
+				<!--begin::Header-->
+				<div 
+					id="kt_app_header" 
+					class="app-header" 
+					data-kt-sticky="true" 
+					data-kt-sticky-activate="{default: true, lg: true}" 
+					data-kt-sticky-name="app-header-minimize" 
+					data-kt-sticky-offset="{default: '200px', lg: '0'}" 
+					data-kt-sticky-animation="false">
+					<!--begin::Header container-->
+					<div class="app-container container-fluid d-flex align-items-stretch justify-content-between" id="kt_app_header_container">
+						<!--begin::Sidebar mobile toggle-->
+						<div class="d-flex align-items-center d-lg-none ms-n3 me-1 me-md-2" title="Show sidebar menu">
+							<div class="btn btn-icon btn-active-color-primary w-35px h-35px" id="kt_app_sidebar_mobile_toggle">
+								<img src="{{ asset('icons/menu.svg') }}" alt="">
+							</div>
+						</div>
+						<!--end::Sidebar mobile toggle-->
+
+						<!--begin::Mobile logo-->
+						<div class="d-flex align-items-center flex-grow-1 flex-lg-grow-0">
+							<a href="{{route('admin.dashboard')}}" class="d-lg-none">
+								<img alt="Logo" src="{{asset('assets/media/logos/Logo-Primer.svg')}}" class="h-35px" />
+							</a>
+						</div>
+						<!--end::Mobile logo-->
+
+						<!--begin::Header wrapper-->
+						<div class="d-flex align-items-stretch justify-content-between flex-lg-grow-1" id="kt_app_header_wrapper">
+
+							<!--begin::Title-->
+							<div 
+								data-kt-swapper="true" 
+								data-kt-swapper-mode="{default: 'prepend', lg: 'prepend'}"
+								data-kt-swapper-parent="{default: '#kt_app_content_container', lg: '#kt_app_header_wrapper'}"
+								class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
+								<h1 class="page-heading d-flex text-gray-900 fw-bold fs-3 flex-column justify-content-center my-0">
+									Metode Pembayaran
+								</h1>
+							</div>
+							<!--end::Title-->
+
+							<!--begin::Navbar-->
+							<div class="app-navbar flex-shrink-0">
+								<!--begin::Theme mode-->
+								<div class="app-navbar-item ms-1 ms-md-4">
+									<div
+										class="btn btn-icon btn-custom btn-icon-muted btn-active-light btn-active-color-primary w-35px h-35px" 
+										data-kt-menu-trigger="click" 
+										data-kt-menu-attach="parent" 
+										data-kt-menu-placement="bottom-end">
+										<i class="bi bi-sun-fill theme-light-show fs-3"></i>
+										<i class="bi bi-moon-fill theme-dark-show fs-4"></i>
+									</div>
+									<div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-title-gray-700 menu-icon-gray-500 menu-active-bg menu-state-color fw-semibold py-4 fs-base w-150px" data-kt-menu="true" data-kt-element="theme-mode-menu">
+										<div class="menu-item px-3 my-0">
+											<a href="#" class="menu-link px-3 py-2" data-kt-element="mode" data-kt-value="light">
+												<span class="menu-icon" data-kt-element="icon"><i class="bi bi-sun-fill fs-3"></i></span>
+												<span class="menu-title">Light</span>
+											</a>
+										</div>
+										<div class="menu-item px-3 my-0">
+											<a href="#" class="menu-link px-3 py-2" data-kt-element="mode" data-kt-value="dark">
+												<span class="menu-icon" data-kt-element="icon"><i class="bi bi-moon-fill fs-4"></i></span>
+												<span class="menu-title">Dark</span>
+											</a>
+										</div>
+										<div class="menu-item px-3 my-0">
+											<a href="#" class="menu-link px-3 py-2" data-kt-element="mode" data-kt-value="system">
+												<span class="menu-icon" data-kt-element="icon"><i class="bi bi-pc-display fs-4"></i></span>
+												<span class="menu-title">System</span>
+											</a>
+										</div>
+									</div>
+								</div>
+								<!--end::Theme mode-->
+							</div>
+							<!--end::Navbar-->
+
+						</div>
+						<!--end::Header wrapper-->
+					</div>
+					<!--end::Header container-->
+				</div>
+				<!--end::Header-->
+
+				<!--begin::Wrapper-->
+				<div class="app-wrapper flex-column flex-row-fluid" id="kt_app_wrapper">
+					<!--begin::Sidebar-->
+					@include('components.sidebar', ["page" => "payment-methods"])
+					<!--end::Sidebar-->
+
+					<!--begin::Main-->
+					<div class="app-main flex-column flex-row-fluid" id="kt_app_main">
+						<!--begin::Content wrapper-->
+						<div class="d-flex flex-column flex-column-fluid">
+
+							<!--begin::Toolbar-->
+							<div id="kt_app_toolbar" class="app-toolbar py-3">
+								<div id="kt_app_toolbar_container" class="app-container container-fluid d-flex flex-stack">
+									<div 
+										data-kt-swapper="true" 
+										data-kt-swapper-mode="{default: 'prepend', lg: 'prepend'}"
+										data-kt-swapper-parent="{default: '#kt_app_content_container', lg: '#kt_app_toolbar_container'}"
+										class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
+										<!--begin::Breadcrumb-->
+										<ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1 d-none d-md-flex">
+											<li class="breadcrumb-item text-muted">
+												<a href="{{ route('admin.dashboard') }}" class="">Home</a>
+											</li>
+											<li class="breadcrumb-item">
+												<span class="bullet bg-gray-500 w-5px h-2px"></span>
+											</li>
+											<li class="breadcrumb-item text-muted">
+												<a href="{{ route('admin.payment-methods') }}" class="">Metode Pembayaran</a>
+											</li>
+											<li class="breadcrumb-item">
+												<span class="bullet bg-gray-500 w-5px h-2px"></span>
+											</li>
+											<li class="breadcrumb-item text-muted">Detail</li>
+										</ul>
+										<!--end::Breadcrumb-->
+									</div>
+								</div>
+							</div>
+							<!--end::Toolbar-->
+
+							<!--begin::Content-->
+							<div id="kt_app_content" class="app-content flex-column-fluid">
+								<div id="kt_app_content_container" class="app-container container-fluid">
+
+									<!--begin::Row Breadcrumb for Mobile View-->
+									<div class="row mb-5 mb-xl-10 d-md-none">
+										<div class="col-12">
+											<ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1 d-md-none">
+												<li class="breadcrumb-item text-muted">
+													<a href="{{ route('admin.dashboard') }}" class="">Home</a>
+												</li>
+												<li class="breadcrumb-item">
+													<span class="bullet bg-gray-500 w-5px h-2px"></span>
+												</li>
+												<li class="breadcrumb-item text-muted">
+													<a href="{{ route('admin.payment-methods') }}" class="">Metode Pembayaran</a>
+												</li>
+												<li class="breadcrumb-item">
+													<span class="bullet bg-gray-500 w-5px h-2px"></span>
+												</li>
+												<li class="breadcrumb-item text-muted">Detail</li>
+											</ul>
+										</div>
+									</div>
+									<!--end::Row Breadcrumb for Mobile View-->
+
+									<form id="formEdit" action="{{ route('admin.edit-payment-method', $payment['id']) }}" method="POST" enctype="multipart/form-data">
+										@csrf
+										@method('PUT')
+
+										<!--begin::Row-->
+										<div class="row g-5 g-xl-10 mb-5 mb-xl-10">
+
+											<!--begin::Page header-->
+											<div class="col-md-12">
+												<div class="d-flex flex-stack flex-wrap">
+													<h3 class="m-md-0">Detail - {{ $payment['bank_name'] }}</h3>
+													<a href="{{ route('admin.payment-methods') }}" class="btn btn-light-primary">
+														<i class="bi bi-arrow-left fs-4"></i>
+														Kembali
+													</a>
+												</div>
+											</div>
+											<!--end::Page header-->
+
+											<!--begin::Left col - Image & Status-->
+											<div class="col-md-4">
+
+												<!--begin::Gambar-->
+												<div class="card card-flush py-4 mb-5">
+													<div class="card-header">
+														<div class="card-title">
+															<h2>Logo Bank / E-Wallet</h2>
+														</div>
+													</div>
+													<div class="card-body text-center pt-0">
+														<style>
+															.image-input-placeholder {
+																background-image: url('{{ $payment['image_url'] ?? asset('assets/media/svg/files/blank-image.svg') }}');
+															}
+															[data-bs-theme="dark"] .image-input-placeholder {
+																background-image: url('{{ $payment['image_url'] ?? asset('assets/media/svg/files/blank-image-dark.svg') }}');
+															}
+														</style>
+
+														<div class="mb-3">
+															<div class="position-relative d-inline-block mb-3">
+																<img 
+																	id="image-preview"
+																	src="{{ $payment['image_url'] ?? asset('assets/media/svg/files/blank-image.svg') }}" 
+																	alt="Logo Bank"
+																	class="rounded shadow-sm object-fit-contain border"
+																	style="width: 150px; height: 150px; cursor: pointer; background: #f9f9f9; padding: 8px;"
+																	onclick="document.getElementById('image-upload').click()"
+																	title="Klik untuk ganti gambar"
+																>
+																<label 
+																	for="image-upload"
+																	class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow position-absolute"
+																	style="top: 0; right: 0; cursor: pointer; transform: translate(50%, -50%)"
+																	title="Ganti gambar"
+																>
+																	<img src="{{ asset('icons/edit.svg') }}" alt="" class="h-50">
+																</label>
+																<span 
+																	id="image-cancel"
+																	class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow position-absolute d-none"
+																	style="bottom: 0; right: 0; cursor: pointer; transform: translate(50%, 50%)"
+																	title="Batalkan perubahan"
+																	onclick="cancelImage()"
+																>
+																	<img src="{{ asset('icons/close.svg') }}" alt="" class="h-75">
+																</span>
+															</div>
+
+															<input 
+																type="file" 
+																id="image-upload"
+																name="image" 
+																accept=".png, .jpg, .jpeg"
+																class="d-none"
+																onchange="previewImage(this)"
+															>
+
+															<div class="text-muted fs-7 text-center">
+																Klik gambar untuk mengganti. Hanya *.png, *.jpg, dan *.jpeg yang diterima.
+															</div>
+														</div>
+													</div>
+												</div>
+												<!--end::Gambar-->
+
+												<!--begin::Status-->
+												<div class="card card-flush py-4">
+													<div class="card-header">
+														<div class="card-title">
+															<h2>Status</h2>
+														</div>
+														<div class="card-toolbar">
+															<div class="rounded-circle w-15px h-15px {{ $payment['is_active'] ? 'bg-success' : 'bg-danger' }}" id="kt_status_indicator"></div>
+														</div>
+													</div>
+													<div class="card-body pt-0">
+														<div class="mb-0">
+															<div class="d-flex align-items-center gap-3">
+																<div class="form-check form-switch mb-0">
+																	<input type="hidden" name="is_active" value="0">
+																	<input
+																		class="form-check-input"
+																		type="checkbox"
+																		role="switch"
+																		id="is_active"
+																		name="is_active"
+																		value="1"
+																		{{ $payment['is_active'] ? 'checked' : '' }}
+																		onchange="handleStatusChange(this)"
+																	>
+																</div>
+																<span id="kt_status_label" class="">
+																</span>
+															</div>
+														</div>
+													</div>
+												</div>
+												<!--end::Status-->
+
+											</div>
+											<!--end::Left col-->
+
+											<!--begin::Right col - Form fields-->
+											<div class="col-md-8">
+												<div class="card card-flush py-4">
+													<div class="card-header">
+														<div class="card-title">
+															<h2>Detail</h2>
+														</div>
+													</div>
+													<div class="card-body pt-0">
+
+														<!--begin::Nama Bank-->
+														<div class="mb-5 mb-xl-10">
+															<label class="form-label required">Nama Bank / E-Wallet</label>
+															<div class="input-group">
+																<input
+																	type="text"
+																	class="form-control"
+																	name="bank_name"
+																	value="{{ old('bank_name', $payment['bank_name']) }}"
+																	required
+																/>
+															</div>
+														</div>
+														<!--end::Nama Bank-->
+
+														<!--begin::Nama Pemilik-->
+														<div class="mb-5 mb-xl-10">
+															<label class="form-label required">Nama Pemilik Rekening</label>
+															<div class="input-group">
+																<input
+																	type="text"
+																	class="form-control"
+																	name="account_owner"
+																	value="{{ old('account_owner', $payment['account_owner']) }}"
+																	required
+																/>
+															</div>
+														</div>
+														<!--end::Nama Pemilik-->
+
+														<!--begin::No Rekening-->
+														<div class="mb-5 mb-xl-10">
+															<label class="form-label required">Nomor Rekening</label>
+															<div class="input-group">
+																<input
+																	type="text"
+																	class="form-control"
+																	name="account_number"
+																	value="{{ old('account_number', $payment['account_number']) }}"
+																	inputmode="numeric"
+																	pattern="[0-9]*"
+																	required
+																/>
+															</div>
+														</div>
+														<!--end::No Rekening-->
+
+													</div>
+												</div>
+											</div>
+											<!--end::Right col-->
+
+											<!--begin::Actions-->
+											<div class="col-md-12">
+												<div class="d-flex justify-content-between align-items-center">
+
+													<!--begin::Save-->
+													<div class="d-flex gap-3">
+														<a href="{{ route('admin.payment-methods') }}" class="btn btn-secondary">
+															Batal
+														</a>
+														<button type="submit" class="btn btn-primary">
+															Simpan
+														</button>
+													</div>
+													<!--end::Save-->
+
+												</div>
+											</div>
+											<!--end::Actions-->
+
+										</div>
+										<!--end::Row-->
+
+									</form>
+
+                                    
+                                    <!--begin::Delete-->
+                                    <form id="formDelete" action="{{ route('admin.delete-payment-method', $payment['id']) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button
+                                            type="submit"
+                                            class="btn btn-light-danger d-flex align-items-center gap-2"
+                                            onclick="return confirm('Yakin ingin menghapus metode pembayaran ini?')"
+                                        >
+                                            <img src="{{ asset('icons/trash.svg') }}" alt="" class="h-15px img-accent">
+                                            Hapus
+                                        </button>
+                                    </form>
+                                    <!--end::Delete-->
+
+								</div>
+							</div>
+							<!--end::Content-->
+
+						</div>
+						<!--end::Content wrapper-->
+
+						<!--begin::Footer-->
+						<div id="kt_app_footer" class="app-footer">
+							<div class="app-container container-fluid d-flex flex-column flex-md-row flex-center flex-md-stack py-3">
+								<div class="text-gray-900 order-2 order-md-1">
+									<span class="text-muted fw-semibold me-1">2025&copy;</span>
+									<span class="text-gray-800">Homade Kreatif Teknologi</span>
+								</div>
+							</div>
+						</div>
+						<!--end::Footer-->
+					</div>
+					<!--end:::Main-->
+				</div>
+				<!--end::Wrapper-->
+
+			</div>
+			<!--end::Page-->
+		</div>
+		<!--end::App-->
+
+		<!--begin::Scrolltop-->
+		<div id="kt_scrolltop" class="scrolltop" data-kt-scrolltop="true">
+			<img src="{{ asset('icons/arrow-up.svg') }}" alt="" class="img-white">
+		</div>
+		<!--end::Scrolltop-->
+
+		<script>var hostUrl = "assets/";</script>
+
+		<!--begin::Global Javascript Bundle-->
+		<script src="{{asset('assets/plugins/global/plugins.bundle.js')}}"></script>
+		<script src="{{asset('assets/js/scripts.bundle.js')}}"></script>
+		<!--end::Global Javascript Bundle-->
+
+		<!--begin::Custom Javascript-->
+		<script>
+			"use strict";
+
+			const originalImageUrl = '{{ $payment['image_url'] ?? '' }}';
+
+			function previewImage(input) {
+				if (input.files && input.files[0]) {
+					const reader = new FileReader();
+					reader.onload = function (e) {
+						document.getElementById('image-preview').src = e.target.result;
+						document.getElementById('image-cancel').classList.remove('d-none');
+					};
+					reader.readAsDataURL(input.files[0]);
+				}
+			}
+
+			function cancelImage() {
+				document.getElementById('image-preview').src = originalImageUrl;
+				document.getElementById('image-cancel').classList.add('d-none');
+				document.getElementById('image-upload').value = '';
+			}
+
+			function handleStatusChange(el) {
+				const indicator = document.getElementById('kt_status_indicator');
+				const label = document.getElementById('kt_status_label');
+				if (el.checked) {
+					indicator.classList.remove('bg-danger');
+					indicator.classList.add('bg-success');
+					label.textContent = '1';
+				} else {
+					indicator.classList.remove('bg-success');
+					indicator.classList.add('bg-danger');
+					label.textContent = '0';
+				}
+			}
+		</script>
+		<!--end::Custom Javascript-->
+
+		@if (session()->has('response'))
+		<script>
+			alert('{{ session()->get('response')['message'] }}');
+		</script>
+		@endif
+
+	</body>
+	<!--end::Body-->
+</html>
