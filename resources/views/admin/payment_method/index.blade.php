@@ -160,7 +160,7 @@ License: For each use you must have a valid license purchased only from above li
 				<!--begin::Wrapper-->
 				<div class="app-wrapper flex-column flex-row-fluid" id="kt_app_wrapper">
 					
-					@include('components.sidebar', ["page" => "payment-methods"])
+					@include('components.sidebar', ["page" => "payment"])
 
 					<!--begin::Main-->
 					<div class="app-main flex-column flex-row-fluid" id="kt_app_main">
