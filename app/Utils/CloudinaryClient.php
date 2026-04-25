@@ -30,9 +30,10 @@ class CloudinaryClient
             $uploud = $this->cloudinary->uploadApi()->upload($image, [
                 'public_id' => $public_id,
                 'use_filename' => false,
-                // blm di format ke webp...
-                // sementara foldernya maish berantakan lah ya hehehe...
-                'folder' => "homade/$folder"
+                'folder' => "homade/$folder",
+                // --- UPDATE WEBP & QUALITY DI SINI ---
+                'format' => 'webp',
+                'quality' => 'auto:good'
             ]);
             return $uploud;
         } catch (Exception $e) {
@@ -42,13 +43,14 @@ class CloudinaryClient
     }
 
     public function delete(
-        string | null $public_id
+        string|null $public_id
     ) {
-        try{
-            if(!$public_id) return;
+        try {
+            if (!$public_id)
+                return;
             $response = $this->cloudinary->adminApi()->deleteAssets($public_id);
             return $response['deleted'][$public_id] === 'deleted';
-        }catch(Exception $e){
+        } catch (Exception $e) {
             Log::error($e->getMessage());
             return false;
         }
@@ -64,9 +66,10 @@ class CloudinaryClient
             $uploud = $this->cloudinary->uploadApi()->upload($image, [
                 'public_id' => $public_id,
                 'use_filename' => false,
-                // blm di format ke webp...
-                // sementara foldernya maish berantakan lah ya hehehe...
-                'folder' => 'homade/payment_proofs'
+                'folder' => 'homade/payment_proofs',
+                // --- UPDATE WEBP & QUALITY DI SINI ---
+                'format' => 'webp',
+                'quality' => 'auto:good'
             ]);
             return $uploud;
         } catch (Exception $e) {
@@ -76,26 +79,28 @@ class CloudinaryClient
     }
 
     public function deleteThePaymentProofImage(
-        string | null $public_id
+        string|null $public_id
     ) {
-        try{
-            if(!$public_id) return;
+        try {
+            if (!$public_id)
+                return;
             $response = $this->cloudinary->adminApi()->deleteAssets($public_id);
             return $response['deleted'][$public_id] === 'deleted';
-        }catch(Exception $e){
+        } catch (Exception $e) {
             Log::error($e->getMessage());
             return false;
         }
     }
 
-    public function getAllPaymentProofs($limit = 2){
-        try{
+    public function getAllPaymentProofs($limit = 2)
+    {
+        try {
             $response = $this->cloudinary->adminApi()->assetsByAssetFolder('homade/payment_proofs', [
                 'max_results' => $limit,
             ]);
             return $response['resources'];
-        }catch(Exception $e){
-             Log::error($e->getMessage());
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
             return [];
         }
     }

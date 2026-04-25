@@ -82,6 +82,7 @@ class PaymentMethodController extends Controller
                     'account_owner' => 'required|string|max:100',
                     'account_number' => 'required|numeric',
                     'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
+                    'is_active' => 'nullable|boolean'
                 ],
                 [
                     'required' => ':attribute dibutuhkan!',
@@ -122,9 +123,11 @@ class PaymentMethodController extends Controller
                 'account_owner' => 'required|string|max:100',
                 'account_number' => 'required|numeric',
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+                'is_active' => 'nullable|boolean'
             ], [
                 'required' => ':attribute dibutuhkan!',
                 'string' => ':attribute harus berupa text',
+                'boolean' => '::attribute harus berupa boolean',
                 'max' => ':attribute harus memiliki maksimal :max karakter',
                 'numeric' => ':attribute harus berupa angka numeric',
                 'image' => ':attribute harus berupa image dengan maksimal 2MB'
@@ -166,7 +169,7 @@ class PaymentMethodController extends Controller
                 $response = $this->responseData->create('Data tidak ditemukan', status: 'warning', status_code: 404, isJson: false);
                 return redirect()->back()->with(compact('response'));
             }
-
+            $deleted = $this->paymentMethodService->delete($payment);
             $response = $this->responseData->create('Metode Pembayaran berhasil dihapus!', isJson: false);
             return redirect()->route('admin.payment-methods')->with(compact('response'));
         } catch (Exception $e) {
