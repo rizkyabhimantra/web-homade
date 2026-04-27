@@ -122,7 +122,7 @@
 				<!--begin::Wrapper-->
 				<div class="app-wrapper flex-column flex-row-fluid" id="kt_app_wrapper">
 					<!--begin::Sidebar-->
-					@include('components.sidebar', ["page" => "payment-methods"])
+					@include('components.sidebar', ["page" => "payment"])
 					<!--end::Sidebar-->
 
 					<!--begin::Main-->
@@ -480,11 +480,9 @@
 				if (el.checked) {
 					indicator.classList.remove('bg-danger');
 					indicator.classList.add('bg-success');
-					label.textContent = '1';
 				} else {
 					indicator.classList.remove('bg-success');
 					indicator.classList.add('bg-danger');
-					label.textContent = '0';
 				}
 			}
 		</script>

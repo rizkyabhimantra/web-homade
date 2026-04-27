@@ -1032,6 +1032,7 @@
                                                 <div class="overflow-hidden d-flex w-100 h-100 align-items-center justify-content-center flex-column">
                                                     <p class="fsc-3 mb-0 w-100 overflow-hidden text-overflow text-nowrap fw-bold">{{ $menu['name'] }}</p>
                                                     <p class="fsc-2 mb-0 w-100 overflow-hidden text-overflow text-nowrap">{{ $menu['package'] }}</p>
+                                                    <p class="fsc-1 mb-0 w-100 overflow-hidden text-overflow text-nowrap">{{ $menu['note'] }}</p>
                                                 </div>
 
                                             </div>
