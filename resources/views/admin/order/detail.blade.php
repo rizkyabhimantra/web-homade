@@ -39,7 +39,7 @@
                     </div>
 
                     <div class="d-flex align-items-center gap-2 justify-content-start justify-content-md-end flex-shrink-0 w-100 w-lg-auto h-lg-100">
-                        <a href="{{ route('admin.orders') }}" class="btn-primary-homade fsc-2 rounded-3 fw-bold text-white">Unduh Invoice</a>
+                        <a href="{{ route('admin.orders') }}" class="btn-primary-homade fsc-2 rounded-3 fw-bold text-white d-none">Unduh Invoice</a>
                         <a href="{{ route('admin.orders') }}" class="btn-primary-homade fsc-2 rounded-3 fw-bold text-white">Kembali <img src="{{ asset('icons/arrow-right.svg') }}" class="img-white"></a>
                     </div>
                 </div>
