@@ -152,7 +152,7 @@ class PackageController extends Controller
             }
 
             $created_info = $this->packageService->save(
-                $request->only('name', 'description', 'minimum_order'),
+                $request->only('name', 'description', 'minimum_order', 'total_servings'),
                 $request->file('image')
             );
 
@@ -238,7 +238,7 @@ class PackageController extends Controller
 
             $updated_info = $this->packageService->edit(
                 $package,
-                $request->only('name', 'description', 'minimum_order'),
+                $request->only('name', 'description', 'minimum_order', 'total_servings'),
                 $request->file('image')
             );
 
