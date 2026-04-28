@@ -1,577 +1,1029 @@
-@include('components.header')
+<!DOCTYPE html>
+<!--
+Author: Keenthemes
+Product Name: Metronic
+-->
+<html lang="en">
+	<!--begin::Head-->
+	@include('components.header')
+	<head>
+		<link href="{{ asset('assets/css/custom.css') }}" rel="stylesheet" type="text/css" />
+	</head>
+	<!--end::Head-->
 
-@if(session('response'))
-    @if(session('response')['status'] !== 'success')
-        <div class="alert alert-danger mx-8 mt-4">
-            <h6 class="fw-bold"><i class="bi bi-exclamation-triangle-fill me-2"></i> {{ session('response')['message'] }}</h6>
-            @if(isset(session('response')['errors']))
-                <ul class="mb-0">
-                    @foreach(session('response')['errors'] as $error)
-                        <li>{{ $error[0] }}</li>
-                    @endforeach
-                </ul>
-            @endif
-        </div>
-    @else
-        <div class="alert alert-success mx-8 mt-4">
-            <h6 class="fw-bold mb-0"><i class="bi bi-check-circle-fill me-2"></i> {{ session('response')['message'] }}</h6>
-        </div>
-    @endif
-@endif
+	<!--begin::Body-->
+	<body
+		id="kt_app_body"
+		data-kt-app-layout="dark-sidebar"
+		data-kt-app-header-fixed="true"
+		data-kt-app-sidebar-enabled="true"
+		data-kt-app-sidebar-fixed="true"
+		data-kt-app-sidebar-hoverable="true"
+		data-kt-app-sidebar-push-header="true"
+		data-kt-app-sidebar-push-toolbar="true"
+		data-kt-app-sidebar-push-footer="true"
+		data-kt-app-toolbar-enabled="true"
+		data-kt-app-toolbar-fixed="true"
+		data-kt-app-toolbar-fixed-mobile="true"
+		class="app-default">
 
-<div class="d-flex flex-column flex-column-fluid">
-    <div id="kt_app_content" class="app-content flex-column-fluid py-8">
-        <div id="kt_app_content_container" class="app-container container-xxl">
-            
-            <div class="mb-5 d-flex align-items-center justify-content-between">
-                <h3 class="fw-bold text-dark mb-0">Tambah Transaksi Baru</h3>
-                <a href="{{ route('admin.dashboard') }}" class="btn btn-sm btn-light-primary"><i class="bi bi-arrow-left"></i> Kembali</a>
-            </div>
+		<!--begin::App-->
+		<div class="d-flex flex-column flex-root app-root" id="kt_app_root">
+			<!--begin::Page-->
+			<div class="app-page flex-column flex-column-fluid" id="kt_app_page">
 
-            <form id="formCheckoutAdmin" action="{{ route('admin.add-order') }}" method="POST" enctype="multipart/form-data">
-                @csrf
-                <input type="hidden" name="checkout_payload" id="checkoutPayloadInput">
+				<!--begin::Header-->
+				<div
+					id="kt_app_header"
+					class="app-header"
+					data-kt-sticky="true"
+					data-kt-sticky-activate="{default: true, lg: true}"
+					data-kt-sticky-name="app-header-minimize"
+					data-kt-sticky-offset="{default: '200px', lg: '0'}"
+					data-kt-sticky-animation="false">
+					<!--begin::Header container-->
+					<div class="app-container container-fluid d-flex align-items-stretch justify-content-between" id="kt_app_header_container">
+						<!--begin::Sidebar mobile toggle-->
+						<div class="d-flex align-items-center d-lg-none ms-n3 me-1 me-md-2" title="Show sidebar menu">
+							<div class="btn btn-icon btn-active-color-primary w-35px h-35px" id="kt_app_sidebar_mobile_toggle">
+								<img src="{{ asset('icons/menu.svg') }}" alt="">
+							</div>
+						</div>
+						<!--end::Sidebar mobile toggle-->
 
-                <div class="row g-5">
-                    <div class="col-lg-8">
-                        
-                        <div class="card shadow-sm border-0 mb-5">
-                            <div class="card-header bg-white border-bottom-0 pt-4 pb-0">
-                                <h5 class="card-title fw-bold">1. Informasi Klien</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="row g-4">
-                                    <div class="col-md-6">
-                                        <label class="form-label small fw-bold required">Pilih Pengguna</label>
-                                        <select class="form-select form-select-sm" id="userSelect">
-                                            </select>
+						<!--begin::Mobile logo-->
+						<div class="d-flex align-items-center flex-grow-1 flex-lg-grow-0">
+							<a href="{{ route('admin.dashboard') }}" class="d-lg-none">
+								<img alt="Logo" src="{{ asset('assets/media/logos/Logo-Primer.svg') }}" class="h-35px" />
+							</a>
+						</div>
+						<!--end::Mobile logo-->
+
+						<!--begin::Header wrapper-->
+						<div class="d-flex align-items-stretch justify-content-between flex-lg-grow-1" id="kt_app_header_wrapper">
+
+							<!--begin::Title-->
+							<div
+								data-kt-swapper="true"
+								data-kt-swapper-mode="{default: 'prepend', lg: 'prepend'}"
+								data-kt-swapper-parent="{default: '#kt_app_content_container', lg: '#kt_app_header_wrapper'}"
+								class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
+								<h1 class="page-heading d-flex text-gray-900 fw-bold fs-3 flex-column justify-content-center my-0">
+									Pesanan
+								</h1>
+							</div>
+							<!--end::Title-->
+
+							<!--begin::Navbar-->
+							<div class="app-navbar flex-shrink-0">
+
+								<!--begin::Notifications-->
+								<div class="app-navbar-item ms-1 ms-md-4">
+									<div
+										class="btn btn-icon btn-custom btn-icon-muted btn-active-light btn-active-color-primary w-35px h-35px position-relative"
+										data-kt-menu-trigger="click"
+										data-kt-menu-attach="parent"
+										data-kt-menu-placement="bottom-end"
+										id="kt_menu_item_wow">
+										<i class="bi bi-bell-fill fs-4"></i>
+										<span class="bullet bullet-dot bg-success h-6px w-6px position-absolute translate-middle top-0 start-50 animation-blink"></span>
+									</div>
+									<div class="menu menu-sub menu-sub-dropdown menu-column w-325px w-lg-375px" data-kt-menu="true" id="kt_menu_notifications">
+										<div class="d-flex flex-column bgi-no-repeat rounded-top" style="background-image:url('{{ asset('assets/media/misc/menu-header-bg.jpg') }}')">
+											<h3 class="text-white fw-semibold px-9 mt-10 mb-6">Notifications
+												<span class="fs-8 opacity-75 ps-3">(99+)</span>
+											</h3>
+											<div class="hover-scroll-x">
+												<div class="d-grid">
+													<ul class="nav nav-line-tabs nav-line-tabs-2x nav-stretch fw-semibold px-9 flex-nowrap text-nowrap">
+														<li class="nav-item">
+															<a class="nav-link text-white opacity-75 opacity-state-100 pb-4 active" data-bs-toggle="tab" href="#kt_topbar_notifications_1">Approval (99+)</a>
+														</li>
+													</ul>
+												</div>
+											</div>
+										</div>
+										<div class="tab-content">
+											<div class="tab-pane fade show active" id="kt_topbar_notifications_1" role="tabpanel">
+												<div class="scroll-y h-325px my-5 px-4">
+													<div class="text-center text-muted py-10 fs-7">Tidak ada notifikasi</div>
+												</div>
+												<div class="py-3 text-center border-top">
+													<a href="#" class="btn btn-color-gray-600 btn-active-color-primary">Lihat Semua</a>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<!--end::Notifications-->
+
+								<!--begin::Theme mode-->
+								<div class="app-navbar-item ms-1 ms-md-4">
+									<div
+										class="btn btn-icon btn-custom btn-icon-muted btn-active-light btn-active-color-primary w-35px h-35px"
+										data-kt-menu-trigger="click"
+										data-kt-menu-attach="parent"
+										data-kt-menu-placement="bottom-end">
+										<i class="bi bi-sun-fill theme-light-show fs-3"></i>
+										<i class="bi bi-moon-fill theme-dark-show fs-4"></i>
+									</div>
+									<div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-title-gray-700 menu-icon-gray-500 menu-active-bg menu-state-color fw-semibold py-4 fs-base w-150px" data-kt-menu="true" data-kt-element="theme-mode-menu">
+										<div class="menu-item px-3 my-0">
+											<a href="#" class="menu-link px-3 py-2" data-kt-element="mode" data-kt-value="light">
+												<span class="menu-icon" data-kt-element="icon"><i class="bi bi-sun-fill fs-3"></i></span>
+												<span class="menu-title">Light</span>
+											</a>
+										</div>
+										<div class="menu-item px-3 my-0">
+											<a href="#" class="menu-link px-3 py-2" data-kt-element="mode" data-kt-value="dark">
+												<span class="menu-icon" data-kt-element="icon"><i class="bi bi-moon-fill fs-4"></i></span>
+												<span class="menu-title">Dark</span>
+											</a>
+										</div>
+										<div class="menu-item px-3 my-0">
+											<a href="#" class="menu-link px-3 py-2" data-kt-element="mode" data-kt-value="system">
+												<span class="menu-icon" data-kt-element="icon"><i class="bi bi-pc-display fs-4"></i></span>
+												<span class="menu-title">System</span>
+											</a>
+										</div>
+									</div>
+								</div>
+								<!--end::Theme mode-->
+
+							</div>
+							<!--end::Navbar-->
+
+						</div>
+						<!--end::Header wrapper-->
+					</div>
+					<!--end::Header container-->
+				</div>
+				<!--end::Header-->
+
+				<!--begin::Wrapper-->
+				<div class="app-wrapper flex-column flex-row-fluid" id="kt_app_wrapper">
+
+					<!--begin::Sidebar-->
+					@include('components.sidebar', ["page" => "order"])
+					<!--end::Sidebar-->
+
+					<!--begin::Main-->
+					<div class="app-main flex-column flex-row-fluid" id="kt_app_main">
+						<!--begin::Content wrapper-->
+						<div class="d-flex flex-column flex-column-fluid">
+
+							<!--begin::Toolbar-->
+							<div id="kt_app_toolbar" class="app-toolbar py-3">
+								<div id="kt_app_toolbar_container" class="app-container container-fluid d-flex flex-stack">
+									<div
+										data-kt-swapper="true"
+										data-kt-swapper-mode="{default: 'prepend', lg: 'prepend'}"
+										data-kt-swapper-parent="{default: '#kt_app_content_container', lg: '#kt_app_toolbar_container'}"
+										class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
+										<ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1 d-none d-md-flex">
+											<li class="breadcrumb-item text-muted">
+												<a href="{{ route('admin.dashboard') }}" class="">Home</a>
+											</li>
+											<li class="breadcrumb-item">
+												<span class="bullet bg-gray-500 w-5px h-2px"></span>
+											</li>
+											<li class="breadcrumb-item text-muted">
+												<a href="{{ route('admin.orders') }}" class="">Kelola Pesanan</a>
+											</li>
+											<li class="breadcrumb-item">
+												<span class="bullet bg-gray-500 w-5px h-2px"></span>
+											</li>
+											<li class="breadcrumb-item text-muted">Buat Pesanan</li>
+										</ul>
+									</div>
+								</div>
+							</div>
+							<!--end::Toolbar-->
+
+							<!--begin::Content-->
+							<div id="kt_app_content" class="app-content flex-column-fluid">
+								<!--begin::Content container-->
+								<div id="kt_app_content_container" class="app-container container-fluid">
+
+									@if($response['status_code'] == 200)
+
+									<form id="createOrderForm" action="{{ route('admin.add-order') }}" method="POST">
+										@csrf
+
+										<!--begin::Row-->
+										<div class="row g-5 g-xl-10 mb-5 mb-xl-10">
+
+											<!--begin::Col Header-->
+											<div class="col-md-12">
+												<div class="d-flex flex-stack flex-wrap">
+													<h3 class="m-md-0">Buat Pesanan</h3>
+													<a href="{{ route('admin.orders') }}" class="btn btn-light-primary">
+														<i class="bi bi-table fs-4"></i>
+														Daftar Pesanan
+													</a>
+												</div>
+											</div>
+											<!--end::Col Header-->
+
+											<!--begin::Col Left (narrow)-->
+											<div class="col-md-4">
+
+												<!--begin::Card Pelanggan-->
+												<div class="card card-flush py-4 mb-5 mb-xl-10">
+													<div class="card-header">
+														<div class="card-title">
+															<h2>Pelanggan</h2>
+														</div>
+													</div>
+													<div class="card-body pt-0">
+
+														<div class="mb-5 mb-xl-10">
+															<label class="form-label">Akun Pelanggan</label>
+															<select id="selectUser" class="form-select" onchange="onUserSelect(this)">
+																<option value="">— Tanpa Akun (Isi Manual) —</option>
+																@foreach($response['data']['user_info']['users'] as $user)
+																	<option
+																		value="{{ $user['id'] }}"
+																		data-firstname="{{ $user['first_name'] }}"
+																		data-lastname="{{ $user['last_name'] }}"
+																		data-phone="{{ $user['phone'] }}"
+																		data-email="{{ $user['email'] }}"
+																		data-address="{{ json_encode($user['address']) }}">
+																		{{ $user['first_name'] }} {{ $user['last_name'] }} &mdash; {{ $user['email'] }}
+																	</option>
+																@endforeach
+															</select>
+														</div>
+
+														<div class="mb-5 mb-xl-10">
+															<label class="form-label required">Nama Depan</label>
+															<div class="input-group">
+																<input type="text" name="first_name" id="inputFirstName" class="form-control" placeholder="Nama depan" required>
+															</div>
+														</div>
+
+														<div class="mb-5 mb-xl-10">
+															<label class="form-label">Nama Belakang</label>
+															<div class="input-group">
+																<input type="text" name="last_name" id="inputLastName" class="form-control" placeholder="Nama belakang">
+															</div>
+														</div>
+
+														<div class="mb-5 mb-xl-10">
+															<label class="form-label required">No. WhatsApp</label>
+															<div class="input-group">
+																<span class="input-group-text">+62</span>
+																<input type="text" name="phone" id="inputPhone" class="form-control" placeholder="81234567890" required>
+															</div>
+														</div>
+
+														<div class="mb-0">
+															<label class="form-label">Email</label>
+															<div class="input-group">
+																<input type="email" name="email" id="inputEmail" class="form-control" placeholder="email@contoh.com">
+															</div>
+														</div>
+
+													</div>
+												</div>
+												<!--end::Card Pelanggan-->
+
+												<!--begin::Card Tanggal Pengiriman-->
+												<div class="card card-flush py-4 mb-5 mb-xl-10">
+													<div class="card-header">
+														<div class="card-title">
+															<h2>Tanggal Pengiriman</h2>
+														</div>
+													</div>
+													<div class="card-body pt-0">
+
+														@if(!empty($response['data']['menu_info']['weekly']))
+														<div class="mb-5 mb-xl-10">
+															<label class="form-label">Jadwal Tersedia</label>
+															<div class="d-flex flex-column gap-2">
+																@foreach($response['data']['menu_info']['weekly'] as $week)
+																	<button type="button"
+																		class="btn btn-sm btn-light weekly-date-btn text-start"
+																		data-date="{{ \Carbon\Carbon::createFromFormat('d-m-Y', $week['date'])->format('Y-m-d') }}"
+																		onclick="pickWeeklyDate(this)">
+																		<i class="bi bi-calendar3 me-2"></i>
+																		{{ \Carbon\Carbon::createFromFormat('d-m-Y', $week['date'])->translatedFormat('l, d M Y') }}
+																	</button>
+																@endforeach
+															</div>
+														</div>
+														@endif
+
+														<div class="mb-0">
+															<label class="form-label required">Tanggal Pengiriman</label>
+															<input type="date" name="delivery_at" id="inputDeliveryAt" class="form-control"
+																min="{{ now()->addDay()->format('Y-m-d') }}"
+																onchange="onDeliveryDateChange(this.value)" required>
+														</div>
+
+													</div>
+												</div>
+												<!--end::Card Tanggal Pengiriman-->
+
+												<!--begin::Card Alamat Pengiriman-->
+												<div class="card card-flush py-4 mb-5 mb-xl-10">
+													<div class="card-header">
+														<div class="card-title">
+															<h2>Alamat Pengiriman</h2>
+														</div>
+													</div>
+													<div class="card-body pt-0">
+
+														<div id="savedAddressSection" class="d-none mb-5 mb-xl-10">
+															<label class="form-label">Alamat Tersimpan</label>
+															<div id="savedAddressList" class="d-flex flex-column gap-2 mb-3"></div>
+															<div class="separator separator-dashed my-4"></div>
+														</div>
+
+														<div class="mb-5 mb-xl-10">
+															<label class="form-label required">Nama Penerima</label>
+															<div class="input-group">
+																<input type="text" name="received_name" id="inputReceivedName" class="form-control" placeholder="Nama penerima paket" required>
+															</div>
+														</div>
+
+														<div class="mb-5 mb-xl-10">
+															<label class="form-label required">No. HP Penerima</label>
+															<div class="input-group">
+																<span class="input-group-text">+62</span>
+																<input type="text" name="received_phone" id="inputReceivedPhone" class="form-control" placeholder="81234567890" required>
+															</div>
+														</div>
+
+														<div class="mb-5 mb-xl-10">
+															<label class="form-label required">Alamat Lengkap</label>
+															<div class="input-group">
+																<textarea name="address" id="inputAddress" class="form-control" rows="3" placeholder="Jl. Contoh No. 123, Kelurahan, Kecamatan, Kota" required></textarea>
+															</div>
+														</div>
+
+														<div class="mb-5 mb-xl-10">
+															<label class="form-label required">Kota</label>
+															<div class="input-group">
+																<input type="text" name="city" id="inputCity" class="form-control" placeholder="Jakarta" required>
+															</div>
+														</div>
+
+														<div class="mb-5 mb-xl-10">
+															<label class="form-label">Provinsi</label>
+															<div class="input-group">
+																<input type="text" name="province" id="inputProvince" class="form-control" placeholder="DKI Jakarta">
+															</div>
+														</div>
+
+														<div class="mb-0">
+															<label class="form-label">Kode Pos</label>
+															<div class="input-group">
+																<input type="text" name="postal_code" id="inputPostalCode" class="form-control" placeholder="12820">
+															</div>
+														</div>
+
+													</div>
+												</div>
+												<!--end::Card Alamat Pengiriman-->
+
+											</div>
+											<!--end::Col Left-->
+
+											<!--begin::Col Right (wide)-->
+											<div class="col-md-8">
+												<!--begin::Card Pilih Menu-->
+												<div class="card card-flush py-4 mb-5 mb-xl-10">
+													<div class="card-header">
+														<div class="card-title">
+															<h2>Pilih Menu &amp; Paket</h2>
+														</div>
+													</div>
+													<div class="card-body pt-0">
+
+														<div class="row g-5">
+															@foreach($response['data']['menu_info']['menus'] as $index => $menu)
+															<div class="col-md-6">
+																<div class="border rounded-3 overflow-hidden h-100 menu-card" data-menu-id="{{ $menu['id'] }}">
+																	<div class="position-relative" style="height: 160px;">
+																		<img src="{{ $menu['image_url'] }}" alt="{{ $menu['name'] }}" class="w-100 h-100 object-fit-cover">
+																		<span class="position-absolute top-0 start-0 m-2 px-4 py-1 rounded-2 fw-semibold bg-light-accent text-accent">{{ $menu['theme'] }}</span>
+																	</div>
+																	<div class="p-4">
+																		<h6 class="fw-bold mb-1">{{ $menu['name'] }}</h6>
+																		<p class="text-muted fs-7 mb-3" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">
+																			{{ $menu['description'] }}
+																		</p>
+																		<div id="menuSummary_{{ $menu['id'] }}" class="mb-3 d-none fs-7 border rounded p-2 bg-light-primary"></div>
+																		<button type="button" class="btn btn-primary btn-sm w-100 align-items-center"
+																			onclick="openMenuPopup('{{ $menu['id'] }}')">
+																			<i class="bi bi-bag me-1"></i>
+																			<span id="menuBtnLabel_{{ $menu['id'] }}" class="text-white">Pilih Paket</span>
+																		</button>
+																	</div>
+																</div>
+															</div>
+															@endforeach
+														</div>
+
+													</div>
+												</div>
+												<!--end::Card Pilih Menu-->
+
+												<!--begin::Card Ringkasan-->
+												<div class="card card-flush mb-5 mb-xl-10 py-4">
+													<div class="card-header">
+														<div class="card-title">
+															<h2>Ringkasan Pesanan</h2>
+														</div>
+													</div>
+													<div class="card-body pt-0">
+
+														<div class="d-flex justify-content-between align-items-center mb-3 border rounded p-3">
+															<span class="text-muted fs-7">Tanggal Pengiriman</span>
+															<span class="fw-bold fs-7" id="summaryDeliveryDate">-</span>
+														</div>
+
+														<div class="d-flex justify-content-between align-items-center mb-5 border rounded p-3">
+															<span class="text-muted fs-7">Pelanggan</span>
+															<span class="fw-bold fs-7" id="summaryCustomer">-</span>
+														</div>
+
+														<p class="fw-bold fs-7 text-muted mb-3">Item Pesanan</p>
+														<div id="summaryItems" class="d-flex flex-column gap-3 mb-5 min-h-50px">
+															<div class="text-center text-muted fs-7 py-5" id="summaryEmpty">
+																<i class="bi bi-cart3 fs-1 d-block mb-2 opacity-25"></i>
+																Belum ada menu dipilih
+															</div>
+														</div>
+
+														<div class="separator separator-dashed my-5"></div>
+
+														<div class="d-flex justify-content-between mb-2">
+															<span class="text-muted fs-7">Subtotal</span>
+															<span class="fw-bold fs-7" id="summarySubtotal">Rp 0</span>
+														</div>
+
+														<div class="d-flex justify-content-between mb-5">
+															<span class="text-muted fs-7">Ongkos Kirim</span>
+															<span class="fs-7 text-muted">Dihitung setelah konfirmasi</span>
+														</div>
+
+													</div>
+												</div>
+												<!--end::Card Ringkasan-->
+
+												<!--begin::Card Catatan-->
+												<div class="card card-flush py-4">
+													<div class="card-header">
+														<div class="card-title">
+															<h2>Catatan Tambahan</h2>
+														</div>
+													</div>
+													<div class="card-body pt-0">
+														<textarea name="note" class="form-control" rows="3" placeholder="Catatan opsional dari pelanggan..."></textarea>
+													</div>
+												</div>
+												<!--end::Card Catatan-->
+
+											</div>
+											<!--end::Col Right-->
+
+											<!--begin::Col Actions-->
+											<div class="col-md-12">
+												<div class="d-flex flex-end gap-3">
+													<button type="reset" class="btn btn-secondary me-3">
+														Batal
+													</button>
+													<button type="button" onclick="submitOrder()" class="btn btn-primary">
+														Simpan Pesanan
+													</button>
+												</div>
+											</div>
+											<!--end::Col Actions-->
+
+										</div>
+										<!--end::Row-->
+
+										<input type="hidden" name="checkout_payload" id="checkoutPayload">
+									</form>
+
+									@else
+
+									<div class="row g-5 g-xl-10 mb-5 mb-xl-10">
+										<div class="col-md-12">
+											<div class="d-flex flex-stack flex-wrap">
+												<h3 class="m-md-0">Buat Pesanan</h3>
+												<a href="{{ route('admin.orders') }}" class="btn btn-light-primary">
+													<i class="bi bi-table fs-4"></i>
+													Daftar Pesanan
+												</a>
+											</div>
+										</div>
+										<div class="col-md-12">
+											<div class="card card-flush py-10 text-center">
+												<div class="card-body">
+													<i class="bi bi-exclamation-triangle fs-1 text-warning mb-4 d-block"></i>
+													<p class="fw-bold fs-4 text-gray-700">{{ $response['message'] }}</p>
+													<a href="{{ route('admin.orders') }}" class="btn btn-primary">Kembali ke Daftar Pesanan</a>
+												</div>
+											</div>
+										</div>
+									</div>
+
+									@endif
+
+								</div>
+								<!--end::Content container-->
+							</div>
+							<!--end::Content-->
+
+						</div>
+						<!--end::Content wrapper-->
+
+						<!--begin::Footer-->
+						<div id="kt_app_footer" class="app-footer">
+							<div class="app-container container-fluid d-flex flex-column flex-md-row flex-center flex-md-stack py-3">
+								<div class="text-gray-900 order-2 order-md-1">
+									<span class="text-muted fw-semibold me-1">2025&copy;</span>
+									<span class="text-gray-800">Homade Kreatif Teknologi</span>
+								</div>
+							</div>
+						</div>
+						<!--end::Footer-->
+
+					</div>
+					<!--end::Main-->
+
+				</div>
+				<!--end::Wrapper-->
+
+			</div>
+			<!--end::Page-->
+		</div>
+		<!--end::App-->
+
+		<!--begin::Scrolltop-->
+		<div id="kt_scrolltop" class="scrolltop" data-kt-scrolltop="true">
+			<img src="{{ asset('icons/arrow-up.svg') }}" alt="" class="img-white">
+		</div>
+		<!--end::Scrolltop-->
+
+		<!--begin::Menu Popup Modal-->
+        <div class="modal fade" id="menuPopupModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+            <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content" style="border-radius: 1.25rem; overflow: hidden; border: none;">
+
+                    <div class="modal-header border-0 px-8 pt-6 pb-0">
+                        <h5 class="modal-title fw-bold">Pilih Kemasan Paket</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body p-0" style="height: 80dvh; overflow: hidden;">
+                        <div class="d-flex h-100">
+
+                            <!--begin::Left panel (menu info)-->
+                            <div class="d-flex flex-column flex-shrink-0 px-8 py-6" style="width: 300px;">
+                                <div class="position-relative rounded-4 overflow-hidden flex-shrink-0" style="height: 200px;">
+                                    <img id="modalMenuImg" src="" alt="" class="w-100 h-100 object-fit-cover">
+                                    <span id="modalMenuLabel"
+                                        class="position-absolute top-0 start-0 m-3 px-4 py-1 rounded-2 fw-bold fs-8 bg-accent text-white"></span>
+                                </div>
+                                <div class="border rounded-bottom-4 p-5 d-flex flex-column flex-grow-1" style="border-top: none !important; margin-top: -4px; min-height: 0;">
+                                    <p id="modalMenuName" class="fw-bolder fs-5 mb-2 flex-shrink-0 text-nowrap overflow-hidden" style="text-overflow:ellipsis;"></p>
+                                    <div class="flex-grow-1 mb-4" style="overflow-y: auto; min-height: 0;">
+                                        <p id="modalMenuDesc" class="text-muted fs-7 mb-0"></p>
                                     </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label small fw-bold required">Email Kontak (Notifikasi)</label>
-                                        <input type="email" class="form-control form-control-sm" id="contactEmail">
-                                    </div>
+                                    <button type="button" class="btn-primary-homade rounded-2 w-100 fw-bold flex-shrink-0 justify-content-center"
+                                        onclick="confirmMenuSelection()">
+                                        <i class="bi bi-check-lg me-1 text-white"></i> Konfirmasi
+                                    </button>
                                 </div>
                             </div>
-                        </div>
+                            <!--end::Left panel-->
 
-                        <div class="card shadow-sm border-0 mb-5">
-                            <div class="card-header bg-white border-bottom-0 pt-4 pb-0">
-                                <h5 class="card-title fw-bold">2. Alamat Pengiriman</h5>
+                            <!--begin::Divider-->
+                            <div class="flex-shrink-0" style="width: 1px; background: var(--bs-border-color);"></div>
+                            <!--end::Divider-->
+
+                            <!--begin::Right panel (packages)-->
+                            <div class="flex-grow-1 px-8 py-6" style="overflow-y: auto; overflow-x: hidden;">
+                                <div id="modalPackageList" class="d-flex flex-column gap-4"></div>
                             </div>
-                            <div class="card-body">
-                                <div class="mb-4">
-                                    <label class="form-label small fw-bold">Pilih Alamat Tersimpan</label>
-                                    <select class="form-select form-select-sm mb-3" id="addressSelect">
-                                        <option value="">-- Buat Alamat Baru --</option>
-                                    </select>
-                                </div>
+                            <!--end::Right panel-->
 
-                                <div class="p-4 bg-light rounded border border-dashed" id="formNewAddress">
-                                    <h6 class="fw-bold mb-3 text-primary">Input Alamat Baru</h6>
-                                    <div class="row g-3">
-                                        <div class="col-md-6">
-                                            <label class="form-label small">Nama Penerima</label>
-                                            <input type="text" class="form-control form-control-sm" id="newFullname">
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label class="form-label small">No. HP</label>
-                                            <input type="text" class="form-control form-control-sm" id="newPhone">
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label class="form-label small">Label (Cth: Rumah/Kantor)</label>
-                                            <input type="text" class="form-control form-control-sm" id="newLabel">
-                                        </div>
-                                        <div class="col-md-6 d-flex align-items-end">
-                                            <div class="form-check form-switch mb-2">
-                                                <input class="form-check-input" type="checkbox" id="saveProfileCheck" value="1">
-                                                <label class="form-check-label small fw-bold" for="saveProfileCheck">
-                                                    Simpan ke Profil (Save to Profile)
-                                                </label>
-                                            </div>
-                                        </div>
-                                        <div class="col-12">
-                                            <label class="form-label small">Alamat Lengkap</label>
-                                            <textarea class="form-control form-control-sm" rows="2" id="newAddress"></textarea>
-                                        </div>
-                                        <div class="col-12">
-                                            <label class="form-label small">Patokan / Catatan</label>
-                                            <input type="text" class="form-control form-control-sm" id="newAddressNote">
-                                        </div>
-                                        <input type="hidden" id="newLongitude" value="106.8574">
-                                        <input type="hidden" id="newLatitude" value="-6.2305">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="card shadow-sm border-0 mb-5">
-                            <div class="card-header bg-white border-bottom-0 pt-4 pb-0">
-                                <h5 class="card-title fw-bold">3. Info Transaksi & Pembayaran</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="row g-4 mb-4 border-bottom pb-4">
-                                    <div class="col-md-6">
-                                        <label class="form-label small fw-bold required">Tanggal Pengiriman (Delivery At)</label>
-                                        <input type="datetime-local" class="form-control form-control-sm" id="deliveryAt" required>
-                                        <small class="text-primary" style="font-size: 11px;">Otomatis terisi jika memilih Menu Mingguan</small>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label small fw-bold required">Ongkos Kirim (Rp)</label>
-                                        <input type="number" class="form-control form-control-sm" id="shippingCost" value="{{ $response['data']['delivery_info']['fee_per_km'] ?? 5000 }}" min="0">
-                                    </div>
-                                    <div class="col-12">
-                                        <label class="form-label small fw-bold">Catatan Pesanan (Utama)</label>
-                                        <textarea class="form-control form-control-sm" rows="2" id="transactionNote"></textarea>
-                                    </div>
-                                </div>
-
-                                <h6 class="fw-bold mb-3">Status Pembayaran</h6>
-                                <div class="row g-4">
-                                    <div class="col-md-4">
-                                        <div class="form-check form-switch p-3 bg-light rounded border">
-                                            <input class="form-check-input ms-0 me-3" type="checkbox" id="isSuccess">
-                                            <label class="form-check-label fw-bold" for="isSuccess">Langsung SUCCESS</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label class="form-label small fw-bold">Tipe Pembayaran</label>
-                                        <select class="form-select form-select-sm" id="paymentType">
-                                            <option value="transfer">Transfer (Butuh Bukti)</option>
-                                            <option value="cash">Cash / COD</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label class="form-label small fw-bold">Upload Bukti Transfer</label>
-                                        <input type="file" class="form-control form-control-sm" name="payment_proof" accept="image/*">
-                                        <small class="text-danger fw-bold d-block mt-1" style="font-size: 11px;">* Wajib diisi jika status "SUCCESS" dan tipe "TRANSFER". Opsional jika COD.</small>
-                                    </div>
-                                </div>
-
-                                <div class="row g-4 mt-2 border-top pt-3">
-                                    <div class="col-md-4">
-                                        <div class="form-check form-switch p-3 bg-light rounded border border-warning border-opacity-25">
-                                            <input class="form-check-input ms-0 me-3" type="checkbox" id="isCreated">
-                                            <label class="form-check-label fw-bold text-warning" for="isCreated">Transaksi Lawas</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <label class="form-label small fw-bold">Tanggal Dibuat (Created At)</label>
-                                        <input type="date" class="form-control form-control-sm" id="createdAt" disabled>
-                                    </div>
-                                </div>
-
-                            </div>
                         </div>
                     </div>
 
-                    <div class="col-lg-4">
-                        <div class="card shadow-sm border-0 bg-primary text-white sticky-top" style="top: 20px; z-index: 1;">
-                            <div class="card-body">
-                                <h5 class="fw-bold mb-3 border-bottom border-white border-opacity-25 pb-2">Ringkasan Pesanan</h5>
-                                
-                                <button type="button" class="btn btn-light text-primary w-100 fw-bold mb-4" data-bs-toggle="modal" data-bs-target="#modalPilihMenu">
-                                    <i class="bi bi-cart-plus me-2"></i> TAMBAH MENU
-                                </button>
-
-                                <div id="cartItemsContainer" class="mb-3 small" style="max-height: 400px; overflow-y: auto;">
-                                    <div class="text-center text-white-50 my-4 fst-italic">Belum ada menu dipilih</div>
-                                </div>
-
-                                <hr class="border-white border-opacity-25">
-                                <div class="d-flex justify-content-between mb-2 small">
-                                    <span>Subtotal</span>
-                                    <span id="txtSubtotal">Rp 0</span>
-                                </div>
-                                <div class="d-flex justify-content-between mb-3 small">
-                                    <span>Ongkos Kirim</span>
-                                    <span id="txtOngkir">Rp 0</span>
-                                </div>
-                                <div class="d-flex justify-content-between align-items-center mb-4">
-                                    <span class="fw-bold fs-6">TOTAL BAYAR</span>
-                                    <span class="fw-bold fs-4" id="txtTotal">Rp 0</span>
-                                </div>
-
-                                <button type="button" onclick="submitTransaction()" class="btn btn-warning text-dark w-100 fw-bold fs-6 py-3">BUAT PESANAN SEKARANG</button>
-                            </div>
-                        </div>
-                    </div>
                 </div>
-            </form>
-            
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="modalPilihMenu" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-scrollable">
-        <div class="modal-content">
-            <div class="modal-header bg-light">
-                <h5 class="modal-title fw-bold">Katalog Menu</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body p-0">
-                <ul class="nav nav-tabs nav-line-tabs mb-3 fs-6 px-4 pt-3" role="tablist">
-                    <li class="nav-item">
-                        <a class="nav-link active fw-bold text-dark" data-bs-toggle="tab" href="#tab_umum">Menu Umum (Reguler)</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link fw-bold text-dark" data-bs-toggle="tab" href="#tab_mingguan">Menu Mingguan (Weekly)</a>
-                    </li>
-                </ul>
-
-                <div class="tab-content p-4">
-                    <div class="tab-pane fade show active" id="tab_umum" role="tabpanel">
-                        <div class="row g-4" id="containerMenuUmum"></div>
-                    </div>
-
-                    <div class="tab-pane fade" id="tab_mingguan" role="tabpanel">
-                        <div class="alert alert-primary mb-4">
-                            <i class="bi bi-info-circle-fill me-2"></i> Memilih menu mingguan akan otomatis merubah Tanggal Pengiriman (Delivery At) di form utama.
-                        </div>
-                        <div id="containerMenuMingguan"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
             </div>
         </div>
-    </div>
-</div>
+        <!--end::Menu Popup Modal-->
 
-@include('components.navbarFoot', ["page" => "transaction"])
+		<script>var hostUrl = "assets/";</script>
 
-<script>var hostUrl = "/assets/";</script>
-<script src="/assets/plugins/global/plugins.bundle.js"></script>
-<script src="/assets/js/scripts.bundle.js"></script>
+		<!--begin::Global Javascript Bundle-->
+		<script src="{{ asset('assets/plugins/global/plugins.bundle.js') }}"></script>
+		<script src="{{ asset('assets/js/scripts.bundle.js') }}"></script>
+		<!--end::Global Javascript Bundle-->
 
-<script>
-    // 1. DATA DARI BACKEND
-    const serverData = @json($response['data'] ?? []);
-    let cart = []; 
+		<script src="{{ asset('assets/plugins/custom/datatables/datatables.bundle.js') }}"></script>
+		<script src="{{ asset('assets/plugins/custom/formrepeater/formrepeater.bundle.js') }}"></script>
+		<script src="{{ asset('assets/plugins/custom/jstree/jstree.bundle.js') }}"></script>
 
-    // INIT USERS
-    const initUsers = () => {
-        const userSelect = document.getElementById('userSelect');
-        if(serverData.user_info.default) {
-            userSelect.innerHTML += `<option value="${serverData.user_info.default.id}">Default / Guest</option>`;
-        }
-        if(serverData.user_info.users) {
-            serverData.user_info.users.forEach(u => {
-                userSelect.innerHTML += `<option value="${u.id}">${u.first_name} ${u.last_name} (${u.email})</option>`;
-            });
-        }
-        userSelect.addEventListener('change', handleUserChange);
-        handleUserChange();
-    };
+		@if($response['status_code'] == 200)
+		<script>
+		"use strict";
 
-    const handleUserChange = () => {
-        const userId = document.getElementById('userSelect').value;
-        const emailInput = document.getElementById('contactEmail');
-        const addressSelect = document.getElementById('addressSelect');
-        
-        let selectedUser = userId === serverData.user_info.default?.id 
-            ? serverData.user_info.default 
-            : serverData.user_info.users.find(u => u.id === userId);
+		const allMenus = @json($response['data']['menu_info']['menus']);
+		const allUsers = @json($response['data']['user_info']['users']);
 
-        if(selectedUser) emailInput.value = selectedUser.email;
+		let allOrders      = [];
+		let currentMenu    = null;
+		let selectedUserId = null;
 
-        addressSelect.innerHTML = '<option value="">-- Buat Alamat Baru --</option>';
-        if(selectedUser && selectedUser.address) {
-            selectedUser.address.forEach(addr => {
-                addressSelect.innerHTML += `<option value="${addr.id}">${addr.label} - ${addr.address.substring(0, 30)}...</option>`;
-            });
-        }
-        handleAddressChange();
-    };
+		function fmt(n) {
+			return new Intl.NumberFormat('id-ID').format(n);
+		}
 
-    const handleAddressChange = () => {
-        const formNew = document.getElementById('formNewAddress');
-        formNew.style.display = document.getElementById('addressSelect').value === "" ? 'block' : 'none';
-    };
-    document.getElementById('addressSelect').addEventListener('change', handleAddressChange);
+		function onUserSelect(sel) {
+			const opt = sel.options[sel.selectedIndex];
+			selectedUserId = opt.value || null;
 
-    // RENDER MENU MODAL
-    const initMenus = () => {
-        const contUmum = document.getElementById('containerMenuUmum');
-        const contMingguan = document.getElementById('containerMenuMingguan');
+			const fields = ['inputFirstName', 'inputLastName', 'inputPhone', 'inputEmail'];
 
-        if(serverData.menu_info.menus) {
-            serverData.menu_info.menus.forEach(menu => {
-                contUmum.innerHTML += generateMenuCardHTML(menu, null);
-            });
-        }
+			if (!opt.value) {
+				fields.forEach(id => {
+					const el    = document.getElementById(id);
+					el.value    = '';
+					el.readOnly = false;
+				});
+				document.getElementById('savedAddressSection').classList.add('d-none');
+				updateSummaryCustomer();
+				return;
+			}
 
-        if(serverData.menu_info.weekly) {
-            serverData.menu_info.weekly.forEach(week => {
-                let html = `<h5 class="fw-bold text-primary mt-4 border-bottom pb-2">Tanggal: ${week.date}</h5><div class="row g-4 mb-4">`;
-                week.menus.forEach(menu => {
-                    html += generateMenuCardHTML(menu, week.date);
-                });
-                html += `</div>`;
-                contMingguan.innerHTML += html;
-            });
-        }
-    };
+			document.getElementById('inputFirstName').value = opt.dataset.firstname || '';
+			document.getElementById('inputLastName').value  = opt.dataset.lastname  || '';
+			document.getElementById('inputPhone').value     = opt.dataset.phone     || '';
+			document.getElementById('inputEmail').value     = opt.dataset.email     || '';
+			fields.forEach(id => { document.getElementById(id).readOnly = true; });
 
-    const generateMenuCardHTML = (menu, weeklyDate) => {
-        let pkgOptions = '';
-        
-        // PENTING: Baca dari menu.packages
-        let menuPackages = menu.packages || [];
-        if (menuPackages.length === 0) {
-             const foundInUmum = serverData.menu_info.menus?.find(m => m.id === menu.id);
-             if (foundInUmum && foundInUmum.packages) menuPackages = foundInUmum.packages;
-        }
+			updateSummaryCustomer();
 
-        menuPackages.forEach((p, idx) => {
-            pkgOptions += `<option value="${p.id}" data-price="${p.price}" data-name="${p.name}">${p.name} - Rp ${parseInt(p.price).toLocaleString('id-ID')}</option>`;
-        });
+			// Saved addresses
+			let addresses = [];
+			try { addresses = JSON.parse(opt.dataset.address || '[]'); } catch(e) {}
 
-        const suffix = weeklyDate ? '_weekly' : '';
-        const dateArg = weeklyDate ? `'${weeklyDate}'` : `null`;
+			const section = document.getElementById('savedAddressSection');
+			const list    = document.getElementById('savedAddressList');
+			list.innerHTML = '';
 
-        return `
-            <div class="col-md-6 col-lg-4">
-                <div class="card border border-light-dark h-100 shadow-sm">
-                    <img src="${menu.image_url || 'https://via.placeholder.com/300'}" class="card-img-top" style="height: 150px; object-fit: cover;">
-                    <div class="card-body p-3">
-                        <h6 class="fw-bold mb-1">${menu.name}</h6>
-                        <span class="badge bg-secondary mb-3">${menu.theme || '-'}</span>
-                        
-                        <div class="mb-2">
-                            <label class="small fw-bold">Pilih Paket:</label>
-                            <select class="form-select form-select-sm" id="sel_pkg_${menu.id}${suffix}">${pkgOptions}</select>
-                        </div>
-                        <div class="row g-2 mb-2">
-                            <div class="col-4">
-                                <label class="small fw-bold">Qty:</label>
-                                <input type="number" class="form-control form-control-sm" id="qty_${menu.id}${suffix}" value="1" min="1">
-                            </div>
-                            <div class="col-8">
-                                <label class="small fw-bold">Catatan (Paket):</label>
-                                <input type="text" class="form-control form-control-sm" id="note_${menu.id}${suffix}" placeholder="Opsional...">
-                            </div>
-                        </div>
-                        <button type="button" class="btn btn-sm btn-primary w-100 mt-2" 
-                            onclick="addMenuToCart('${menu.id}', '${menu.name}', '${menu.image_url}', ${dateArg})">
-                            <i class="bi bi-plus-circle"></i> Tambah
-                        </button>
-                    </div>
-                </div>
-            </div>
-        `;
-    };
+			if (addresses.length > 0) {
+				section.classList.remove('d-none');
+				addresses.forEach(addr => {
+					const btn         = document.createElement('button');
+					btn.type          = 'button';
+					btn.className     = 'btn btn-sm btn-light text-start w-100 saved-address-btn';
+					btn.dataset.name  = addr.received_name || '';
+					btn.dataset.phone = addr.phone         || '';
+					btn.dataset.address  = addr.address    || '';
+					btn.dataset.city     = addr.city       || '';
+					btn.dataset.province = addr.province   || '';
+					btn.dataset.postal   = addr.postal_code|| '';
+					btn.innerHTML = `
+						<div class="d-flex align-items-start gap-3">
+							<i class="bi bi-geo-alt-fill text-accent mt-1 flex-shrink-0"></i>
+							<div class="text-start overflow-hidden">
+								<div class="fw-bold">${addr.received_name || '—'}
+									<span class="badge badge-light-success ms-2">${addr.label || ''}</span>
+								</div>
+								<div class="fs-8 text-muted">${addr.phone || ''}</div>
+								<div class="fs-8 text-nowrap overflow-hidden text-overflow">${addr.address || ''}</div>
+							</div>
+						</div>`;
+					btn.onclick = () => fillAddressFromSaved(btn);
+					list.appendChild(btn);
+				});
+			} else {
+				section.classList.add('d-none');
+			}
+		}
 
-    // CART LOGIC
-    const addMenuToCart = (menuId, menuName, img, weeklyDate) => {
-        const suffix = weeklyDate ? '_weekly' : '';
-        const selPkg = document.getElementById(`sel_pkg_${menuId}${suffix}`);
-        
-        if (!selPkg || selPkg.options.length === 0) return alert("Paket harga tidak ditemukan!");
+		function fillAddressFromSaved(btn) {
+			document.getElementById('inputReceivedName').value  = btn.dataset.name     || '';
+			document.getElementById('inputReceivedPhone').value = btn.dataset.phone    || '';
+			document.getElementById('inputAddress').value       = btn.dataset.address  || '';
+			document.getElementById('inputCity').value          = btn.dataset.city     || '';
+			document.getElementById('inputProvince').value      = btn.dataset.province || '';
+			document.getElementById('inputPostalCode').value    = btn.dataset.postal   || '';
+			document.querySelectorAll('.saved-address-btn').forEach(b => {
+				b.classList.remove('btn-accent');
+				b.classList.add('btn-light');
+			});
+			btn.classList.remove('btn-light');
+			btn.classList.add('btn-accent');
+		}
 
-        const pkgId = selPkg.value;
-        const pkgName = selPkg.options[selPkg.selectedIndex].getAttribute('data-name');
-        const price = parseInt(selPkg.options[selPkg.selectedIndex].getAttribute('data-price'));
-        const qty = parseInt(document.getElementById(`qty_${menuId}${suffix}`).value);
-        const note = document.getElementById(`note_${menuId}${suffix}`).value;
+		function pickWeeklyDate(btn) {
+			document.querySelectorAll('.weekly-date-btn').forEach(b => {
+				b.classList.remove('btn-accent');
+				b.classList.add('btn-light');
+			});
+			btn.classList.remove('btn-light');
+			btn.classList.add('btn-accent');
+			const date = btn.dataset.date;
+			document.getElementById('inputDeliveryAt').value = date;
+			onDeliveryDateChange(date);
+		}
 
-        if(qty < 1) return alert("Quantity minimal 1!");
+		function onDeliveryDateChange(val) {
+			if (!val) { document.getElementById('summaryDeliveryDate').textContent = '—'; return; }
+			const d    = new Date(val);
+			const opts = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+			document.getElementById('summaryDeliveryDate').textContent = d.toLocaleDateString('id-ID', opts);
+		}
 
-        // Auto Fill Delivery At (YYYY-MM-DD Format)
-        if(weeklyDate) {
-            const parts = weeklyDate.split('-');
-            const isoDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
-            document.getElementById('deliveryAt').value = isoDate;
-            alert(`Tanggal pengiriman otomatis diset ke ${isoDate}`);
-        }
+        function openMenuPopup(menuId) {
+            currentMenu = allMenus.find(m => m.id === menuId);
+            if (!currentMenu) return;
 
-        let menuInCart = cart.find(m => m.menu_id === menuId);
-        if(!menuInCart) {
-            menuInCart = { menu_id: menuId, menu_name: menuName, img: img, packages: [] };
-            cart.push(menuInCart);
-        }
+            const menuIndex = allMenus.findIndex(m => m.id === menuId);
 
-        let pkgInCart = menuInCart.packages.find(p => p.package_id === pkgId);
-        if(pkgInCart) {
-            pkgInCart.qty += qty;
-            if(note) pkgInCart.note = pkgInCart.note ? pkgInCart.note + ", " + note : note;
-        } else {
-            menuInCart.packages.push({ package_id: pkgId, package_name: pkgName, price: price, qty: qty, note: note });
-        }
+            document.getElementById('modalMenuImg').src             = currentMenu.image_url;
+            document.getElementById('modalMenuName').textContent    = currentMenu.name;
+            document.getElementById('modalMenuDesc').textContent    = currentMenu.description;
+            document.getElementById('modalMenuLabel').textContent   = 'Paket ' + (menuIndex === 0 ? 'A' : 'B');
 
-        renderCart();
-        
-        document.getElementById(`qty_${menuId}${suffix}`).value = 1;
-        document.getElementById(`note_${menuId}${suffix}`).value = '';
-    };
-
-    const removePackage = (menuIndex, pkgIndex) => {
-        cart[menuIndex].packages.splice(pkgIndex, 1);
-        if(cart[menuIndex].packages.length === 0) {
-            cart.splice(menuIndex, 1);
-        }
-        renderCart();
-    };
-
-    const renderCart = () => {
-        const container = document.getElementById('cartItemsContainer');
-        let subtotal = 0;
-        
-        if(cart.length === 0) {
-            container.innerHTML = `<div class="text-center text-white-50 my-4 fst-italic">Belum ada menu dipilih</div>`;
-        } else {
+            const container = document.getElementById('modalPackageList');
             container.innerHTML = '';
-            cart.forEach((menuItem, mIdx) => {
-                let pkgHtml = '';
-                menuItem.packages.forEach((pkg, pIdx) => {
-                    subtotal += (pkg.price * pkg.qty);
-                    pkgHtml += `
-                        <div class="d-flex justify-content-between align-items-center mb-1 ps-2 border-start border-2 border-warning ms-1">
-                            <div class="small">
-                                <span class="text-danger cursor-pointer me-1" onclick="removePackage(${mIdx}, ${pIdx})"><i class="bi bi-x"></i></span>
-                                <b>${pkg.qty}x</b> ${pkg.package_name}
-                                ${pkg.note ? `<br><small class="text-white-50 fst-italic ms-4">Catatan: ${pkg.note}</small>` : ''}
-                            </div>
-                            <span class="small fw-bold text-nowrap">Rp ${(pkg.price * pkg.qty).toLocaleString('id-ID')}</span>
-                        </div>
-                    `;
-                });
 
-                container.innerHTML += `
-                    <div class="mb-3 pb-2 border-bottom border-white border-opacity-10">
-                        <div class="fw-bold mb-1"><i class="bi bi-box-seam me-1"></i> ${menuItem.menu_name}</div>
-                        ${pkgHtml}
+            (currentMenu.packages || []).forEach((pkg, idx) => {
+                const i        = idx + 1;
+                const minOrder = pkg.minimum_order || 5;
+                const price    = fmt(parseFloat(pkg.price));
+                const existing = allOrders.find(o => o.menuId === menuId && o.pkgId === pkg.id);
+                const initQty  = existing ? existing.qty  : 0;
+                const initNote = existing ? existing.note : '';
+
+                const card = document.createElement('div');
+                card.className = 'rounded-4 p-5 flex-shrink-0';
+                card.style.background = '#FFFBD7';
+                card.innerHTML = `
+                    <div class="d-flex align-items-center gap-5 flex-wrap mb-3">
+                        <div class="d-flex align-items-center justify-content-center rounded-3 flex-shrink-0 overflow-hidden"
+                            style="width:64px;height:64px;border:1px solid rgba(0,0,0,.08);">
+                            <img src="${pkg.image_url || ''}" alt="${pkg.name}" style="width:100%;height:100%;object-fit:cover;">
+                        </div>
+                        <div class="flex-grow-1">
+                            <p class="fw-bolder fs-6 mb-0">${pkg.name}</p>
+                            <p class="text-accent fw-bold fs-7 mb-0">Rp ${price} / box</p>
+                        </div>
+                        <div class="d-flex align-items-center gap-3 flex-shrink-0">
+                            <button type="button"
+                                class="btn btn-sm btn-icon rounded-2 text-white"
+                                style="width:36px;height:36px;background:var(--bs-accent);"
+                                onclick="counterSubtract(${i}, ${minOrder})">
+                                <i class="bi bi-dash-lg text-accent"></i>
+                            </button>
+                            <input id="pkgInput${i}" type="number"
+                                class="text-center fw-bold"
+                                style="width:60px;" value="${initQty}" min="0"
+                                onblur="checkEmpty(${i})">
+                            <button type="button"
+                                class="btn btn-sm btn-icon rounded-2 text-white"
+                                style="width:36px;height:36px;background:var(--bs-accent);"
+                                onclick="counterAdd(${i}, ${minOrder})">
+                                <i class="bi bi-plus-lg text-accent"></i>
+                            </button>
+                        </div>
                     </div>
-                `;
+                    <div id="noteWrapper${i}" style="display:${initQty > 0 ? 'block' : 'none'};">
+                        <button type="button"
+                            class="p-0 fs-8 text-accent mb-2 fw-semibold"
+                            onclick="toggleNote(${i})"
+                            id="noteToggle${i}">${initNote ? initNote : 'Tambah Catatan'}</button>
+                        <div id="noteArea${i}" style="display:${initNote ? 'block' : 'none'};">
+                            <textarea id="pkgNote${i}"
+                                class="form-control form-control-sm"
+                                rows="2"
+                                placeholder="Catatan opsional untuk paket ini"
+                                oninput="syncNoteBtn(${i})">${initNote}</textarea>
+                        </div>
+                    </div>`;
+                container.appendChild(card);
             });
+
+            new bootstrap.Modal(document.getElementById('menuPopupModal')).show();
         }
 
-        const shippingCost = parseInt(document.getElementById('shippingCost').value) || 0;
-        document.getElementById('txtSubtotal').innerText = 'Rp ' + subtotal.toLocaleString('id-ID');
-        document.getElementById('txtOngkir').innerText = 'Rp ' + shippingCost.toLocaleString('id-ID');
-        document.getElementById('txtTotal').innerText = 'Rp ' + (subtotal + shippingCost).toLocaleString('id-ID');
-    };
+        function counterAdd(i, minOrder) {
+            const inp = document.getElementById('pkgInput' + i);
+            let val   = parseInt(inp.value) || 0;
+            inp.value = (val === 0 && minOrder > 1) ? minOrder : val + 1;
+            document.getElementById('noteWrapper' + i).style.display = 'block';
+        }
 
-    document.getElementById('shippingCost').addEventListener('input', renderCart);
-    document.getElementById('isCreated').addEventListener('change', function() { document.getElementById('createdAt').disabled = !this.checked; });
+        function counterSubtract(i, minOrder) {
+            const inp = document.getElementById('pkgInput' + i);
+            let val   = parseInt(inp.value) || 0;
+            if (val <= 0) return;
+            if (minOrder > 1 && val === minOrder) {
+                inp.value = 0;
+            } else {
+                inp.value = Math.max(0, val - 1);
+            }
+            if (parseInt(inp.value) === 0) {
+                document.getElementById('noteWrapper' + i).style.display = 'none';
+                document.getElementById('noteArea'    + i).style.display = 'none';
+            }
+        }
 
-    // RECOVERY JIKA ERROR
-    const recoverOldData = () => {
-        const oldPayloadStr = `{!! old('checkout_payload') !!}`;
-        if(oldPayloadStr) {
-            try {
-                const old = JSON.parse(oldPayloadStr);
-                document.getElementById('shippingCost').value = old.transaction_info.shipping_cost;
-                document.getElementById('isSuccess').checked = old.transaction_info.is_success;
-                document.getElementById('isCreated').checked = old.transaction_info.is_created;
-                if(old.transaction_info.is_created) {
-                    document.getElementById('createdAt').disabled = false;
-                    document.getElementById('createdAt').value = old.transaction_info.created_at;
-                }
-                document.getElementById('paymentType').value = old.transaction_info.payment_type;
-                document.getElementById('transactionNote').value = old.transaction_info.note;
-                
-                document.getElementById('userSelect').value = old.user_info.user_id;
-                document.getElementById('contactEmail').value = old.user_info.contact_email;
-                document.getElementById('deliveryAt').value = old.delivery_info.delivery_at;
-                document.getElementById('addressSelect').value = old.delivery_info.user_address_id || '';
-                handleAddressChange();
+        function checkEmpty(i) {
+            const inp = document.getElementById('pkgInput' + i);
+            if (!inp.value.trim()) inp.value = 0;
+        }
 
-                if(!old.delivery_info.user_address_id) {
-                    document.getElementById('newFullname').value = old.delivery_info.new_user_address.fullname;
-                    document.getElementById('newPhone').value = old.delivery_info.new_user_address.phone;
-                    document.getElementById('newLabel').value = old.delivery_info.new_user_address.label;
-                    document.getElementById('newAddress').value = old.delivery_info.new_user_address.address;
-                    document.getElementById('newAddressNote').value = old.delivery_info.new_user_address.note;
-                    document.getElementById('saveProfileCheck').checked = old.delivery_info.new_user_address.save_to_profile;
-                }
+        function toggleNote(i) {
+            const area = document.getElementById('noteArea' + i);
+            area.style.display = area.style.display === 'none' ? 'block' : 'none';
+        }
 
-                if(old.items) {
-                    old.items.forEach(item => {
-                        let mName = "Menu", mImg = "";
-                        const m = serverData.menu_info.menus?.find(x => x.id === item.id) || 
-                                  serverData.menu_info.weekly?.flatMap(w=>w.menus).find(x => x.id === item.id);
-                        if(m) { mName = m.name; mImg = m.image_url; }
-                        
-                        let packages = [];
-                        item.packages.forEach(pkg => {
-                            let pName = "Paket", pPrice = 0;
-                            if(m) {
-                                // PENTING: Baca dari packages juga saat recovery
-                                const p = m.packages?.find(x => x.id === pkg.id) || [];
-                                if(p) { pName = p.name; pPrice = p.price; }
-                            }
-                            packages.push({ package_id: pkg.id, package_name: pName, price: pPrice, qty: pkg.quantity, note: pkg.note || '' });
-                        });
-                        cart.push({ menu_id: item.id, menu_name: mName, img: mImg, packages: packages });
+        function syncNoteBtn(i) {
+            const val = document.getElementById('pkgNote' + i).value.trim();
+            document.getElementById('noteToggle' + i).textContent = val || 'Tambah Catatan';
+        }
+
+        function confirmMenuSelection() {
+            if (!currentMenu) return;
+
+            const newItems = [];
+            (currentMenu.packages || []).forEach((pkg, idx) => {
+                const i    = idx + 1;
+                const qty  = parseInt(document.getElementById('pkgInput' + i)?.value) || 0;
+                const note = document.getElementById('pkgNote'  + i)?.value?.trim()  || '';
+                if (qty > 0) {
+                    newItems.push({
+                        menuId:   currentMenu.id,
+                        menuName: currentMenu.name,
+                        pkgId:    pkg.id,
+                        pkgName:  pkg.name,
+                        qty, note,
+                        price: parseFloat(pkg.price)
                     });
                 }
-                renderCart();
-            } catch(e) {}
-        }
-    }
-
-    // BUILD JSON SEBELUM SUBMIT
-    const submitTransaction = () => {
-        if(cart.length === 0) return alert("Pilih minimal 1 menu dulu!");
-
-        let formattedItems = [];
-        cart.forEach(c => {
-            formattedItems.push({
-                id: c.menu_id,
-                packages: c.packages.map(p => ({
-                    id: p.package_id,
-                    quantity: p.qty,
-                    note: p.note
-                }))
             });
-        });
 
-        const payload = {
-            transaction_info: {
-                shipping_cost: parseInt(document.getElementById('shippingCost').value) || 0,
-                is_success: document.getElementById('isSuccess').checked,
-                is_created: document.getElementById('isCreated').checked,
-                created_at: document.getElementById('createdAt').value || null,
-                payment_type: document.getElementById('paymentType').value,
-                note: document.getElementById('transactionNote').value
-            },
-            items: formattedItems,
-            user_info: {
-                user_id: document.getElementById('userSelect').value,
-                contact_email: document.getElementById('contactEmail').value
-            },
-            delivery_info: {
-                delivery_at: document.getElementById('deliveryAt').value,
-                user_address_id: document.getElementById('addressSelect').value || null,
-                new_user_address: {
-                    fullname: document.getElementById('newFullname').value,
-                    phone: document.getElementById('newPhone').value,
-                    label: document.getElementById('newLabel').value,
-                    address: document.getElementById('newAddress').value,
-                    note: document.getElementById('newAddressNote').value,
-                    longitude: document.getElementById('newLongitude').value,
-                    latitude: document.getElementById('newLatitude').value,
-                    save_to_profile: document.getElementById('saveProfileCheck').checked
-                }
-            }
-        };
+            allOrders = allOrders.filter(o => o.menuId !== currentMenu.id);
+            allOrders.push(...newItems);
 
-        document.getElementById('checkoutPayloadInput').value = JSON.stringify(payload);
-        document.getElementById('formCheckoutAdmin').submit();
-    };
+            renderSummary();
+            updateMenuCard(currentMenu.id);
 
-    window.onload = () => {
-        initUsers();
-        initMenus();
-        recoverOldData();
-    };
-</script>
+            bootstrap.Modal.getInstance(document.getElementById('menuPopupModal'))?.hide();
+        }
+		
+		function updateMenuCard(menuId) {
+			const items    = allOrders.filter(o => o.menuId === menuId);
+			const summDiv  = document.getElementById('menuSummary_' + menuId);
+			const btnLabel = document.getElementById('menuBtnLabel_' + menuId);
+			const card     = document.querySelector(`[data-menu-id="${menuId}"]`);
 
+			if (items.length === 0) {
+				summDiv.classList.add('d-none');
+				summDiv.innerHTML = '';
+				btnLabel.textContent = 'Pilih Paket';
+				card?.classList.remove('border-accent');
+				return;
+			}
 
-@if (session()->has('response'))
-<script>
-    alert('{{ session()->get('response')['message'] }}')
-</script>
-@endif
+			summDiv.classList.remove('d-none');
+			summDiv.innerHTML = items.map(it =>
+				`<div class="d-flex justify-content-between">
+					<span class="text-muted">${it.pkgName}</span>
+					<span class="fw-bold badge badge-light-accent">${it.qty}x</span>
+				</div>`
+			).join('');
+			btnLabel.textContent = 'Ubah Pilihan';
+			card?.classList.add('border-accent');
+		}
+
+		function renderSummary() {
+			const container = document.getElementById('summaryItems');
+			const emptyEl   = document.getElementById('summaryEmpty');
+
+			if (allOrders.length === 0) {
+				container.innerHTML = '';
+				emptyEl.classList.remove('d-none');
+				container.appendChild(emptyEl);
+				document.getElementById('summarySubtotal').textContent = 'Rp 0';
+				return;
+			}
+
+			emptyEl.classList.add('d-none');
+			let subtotal = 0;
+			container.innerHTML = '';
+
+			allOrders.forEach(item => {
+				const total = item.qty * item.price;
+				subtotal += total;
+				const row = document.createElement('div');
+				row.className = 'd-flex justify-content-between align-items-start gap-3 border-bottom pb-3';
+				row.innerHTML = `
+					<div class="flex-grow-1 min-w-0">
+						<div class="fw-bold fs-7">${item.menuName}</div>
+						<div class="text-muted fs-8">${item.qty}x ${item.pkgName}</div>
+					</div>
+					<div class="flex-shrink-0 text-end">
+						<div class="fw-bold fs-7">Rp ${fmt(total)}</div>
+						<button type="button" class="btn btn-xs btn-link text-danger p-0 fs-8"
+							onclick="removeOrder('${item.menuId}','${item.pkgId}')">Hapus</button>
+					</div>`;
+				container.appendChild(row);
+			});
+			container.appendChild(emptyEl);
+
+			document.getElementById('summarySubtotal').textContent = 'Rp ' + fmt(subtotal);
+		}
+
+		function removeOrder(menuId, pkgId) {
+			allOrders = allOrders.filter(o => !(o.menuId === menuId && o.pkgId === pkgId));
+			renderSummary();
+			updateMenuCard(menuId);
+		}
+
+		function updateSummaryCustomer() {
+			const fn = document.getElementById('inputFirstName').value.trim();
+			const ln = document.getElementById('inputLastName').value.trim();
+			document.getElementById('summaryCustomer').textContent = (fn || ln) ? `${fn} ${ln}`.trim() : '—';
+		}
+
+		['inputFirstName', 'inputLastName'].forEach(id => {
+			document.getElementById(id)?.addEventListener('input', updateSummaryCustomer);
+		});
+
+		function submitOrder() {
+			if (allOrders.length === 0) {
+				alert('Silakan pilih minimal satu menu terlebih dahulu.');
+				return;
+			}
+
+			const deliveryAt   = document.getElementById('inputDeliveryAt').value;
+			const firstName    = document.getElementById('inputFirstName').value.trim();
+			const phone        = document.getElementById('inputPhone').value.trim();
+			const receivedName = document.getElementById('inputReceivedName').value.trim();
+			const address      = document.getElementById('inputAddress').value.trim();
+			const city         = document.getElementById('inputCity').value.trim();
+
+			if (!deliveryAt)   { alert('Silakan pilih tanggal pengiriman.');      return; }
+			if (!firstName)    { alert('Nama depan pelanggan wajib diisi.');      return; }
+			if (!phone)        { alert('No. WhatsApp pelanggan wajib diisi.');    return; }
+			if (!receivedName) { alert('Nama penerima wajib diisi.');             return; }
+			if (!address)      { alert('Alamat pengiriman wajib diisi.');         return; }
+			if (!city)         { alert('Kota wajib diisi.');                      return; }
+
+			const itemsMap = {};
+			allOrders.forEach(o => {
+				if (!itemsMap[o.menuId]) itemsMap[o.menuId] = { id: o.menuId, packages: [] };
+				itemsMap[o.menuId].packages.push({ id: o.pkgId, quantity: o.qty, note: o.note });
+			});
+
+			const payload = {
+				user_info: {
+					user_id:    selectedUserId || null,
+					first_name: firstName,
+					last_name:  document.getElementById('inputLastName').value.trim(),
+					phone,
+					email:      document.getElementById('inputEmail').value.trim(),
+				},
+				items: Object.values(itemsMap),
+				delivery_info: {
+					delivery_at:    deliveryAt,
+					received_name:  receivedName,
+					received_phone: document.getElementById('inputReceivedPhone').value.trim(),
+					address,
+					city,
+					province:       document.getElementById('inputProvince').value.trim(),
+					postal_code:    document.getElementById('inputPostalCode').value.trim(),
+				},
+				note:   document.querySelector('textarea[name="note"]').value.trim(),
+				source: 'whatsapp'
+			};
+
+			document.getElementById('checkoutPayload').value = JSON.stringify(payload);
+			document.getElementById('createOrderForm').submit();
+		}
+
+		</script>
+		@endif
+
+		@if(session()->has('response'))
+		<script>
+			alert('{{ session()->get('response')['message'] }}');
+			console.log(@json(session()->get('response')));
+		</script>
+		@endif
+
+	</body>
+	<!--end::Body-->
+</html>

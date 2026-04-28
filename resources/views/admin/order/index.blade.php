@@ -674,7 +674,12 @@ License: For each use you must have a valid license purchased only from above li
 													<!--end::Title-->
 												
 													<!--begin::Toolbar-->
-													<div class="card-toolbar"></div>
+													<div class="card-toolbar">
+														<a href="{{ route('admin.add-order-page') }}" class="btn btn-primary">
+															<i class="bi bi-plus-lg fs-4"></i>
+															Tambahkan Pesanan
+														</a>
+													</div>
 													<!--end::Toolbar-->
 												</div>
 												<!--end::Header-->
