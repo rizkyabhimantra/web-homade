@@ -1822,7 +1822,7 @@ License: For each use you must have a valid license purchased only from above li
                                                                 <img src="{{ asset('icons/checkmark.svg') }}" alt="" class="h-50px img-white">
                                                             </div>
                                                             <div class="d-flex w-100 flex-column align-items-center justify-content-center">
-                                                                <p class="fsc-2 mb-0 text-white fw-bold w-100">Pesanan Siap Dikirim</p>
+                                                                <p class="fsc-2 mb-0 text-white fw-bold w-100">Pesanan Siap Dikirimkan</p>
                                                                 <p class="fsc-2 mb-0 text-white w-100">Diperiksa & dikemas sesuai standar.</p>
                                                             </div>
                                                         </div>
@@ -1836,7 +1836,7 @@ License: For each use you must have a valid license purchased only from above li
                                                             <input type="hidden" name="delivery_status" value="on_the_way">
 
                                                             <button class="w-100 py-4 gap-2 bg-accent rounded-3 d-flex align-items-center justify-content-center mb-3 text-white fsc-2">
-                                                                Siap Dikirim
+                                                                Pesanan Diambil Kurir
                                                             </button>
 
                                                             <p class="fsc-2 mb-2">Klik tombol diatas jika pesanan sudah siap dikirm</p>

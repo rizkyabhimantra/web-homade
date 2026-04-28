@@ -840,7 +840,7 @@ License: For each use you must have a valid license purchased only from above li
 											<div class="row g-3 g-lg-6 mt-0">
 												<div class="col-12">
 													<!--begin::Input group-->
-													<label class="form-label">Kategori</label>
+													<label class="form-label">Status</label>
 													<select class="form-select" name="status">
 														<option value="all">Semua</option>
 														<option value="active" selected>Aktif</option>
