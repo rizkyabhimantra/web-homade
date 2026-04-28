@@ -711,6 +711,7 @@ License: For each use you must have a valid license purchased only from above li
 																<tr class="text-start text-gray-800 fw-bold fs-7 text-capitalize">
 																	<th class="min-w-200px">ID Kategori</th>
 																	<th class="min-w-100px">Nama Kategori</th>
+																	<th class="min-w-100px">Status</th>
 																	<th class="text-end min-w-125px pe-5">Aksi</th>
 																</tr>
 															</thead>
@@ -992,6 +993,13 @@ License: For each use you must have a valid license purchased only from above li
 			const columns1 = [
 				{ data: 'id' },
 				{ data: 'name' },
+				{ data: 'deleted_at',
+					render: function (data) {
+						return data === null
+							? `<div class="badge badge-success">Active</div>`
+							: `<div class="badge badge-secondary">Dihapus</div>`;
+					}
+				},
 				{
 					data: null,
 					orderable: false,

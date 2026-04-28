@@ -97,6 +97,18 @@
 								<!--end:Menu link-->
 							</div>
 							<!--end:Menu item-->
+							<!--begin:Menu item-->
+							<div class="menu-item">
+								<!--begin:Menu link-->
+								<a class="menu-link {{ $page === "package" ? 'active' : '' }}" href="{{ route('admin.packages') }}">
+									<span class="menu-bullet">
+										<span class="bullet bullet-dot"></span>
+									</span>
+									<span class="menu-title">Paket</span>
+								</a>
+								<!--end:Menu link-->
+							</div>
+							<!--end:Menu item-->
 						</div>
 						<!--end:Menu sub-->
 					</div>
