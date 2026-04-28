@@ -1000,7 +1000,7 @@ License: For each use you must have a valid license purchased only from above li
 					render: function (data) {
 						return data === null
 							? `<div class="badge badge-success">Active</div>`
-							: `<div class="badge badge-secondary">Non Active</div>`;
+							: `<div class="badge badge-secondary">Dihapus</div>`;
 					}
 				},
 				{
