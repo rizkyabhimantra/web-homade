@@ -8,6 +8,7 @@ Product Name: Metronic
 	@include('components.header')
 	<head>
 		<link href="{{ asset('assets/css/custom.css') }}" rel="stylesheet" type="text/css" />
+		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 	</head>
 	<!--end::Head-->
 
@@ -312,6 +313,23 @@ Product Name: Metronic
 													</div>
 													<div class="card-body pt-0">
 
+														@if(!empty($response['data']['menu_info']['weekly']))
+														<div class="mb-5 mb-xl-10">
+															<label class="form-label">Jadwal Tersedia</label>
+															<div class="d-flex flex-column gap-2">
+																@foreach($response['data']['menu_info']['weekly'] as $week)
+																	<button type="button"
+																		class="btn btn-sm btn-light weekly-date-btn text-start"
+																		data-date="{{ \Carbon\Carbon::createFromFormat('d-m-Y', $week['date'])->format('Y-m-d') }}"
+																		onclick="pickWeeklyDate(this)">
+																		<i class="bi bi-calendar3 me-2"></i>
+																		{{ \Carbon\Carbon::createFromFormat('d-m-Y', $week['date'])->translatedFormat('l, d M Y') }}
+																	</button>
+																@endforeach
+															</div>
+														</div>
+														@endif
+
 														<div class="mb-0">
 															<label class="form-label required">Tanggal Pengiriman</label>
 															<input type="date" name="delivery_at" id="inputDeliveryAt" class="form-control"
@@ -378,15 +396,22 @@ Product Name: Metronic
 																</div>
 															</div>
 
-															<div class="row mb-5">
-																<div class="col-6">
-																	<label class="form-label required">Longitude</label>
-																	<input type="text" name="longitude" id="inputLongitude" class="form-control" placeholder="106.8574" required>
+															<div class="mb-5">
+																<label class="form-label required">Lokasi Pin</label>
+																<div id="deliveryMap" style="height:220px;border-radius:0.625rem;border:1px solid var(--bs-border-color);z-index:0;"></div>
+																<div class="d-flex gap-3 mt-2">
+																	<div class="flex-grow-1">
+																		<small class="text-muted">Latitude</small>
+																		<div class="fw-bold fs-7" id="displayLatitude">-6.2088</div>
+																	</div>
+																	<div class="flex-grow-1">
+																		<small class="text-muted">Longitude</small>
+																		<div class="fw-bold fs-7" id="displayLongitude">106.8456</div>
+																	</div>
 																</div>
-																<div class="col-6">
-																	<label class="form-label required">Latitude</label>
-																	<input type="text" name="latitude" id="inputLatitude" class="form-control" placeholder="-6.2305" required>
-																</div>
+																<small class="text-muted fs-8">Klik atau geser pin untuk mengatur lokasi pengiriman.</small>
+																<input type="hidden" name="latitude"  id="inputLatitude"  value="-6.2088" required>
+																<input type="hidden" name="longitude" id="inputLongitude" value="106.8456" required>
 															</div>
 
 															<div class="mb-0 d-flex align-items-center gap-3">
@@ -454,6 +479,17 @@ Product Name: Metronic
 													</div>
 													<div class="card-body pt-0">
 
+														<div class="d-flex justify-content-between align-items-center mb-3 border rounded p-3">
+															<span class="text-muted fs-7">Tanggal Pengiriman</span>
+															<span class="fw-bold fs-7" id="summaryDeliveryDate">-</span>
+														</div>
+
+														<div class="d-flex justify-content-between align-items-center mb-5 border rounded p-3">
+															<span class="text-muted fs-7">Pelanggan</span>
+															<span class="fw-bold fs-7" id="summaryCustomer">-</span>
+														</div>
+
+														<p class="fw-bold fs-7 text-muted mb-3">Item Pesanan</p>
 														<div id="summaryItems" class="d-flex flex-column gap-3 mb-5 min-h-50px">
 															<div class="text-center text-muted fs-7 py-5" id="summaryEmpty">
 																<i class="bi bi-cart3 fs-1 d-block mb-2 opacity-25"></i>
@@ -629,6 +665,7 @@ Product Name: Metronic
 		<!--begin::Global Javascript Bundle-->
 		<script src="{{ asset('assets/plugins/global/plugins.bundle.js') }}"></script>
 		<script src="{{ asset('assets/js/scripts.bundle.js') }}"></script>
+		<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 		<!--end::Global Javascript Bundle-->
 
 		<script src="{{ asset('assets/plugins/custom/datatables/datatables.bundle.js') }}"></script>
@@ -1136,6 +1173,12 @@ Product Name: Metronic
 			});
 
 			// ── Assemble final payload ─────────────────────────────────────────────
+			const isDefaultUser = document.getElementById('selectUser')
+				?.options[document.getElementById('selectUser').selectedIndex]
+				?.dataset.isdefault === '1';
+
+			const lastName = document.getElementById('inputLastName').value.trim();
+
 			const payload = {
 				transaction_info: {
 					shipping_cost: 0,
@@ -1147,7 +1190,12 @@ Product Name: Metronic
 				},
 				items: Object.values(itemsMap),
 				user_info: {
-					user_id:       selectedUserId || null,
+					// For default (walk-in) customers, send null so backend doesn't
+					// resolve the name from the account — use the typed fields instead.
+					user_id:       selectedUserId, // always send the UUID; backend requires it even for the default (walk-in) user
+					first_name:    firstName,
+					last_name:     lastName || null,
+					phone:         '62' + phone,
 					contact_email: email || null,
 				},
 				delivery_info: deliveryInfo,
@@ -1157,11 +1205,50 @@ Product Name: Metronic
 			document.getElementById('createOrderForm').submit();
 		}
 
+		// ─── Leaflet map ──────────────────────────────────────────────────────────
+
+		let deliveryMap    = null;
+		let deliveryMarker = null;
+
+		function initDeliveryMap() {
+			if (deliveryMap) return; // already initialised
+			const defaultLat = -6.2088;
+			const defaultLng = 106.8456;
+
+			deliveryMap = L.map('deliveryMap').setView([defaultLat, defaultLng], 13);
+
+			L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+				attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+				maxZoom: 19,
+			}).addTo(deliveryMap);
+
+			deliveryMarker = L.marker([defaultLat, defaultLng], { draggable: true }).addTo(deliveryMap);
+
+			function onPinMoved(latlng) {
+				const lat = latlng.lat.toFixed(7);
+				const lng = latlng.lng.toFixed(7);
+				document.getElementById('inputLatitude').value  = lat;
+				document.getElementById('inputLongitude').value = lng;
+				document.getElementById('displayLatitude').textContent  = lat;
+				document.getElementById('displayLongitude').textContent = lng;
+			}
+
+			// Drag the marker
+			deliveryMarker.on('dragend', (e) => onPinMoved(e.target.getLatLng()));
+
+			// Click anywhere on map to move pin
+			deliveryMap.on('click', (e) => {
+				deliveryMarker.setLatLng(e.latlng);
+				onPinMoved(e.latlng);
+			});
+		}
+
 		// ─── Initialize on page load ──────────────────────────────────────────────
 
 		window.addEventListener('DOMContentLoaded', () => {
 			const sel = document.getElementById('selectUser');
 			if (sel) onUserSelect(sel);
+			initDeliveryMap();
 		});
 
 		</script>
