@@ -239,9 +239,23 @@ Product Name: Metronic
 
 														<div class="mb-5 mb-xl-10">
 															<label class="form-label">Akun Pelanggan</label>
+															@php $defaultUser = $response['data']['user_info']['default']; @endphp
 															<select id="selectUser" class="form-select" onchange="onUserSelect(this)">
-																<option value="">— Tanpa Akun (Isi Manual) —</option>
+																{{-- Default user always first and pre-selected --}}
+																<option
+																	value="{{ $defaultUser['id'] }}"
+																	data-firstname="{{ $defaultUser['first_name'] }}"
+																	data-lastname="{{ $defaultUser['last_name'] }}"
+																	data-phone="{{ $defaultUser['phone'] }}"
+																	data-email="{{ $defaultUser['email'] }}"
+																	data-address="{{ json_encode($defaultUser['address']) }}"
+																	data-isdefault="1"
+																	selected>
+																	{{ $defaultUser['first_name'] }} &mdash; {{ $defaultUser['email'] }}
+																</option>
+																{{-- All other users (skip default to avoid duplicate) --}}
 																@foreach($response['data']['user_info']['users'] as $user)
+																	@if($user['id'] !== $defaultUser['id'])
 																	<option
 																		value="{{ $user['id'] }}"
 																		data-firstname="{{ $user['first_name'] }}"
@@ -251,6 +265,7 @@ Product Name: Metronic
 																		data-address="{{ json_encode($user['address']) }}">
 																		{{ $user['first_name'] }} {{ $user['last_name'] }} &mdash; {{ $user['email'] }}
 																	</option>
+																	@endif
 																@endforeach
 															</select>
 														</div>
@@ -297,23 +312,6 @@ Product Name: Metronic
 													</div>
 													<div class="card-body pt-0">
 
-														@if(!empty($response['data']['menu_info']['weekly']))
-														<div class="mb-5 mb-xl-10">
-															<label class="form-label">Jadwal Tersedia</label>
-															<div class="d-flex flex-column gap-2">
-																@foreach($response['data']['menu_info']['weekly'] as $week)
-																	<button type="button"
-																		class="btn btn-sm btn-light weekly-date-btn text-start"
-																		data-date="{{ \Carbon\Carbon::createFromFormat('d-m-Y', $week['date'])->format('Y-m-d') }}"
-																		onclick="pickWeeklyDate(this)">
-																		<i class="bi bi-calendar3 me-2"></i>
-																		{{ \Carbon\Carbon::createFromFormat('d-m-Y', $week['date'])->translatedFormat('l, d M Y') }}
-																	</button>
-																@endforeach
-															</div>
-														</div>
-														@endif
-
 														<div class="mb-0">
 															<label class="form-label required">Tanggal Pengiriman</label>
 															<input type="date" name="delivery_at" id="inputDeliveryAt" class="form-control"
@@ -334,53 +332,70 @@ Product Name: Metronic
 													</div>
 													<div class="card-body pt-0">
 
-														<div id="savedAddressSection" class="d-none mb-5 mb-xl-10">
+														{{-- Address picker: shown when selected user has saved addresses --}}
+														<div id="addressPicker" class="d-none mb-5">
 															<label class="form-label">Alamat Tersimpan</label>
-															<div id="savedAddressList" class="d-flex flex-column gap-2 mb-3"></div>
+															<div id="addressOptions" class="d-flex flex-column gap-2 mb-3"></div>
 															<div class="separator separator-dashed my-4"></div>
 														</div>
 
-														<div class="mb-5 mb-xl-10">
-															<label class="form-label required">Nama Penerima</label>
-															<div class="input-group">
-																<input type="text" name="received_name" id="inputReceivedName" class="form-control" placeholder="Nama penerima paket" required>
-															</div>
-														</div>
+														{{-- New address fields: shown when no saved address is chosen --}}
+														<div id="newAddressFields">
 
-														<div class="mb-5 mb-xl-10">
-															<label class="form-label required">No. HP Penerima</label>
-															<div class="input-group">
-																<span class="input-group-text">+62</span>
-																<input type="text" name="received_phone" id="inputReceivedPhone" class="form-control" placeholder="81234567890" required>
+															<div class="mb-5 mb-xl-10">
+																<label class="form-label required">Nama Penerima</label>
+																<div class="input-group">
+																	<input type="text" name="fullname" id="inputFullname" class="form-control" placeholder="Nama penerima paket" required>
+																</div>
 															</div>
-														</div>
 
-														<div class="mb-5 mb-xl-10">
-															<label class="form-label required">Alamat Lengkap</label>
-															<div class="input-group">
-																<textarea name="address" id="inputAddress" class="form-control" rows="3" placeholder="Jl. Contoh No. 123, Kelurahan, Kecamatan, Kota" required></textarea>
+															<div class="mb-5 mb-xl-10">
+																<label class="form-label required">No. HP Penerima</label>
+																<div class="input-group">
+																	<span class="input-group-text">+62</span>
+																	<input type="text" name="phone_address" id="inputAddressPhone" class="form-control" placeholder="81234567890" required>
+																</div>
 															</div>
-														</div>
 
-														<div class="mb-5 mb-xl-10">
-															<label class="form-label required">Kota</label>
-															<div class="input-group">
-																<input type="text" name="city" id="inputCity" class="form-control" placeholder="Jakarta" required>
+															<div class="mb-5 mb-xl-10">
+																<label class="form-label required">Label Alamat</label>
+																<div class="input-group">
+																	<input type="text" name="address_label" id="inputAddressLabel" class="form-control" placeholder="Contoh: Rumah, Kantor" required>
+																</div>
 															</div>
-														</div>
 
-														<div class="mb-5 mb-xl-10">
-															<label class="form-label">Provinsi</label>
-															<div class="input-group">
-																<input type="text" name="province" id="inputProvince" class="form-control" placeholder="DKI Jakarta">
+															<div class="mb-5 mb-xl-10">
+																<label class="form-label required">Alamat Lengkap</label>
+																<div class="input-group">
+																	<textarea name="address" id="inputAddress" class="form-control" rows="3" placeholder="Jl. Contoh No. 123, Kelurahan, Kecamatan, Kota" required></textarea>
+																</div>
 															</div>
-														</div>
 
-														<div class="mb-0">
-															<label class="form-label">Kode Pos</label>
-															<div class="input-group">
-																<input type="text" name="postal_code" id="inputPostalCode" class="form-control" placeholder="12820">
+															<div class="mb-5 mb-xl-10">
+																<label class="form-label required">Catatan Alamat</label>
+																<div class="input-group">
+																	<input type="text" name="address_note" id="inputAddressNote" class="form-control" placeholder="Contoh: Titip di pos satpam depan" required>
+																</div>
 															</div>
+
+															<div class="row mb-5">
+																<div class="col-6">
+																	<label class="form-label required">Longitude</label>
+																	<input type="text" name="longitude" id="inputLongitude" class="form-control" placeholder="106.8574" required>
+																</div>
+																<div class="col-6">
+																	<label class="form-label required">Latitude</label>
+																	<input type="text" name="latitude" id="inputLatitude" class="form-control" placeholder="-6.2305" required>
+																</div>
+															</div>
+
+															<div class="mb-0 d-flex align-items-center gap-3">
+																<div class="form-check form-switch mb-0">
+																	<input class="form-check-input" type="checkbox" id="inputSaveToProfile" name="save_to_profile">
+																	<label class="form-check-label" for="inputSaveToProfile">Simpan alamat ke profil</label>
+																</div>
+															</div>
+
 														</div>
 
 													</div>
@@ -439,17 +454,6 @@ Product Name: Metronic
 													</div>
 													<div class="card-body pt-0">
 
-														<div class="d-flex justify-content-between align-items-center mb-3 border rounded p-3">
-															<span class="text-muted fs-7">Tanggal Pengiriman</span>
-															<span class="fw-bold fs-7" id="summaryDeliveryDate">-</span>
-														</div>
-
-														<div class="d-flex justify-content-between align-items-center mb-5 border rounded p-3">
-															<span class="text-muted fs-7">Pelanggan</span>
-															<span class="fw-bold fs-7" id="summaryCustomer">-</span>
-														</div>
-
-														<p class="fw-bold fs-7 text-muted mb-3">Item Pesanan</p>
 														<div id="summaryItems" class="d-flex flex-column gap-3 mb-5 min-h-50px">
 															<div class="text-center text-muted fs-7 py-5" id="summaryEmpty">
 																<i class="bi bi-cart3 fs-1 d-block mb-2 opacity-25"></i>
@@ -481,7 +485,7 @@ Product Name: Metronic
 														</div>
 													</div>
 													<div class="card-body pt-0">
-														<textarea name="note" class="form-control" rows="3" placeholder="Catatan opsional dari pelanggan..."></textarea>
+														<textarea name="note" id="inputNote" class="form-control" rows="3" placeholder="Catatan opsional dari pelanggan..."></textarea>
 													</div>
 												</div>
 												<!--end::Card Catatan-->
@@ -642,88 +646,182 @@ Product Name: Metronic
 		let currentMenu    = null;
 		let selectedUserId = null;
 
+		// Tracks the UUID of a saved address if one is selected
+		let selectedSavedAddressId = null;
+
 		function fmt(n) {
 			return new Intl.NumberFormat('id-ID').format(n);
 		}
 
+		// ─── User selector ────────────────────────────────────────────────────────
+
 		function onUserSelect(sel) {
-			const opt = sel.options[sel.selectedIndex];
-			selectedUserId = opt.value || null;
+			const opt       = sel.options[sel.selectedIndex];
+			const isDefault = opt.dataset.isdefault === '1';
+			selectedUserId         = opt.value || null;
+			selectedSavedAddressId = null;
 
-			const fields = ['inputFirstName', 'inputLastName', 'inputPhone', 'inputEmail'];
+			const customerFields = ['inputFirstName', 'inputLastName', 'inputPhone', 'inputEmail'];
 
-			if (!opt.value) {
-				fields.forEach(id => {
-					const el    = document.getElementById(id);
+			if (isDefault) {
+				// Default = walk-in / messaging customer: clear fields so admin can type freely
+				customerFields.forEach(id => {
+					const el = document.getElementById(id);
 					el.value    = '';
 					el.readOnly = false;
 				});
-				document.getElementById('savedAddressSection').classList.add('d-none');
-				updateSummaryCustomer();
-				return;
+			} else {
+				// Real account: pre-fill from stored data and lock
+				document.getElementById('inputFirstName').value = opt.dataset.firstname || '';
+				document.getElementById('inputLastName').value  = opt.dataset.lastname  || '';
+				document.getElementById('inputPhone').value     = opt.dataset.phone     || '';
+				document.getElementById('inputEmail').value     = opt.dataset.email     || '';
+				customerFields.forEach(id => {
+					document.getElementById(id).readOnly = true;
+				});
 			}
-
-			document.getElementById('inputFirstName').value = opt.dataset.firstname || '';
-			document.getElementById('inputLastName').value  = opt.dataset.lastname  || '';
-			document.getElementById('inputPhone').value     = opt.dataset.phone     || '';
-			document.getElementById('inputEmail').value     = opt.dataset.email     || '';
-			fields.forEach(id => { document.getElementById(id).readOnly = true; });
 
 			updateSummaryCustomer();
 
-			// Saved addresses
+			// Parse this user's saved addresses
 			let addresses = [];
 			try { addresses = JSON.parse(opt.dataset.address || '[]'); } catch(e) {}
 
-			const section = document.getElementById('savedAddressSection');
-			const list    = document.getElementById('savedAddressList');
-			list.innerHTML = '';
+			const addressPicker  = document.getElementById('addressPicker');
+			const addressOptions = document.getElementById('addressOptions');
 
-			if (addresses.length > 0) {
-				section.classList.remove('d-none');
-				addresses.forEach(addr => {
-					const btn         = document.createElement('button');
-					btn.type          = 'button';
-					btn.className     = 'btn btn-sm btn-light text-start w-100 saved-address-btn';
-					btn.dataset.name  = addr.received_name || '';
-					btn.dataset.phone = addr.phone         || '';
-					btn.dataset.address  = addr.address    || '';
-					btn.dataset.city     = addr.city       || '';
-					btn.dataset.province = addr.province   || '';
-					btn.dataset.postal   = addr.postal_code|| '';
-					btn.innerHTML = `
+			// Clear previous address options
+			addressOptions.innerHTML = '';
+
+			if (isDefault) {
+				// Default user: always hide picker, always show manual address form
+				addressPicker.classList.add('d-none');
+				setNewAddressRequired(true);
+			} else if (addresses.length > 0) {
+				// Real user with saved addresses: show picker, hide manual form immediately
+				addressPicker.classList.remove('d-none');
+				setNewAddressRequired(false);
+
+				addresses.forEach((addr, i) => {
+					const card = document.createElement('div');
+					card.className = 'border rounded-3 p-4 cursor-pointer address-option-card';
+					card.dataset.addressId = addr.id || '';
+					card.innerHTML = `
 						<div class="d-flex align-items-start gap-3">
-							<i class="bi bi-geo-alt-fill text-accent mt-1 flex-shrink-0"></i>
-							<div class="text-start overflow-hidden">
-								<div class="fw-bold">${addr.received_name || '—'}
-									<span class="badge badge-light-success ms-2">${addr.label || ''}</span>
-								</div>
-								<div class="fs-8 text-muted">${addr.phone || ''}</div>
-								<div class="fs-8 text-nowrap overflow-hidden text-overflow">${addr.address || ''}</div>
+							<div class="form-check mt-1 flex-shrink-0">
+								<input class="form-check-input" type="radio" name="addressOptionRadio"
+									id="addrOpt${i}" value="${addr.id || ''}" ${i === 0 ? 'checked' : ''}>
 							</div>
+							<label class="form-check-label w-100" for="addrOpt${i}" style="cursor:pointer;">
+								<div class="d-flex align-items-center gap-2 mb-1">
+									<span class="fw-bold fs-7">${addr.received_name || addr.fullname || '—'}</span>
+									${addr.label ? `<span class="badge badge-light-success">${addr.label}</span>` : ''}
+									${addr.is_main_address ? '<span class="badge badge-light-primary">Utama</span>' : ''}
+								</div>
+								<div class="text-muted fs-8">${addr.phone || ''}</div>
+								<div class="text-muted fs-8 mt-1">${addr.address || ''}</div>
+							</label>
 						</div>`;
-					btn.onclick = () => fillAddressFromSaved(btn);
-					list.appendChild(btn);
+
+					card.querySelector('input[type=radio]').addEventListener('change', () => {
+						pickAddressCard(card, addr.id);
+					});
+					card.addEventListener('click', (e) => {
+						if (e.target.tagName !== 'INPUT') {
+							card.querySelector('input').checked = true;
+							pickAddressCard(card, addr.id);
+						}
+					});
+					addressOptions.appendChild(card);
 				});
+
+				// "Use New Address" option at the bottom
+				const newCard = document.createElement('div');
+				newCard.className = 'border rounded-3 p-4 cursor-pointer address-option-card';
+				newCard.dataset.addressId = '__new__';
+				newCard.innerHTML = `
+					<div class="d-flex align-items-center gap-3">
+						<div class="form-check flex-shrink-0">
+							<input class="form-check-input" type="radio" name="addressOptionRadio" id="addrOptNew" value="__new__">
+						</div>
+						<label class="form-check-label d-flex align-items-center gap-2" for="addrOptNew" style="cursor:pointer;">
+							<i class="bi bi-plus-circle text-accent"></i>
+							<span class="fw-semibold fs-7 text-accent">Gunakan Alamat Baru</span>
+						</label>
+					</div>`;
+				newCard.querySelector('input[type=radio]').addEventListener('change', () => {
+					pickAddressCard(newCard, '__new__');
+				});
+				newCard.addEventListener('click', (e) => {
+					if (e.target.tagName !== 'INPUT') {
+						newCard.querySelector('input').checked = true;
+						pickAddressCard(newCard, '__new__');
+					}
+				});
+				addressOptions.appendChild(newCard);
+
+				// Auto-select the first saved address
+				pickAddressCard(addressOptions.firstElementChild, addresses[0].id);
+
 			} else {
-				section.classList.add('d-none');
+				// Real user with no saved addresses: hide picker, show manual form
+				addressPicker.classList.add('d-none');
+				setNewAddressRequired(true);
 			}
 		}
 
-		function fillAddressFromSaved(btn) {
-			document.getElementById('inputReceivedName').value  = btn.dataset.name     || '';
-			document.getElementById('inputReceivedPhone').value = btn.dataset.phone    || '';
-			document.getElementById('inputAddress').value       = btn.dataset.address  || '';
-			document.getElementById('inputCity').value          = btn.dataset.city     || '';
-			document.getElementById('inputProvince').value      = btn.dataset.province || '';
-			document.getElementById('inputPostalCode').value    = btn.dataset.postal   || '';
-			document.querySelectorAll('.saved-address-btn').forEach(b => {
-				b.classList.remove('btn-accent');
-				b.classList.add('btn-light');
+		function pickAddressCard(card, addressId) {
+			// Remove highlight from all cards
+			document.querySelectorAll('.address-option-card').forEach(c => {
+				c.classList.remove('border-accent', 'bg-light-accent');
 			});
-			btn.classList.remove('btn-light');
-			btn.classList.add('btn-accent');
+			card.classList.add('border-accent', 'bg-light-accent');
+
+			if (addressId === '__new__') {
+				// Show manual address form
+				selectedSavedAddressId = null;
+				setNewAddressRequired(true);
+			} else {
+				// Use this saved address UUID, hide manual form
+				selectedSavedAddressId = addressId;
+				setNewAddressRequired(false);
+			}
 		}
+
+		/**
+		 * Toggle visibility and HTML `required` attribute on new-address fields.
+		 * When a saved address is selected these fields are hidden and not required.
+		 */
+		function setNewAddressRequired(required) {
+			const wrapper = document.getElementById('newAddressFields');
+			wrapper.style.display = required ? '' : 'none';
+
+			const fieldIds = [
+				'inputFullname',
+				'inputAddressPhone',
+				'inputAddressLabel',
+				'inputAddress',
+				'inputAddressNote',
+				'inputLongitude',
+				'inputLatitude'
+			];
+
+			fieldIds.forEach(id => {
+				const el = document.getElementById(id);
+				if (!el) return;
+				if (required) {
+					el.setAttribute('required', '');
+				} else {
+					el.removeAttribute('required');
+				}
+			});
+
+			if (required) {
+				selectedSavedAddressId = null;
+			}
+		}
+
+		// ─── Delivery date ────────────────────────────────────────────────────────
 
 		function pickWeeklyDate(btn) {
 			document.querySelectorAll('.weekly-date-btn').forEach(b => {
@@ -738,11 +836,16 @@ Product Name: Metronic
 		}
 
 		function onDeliveryDateChange(val) {
-			if (!val) { document.getElementById('summaryDeliveryDate').textContent = '—'; return; }
+			if (!val) {
+				document.getElementById('summaryDeliveryDate').textContent = '—';
+				return;
+			}
 			const d    = new Date(val);
 			const opts = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
 			document.getElementById('summaryDeliveryDate').textContent = d.toLocaleDateString('id-ID', opts);
 		}
+
+		// ─── Menu popup ───────────────────────────────────────────────────────────
 
         function openMenuPopup(menuId) {
             currentMenu = allMenus.find(m => m.id === menuId);
@@ -882,7 +985,9 @@ Product Name: Metronic
 
             bootstrap.Modal.getInstance(document.getElementById('menuPopupModal'))?.hide();
         }
-		
+
+		// ─── Summary / card helpers ───────────────────────────────────────────────
+
 		function updateMenuCard(menuId) {
 			const items    = allOrders.filter(o => o.menuId === menuId);
 			const summDiv  = document.getElementById('menuSummary_' + menuId);
@@ -962,57 +1067,102 @@ Product Name: Metronic
 			document.getElementById(id)?.addEventListener('input', updateSummaryCustomer);
 		});
 
+		// ─── Submit ───────────────────────────────────────────────────────────────
+
 		function submitOrder() {
 			if (allOrders.length === 0) {
 				alert('Silakan pilih minimal satu menu terlebih dahulu.');
 				return;
 			}
 
-			const deliveryAt   = document.getElementById('inputDeliveryAt').value;
-			const firstName    = document.getElementById('inputFirstName').value.trim();
-			const phone        = document.getElementById('inputPhone').value.trim();
-			const receivedName = document.getElementById('inputReceivedName').value.trim();
-			const address      = document.getElementById('inputAddress').value.trim();
-			const city         = document.getElementById('inputCity').value.trim();
+			const deliveryAt    = document.getElementById('inputDeliveryAt').value;
+			const firstName     = document.getElementById('inputFirstName').value.trim();
+			const phone         = document.getElementById('inputPhone').value.trim();
+			const email         = document.getElementById('inputEmail').value.trim();
+			const orderNote     = document.getElementById('inputNote').value.trim();
 
-			if (!deliveryAt)   { alert('Silakan pilih tanggal pengiriman.');      return; }
-			if (!firstName)    { alert('Nama depan pelanggan wajib diisi.');      return; }
-			if (!phone)        { alert('No. WhatsApp pelanggan wajib diisi.');    return; }
-			if (!receivedName) { alert('Nama penerima wajib diisi.');             return; }
-			if (!address)      { alert('Alamat pengiriman wajib diisi.');         return; }
-			if (!city)         { alert('Kota wajib diisi.');                      return; }
+			// ── Required field validation ──────────────────────────────────────────
+			if (!deliveryAt) { alert('Silakan pilih tanggal pengiriman.');   return; }
+			if (!firstName)  { alert('Nama depan pelanggan wajib diisi.');   return; }
+			if (!phone)      { alert('No. WhatsApp pelanggan wajib diisi.'); return; }
 
+			// Only validate new-address fields when no saved address is selected
+			let deliveryInfo;
+			if (selectedSavedAddressId) {
+				deliveryInfo = {
+					delivery_at:      deliveryAt,
+					user_address_id:  selectedSavedAddressId,
+					new_user_address: null,
+				};
+			} else {
+				const fullname      = document.getElementById('inputFullname').value.trim();
+				const addressPhone  = document.getElementById('inputAddressPhone').value.trim();
+				const addrLabel     = document.getElementById('inputAddressLabel').value.trim();
+				const address       = document.getElementById('inputAddress').value.trim();
+				const addrNote      = document.getElementById('inputAddressNote').value.trim();
+				const longitude     = document.getElementById('inputLongitude').value.trim();
+				const latitude      = document.getElementById('inputLatitude').value.trim();
+				const saveToProfile = document.getElementById('inputSaveToProfile').checked;
+
+				if (!fullname)     { alert('Nama penerima wajib diisi.');     return; }
+				if (!addressPhone) { alert('No. HP penerima wajib diisi.');   return; }
+				if (!addrLabel)    { alert('Label alamat wajib diisi.');      return; }
+				if (!address)      { alert('Alamat lengkap wajib diisi.');    return; }
+				if (!addrNote)     { alert('Catatan alamat wajib diisi.');    return; }
+				if (!longitude)    { alert('Longitude wajib diisi.');         return; }
+				if (!latitude)     { alert('Latitude wajib diisi.');          return; }
+
+				deliveryInfo = {
+					delivery_at:      deliveryAt,
+					user_address_id:  null,
+					new_user_address: {
+						fullname:        fullname,
+						phone:           '62' + addressPhone,
+						label:           addrLabel,
+						address:         address,
+						note:            addrNote,
+						longitude:       longitude,
+						latitude:        latitude,
+						save_to_profile: saveToProfile,
+					},
+				};
+			}
+
+			// ── Build items ────────────────────────────────────────────────────────
 			const itemsMap = {};
 			allOrders.forEach(o => {
 				if (!itemsMap[o.menuId]) itemsMap[o.menuId] = { id: o.menuId, packages: [] };
 				itemsMap[o.menuId].packages.push({ id: o.pkgId, quantity: o.qty, note: o.note });
 			});
 
+			// ── Assemble final payload ─────────────────────────────────────────────
 			const payload = {
-				user_info: {
-					user_id:    selectedUserId || null,
-					first_name: firstName,
-					last_name:  document.getElementById('inputLastName').value.trim(),
-					phone,
-					email:      document.getElementById('inputEmail').value.trim(),
+				transaction_info: {
+					shipping_cost: 0,
+					is_success:    false,
+					is_created:    false,
+					created_at:    null,
+					payment_type:  'transfer',
+					note:          orderNote,
 				},
 				items: Object.values(itemsMap),
-				delivery_info: {
-					delivery_at:    deliveryAt,
-					received_name:  receivedName,
-					received_phone: document.getElementById('inputReceivedPhone').value.trim(),
-					address,
-					city,
-					province:       document.getElementById('inputProvince').value.trim(),
-					postal_code:    document.getElementById('inputPostalCode').value.trim(),
+				user_info: {
+					user_id:       selectedUserId || null,
+					contact_email: email || null,
 				},
-				note:   document.querySelector('textarea[name="note"]').value.trim(),
-				source: 'whatsapp'
+				delivery_info: deliveryInfo,
 			};
 
 			document.getElementById('checkoutPayload').value = JSON.stringify(payload);
 			document.getElementById('createOrderForm').submit();
 		}
+
+		// ─── Initialize on page load ──────────────────────────────────────────────
+
+		window.addEventListener('DOMContentLoaded', () => {
+			const sel = document.getElementById('selectUser');
+			if (sel) onUserSelect(sel);
+		});
 
 		</script>
 		@endif
