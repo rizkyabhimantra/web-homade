@@ -2159,7 +2159,7 @@ License: For each use you must have a valid license purchased only from above li
             <!-- end::cancel payment pop up -->
 
             <!-- begin::proof pop up -->
-            <div class="d-none2 align-items-center justify-content-center pop-up" id="ProofPopUp">
+            <div class="d-none2 align-items-center justify-content-center pop-up" style="z-index: 999;" id="ProofPopUp">
                 <div class="d-flex flex-column w-100 h-100 gap-3 p-5">
                     
                     <div class="d-flex h-30px justify-content-end align-items-center gap-3 flex-shrink-0">
