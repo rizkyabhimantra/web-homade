@@ -675,6 +675,109 @@
                         
                     </div>
                 </div>
+                @elseif ($response['data']['transaction']['status'] === "success")
+
+                <div class="d-flex align-items-end align-items-sm-center gap-3 gap-sm-0 flex-column flex-sm-row w-100 justify-content-between mb-5">
+                    <p class="fsc-3 mb-0 fw-black d-flex gap-5 align-items-center w-100 w-sm-auto"><img src="{{ asset('icons/arrow-left-right.svg') }}" alt="" class="h-1em"> WORKFLOW STATUS : <br class="d-sm-none">DELIVERED</p>
+                    <p class="fsc-2 mb-0 bg-light-green text-green rounded-pill d-none d-sm-flex align-items-center gap-3 px-4 py-1"><img src="{{ asset('icons/check-circle.svg') }}" class="img-green h-1em"> Delivered</p>
+                </div>
+
+                <div class="d-flex align-items-center justify-content-center w-100 mt-5 h-100px">
+                    <div class="d-flex align-items-center w-101 w-lg-90 overflow-scroll h-100">
+
+
+                        <div class="d-flex align-items-center justify-content-between h-100 w-125px flex-shrink-0 flex-lg-shrink-1 w-lg-100 flex-column">
+                            
+                            <div class="d-flex justify-content-center align-items-center h-100 w-100 ">
+                                <span class="w-100 h-5px"></span>
+                                <div class="d-flex h-90 rounded-circle bg-success ratio-1 justify-content-center align-items-center">
+                                    <img src="{{ asset('icons/checkmark.svg') }}" alt="" class="h-40 img-white">
+                                </div>
+                                <span class="w-100 h-5px bg-success"></span>
+                            </div>
+
+                            <p class="fsc-2 text-center w-100 mb-0 fw-light h-30px">Waiting Review</p>
+                            <p class="fsc-1 text-center w-100 mb-0 fw-light h-30px">Validation Order</p>
+
+                        </div>
+
+                        <div class="d-flex align-items-center justify-content-between h-100 w-125px flex-shrink-0 flex-lg-shrink-1 w-lg-100 flex-column">
+                            
+                            <div class="d-flex justify-content-center align-items-center h-100 w-100 ">
+                                <span class="w-100 h-5px bg-success"></span>
+                                <div class="d-flex h-90 rounded-circle bg-success ratio-1 justify-content-center align-items-center">
+                                    <img src="{{ asset('icons/checkmark.svg') }}" alt="" class="h-40 img-white">
+                                </div>
+                                <span class="w-100 h-5px bg-success"></span>
+                            </div>
+
+                            <p class="fsc-2 text-center text-nowrap w-100 mb-0 fw-light h-30px">Waiting Confirmation</p>
+                            <p class="fsc-1 text-center w-100 mb-0 fw-light h-30px">Wait Payment</p>
+
+                        </div>
+
+                        <div class="d-flex align-items-center justify-content-between h-100 w-125px flex-shrink-0 flex-lg-shrink-1 w-lg-100 flex-column">
+                            
+                            <div class="d-flex justify-content-center align-items-center h-100 w-100 ">
+                                <span class="w-100 h-5px bg-success"></span>
+                                <div class="d-flex h-90 rounded-circle bg-success ratio-1 justify-content-center align-items-center">
+                                    <img src="{{ asset('icons/checkmark.svg') }}" alt="" class="h-40 img-white">
+                                </div>
+                                <span class="w-100 h-5px bg-success"></span>
+                            </div>
+
+                            <p class="fsc-2 text-center w-100 mb-0 fw-light h-30px">Process</p>
+                            <p class="fsc-1 text-center w-100 mb-0 fw-light h-30px">Processing Your Food</p>
+
+                        </div>
+
+                        <div class="d-flex align-items-center justify-content-between h-100 w-125px flex-shrink-0 flex-lg-shrink-1 w-lg-100 flex-column">
+                            
+                            <div class="d-flex justify-content-center align-items-center h-100 w-100 ">
+                                <span class="w-100 h-5px bg-success"></span>
+                                <div class="d-flex h-90 rounded-circle bg-success ratio-1 justify-content-center align-items-center">
+                                    <img src="{{ asset('icons/checkmark.svg') }}" alt="" class="h-40 img-white">
+                                </div>
+                                <span class="w-100 h-5px bg-success"></span>
+                            </div>
+
+                            <p class="fsc-2 text-center w-100 mb-0 fw-light h-30px">Waiting For Pickup</p>
+                            <p class="fsc-1 text-center w-100 mb-0 fw-light h-30px">Menunggu Kurir</p>
+
+                        </div>
+
+                        <div class="d-flex align-items-center justify-content-between h-100 w-125px flex-shrink-0 flex-lg-shrink-1 w-lg-100 flex-column">
+                            
+                            <div class="d-flex justify-content-center align-items-center h-100 w-100 ">
+                                <span class="w-100 h-5px bg-success"></span>
+                                <div class="d-flex h-90 rounded-circle bg-success ratio-1 justify-content-center align-items-center">
+                                    <img src="{{ asset('icons/checkmark.svg') }}" alt="" class="h-40 img-white">
+                                </div>
+                                <span class="w-100 h-5px bg-success"></span>
+                            </div>
+
+                            <p class="fsc-2 text-center w-100 mb-0 fw-light h-30px">On The Way</p>
+                            <p class="fsc-1 text-center w-100 mb-0 fw-light h-30px">Dalam Perjalanan</p>
+
+                        </div>
+                            
+                        <div class="d-flex align-items-center justify-content-between h-100 w-125px flex-shrink-0 flex-lg-shrink-1 w-lg-100 flex-column">
+                            
+                            <div class="d-flex justify-content-center align-items-center h-100 w-100">
+                                <span class="w-100 h-5px bg-success"></span>
+                                <div class="d-flex h-90 rounded-circle bg-success ratio-1 justify-content-center align-items-center">
+                                    <img src="{{ asset('icons/checkmark.svg') }}" alt="" class="h-40 img-white">
+                                </div>
+                                <span class="w-100 h-5px"></span>
+                            </div>
+
+                            <p class="fsc-2 text-center w-100 mb-0 fw-light h-30px">Delivered</p>
+                            <p class="fsc-1 text-center w-100 mb-0 fw-light h-30px">Finished</p>
+
+                        </div>
+                        
+                    </div>
+                </div>
                 
                 @elseif ($response['data']['transaction']['status'] === "cancelled_by_customer")
 
@@ -1305,6 +1408,18 @@
                                 </div>
 
                                 <p class="fsc-2 mb-7 mt-5">Pesanan Sudah Sampai</p>
+
+                            </div>
+                            @elseif ($response['data']['transaction']['status'] === "success")
+
+                            <div class="d-flex w-90 h-95 py-5 flex-column align-items-center justify-content-center">
+                                <p class="w-100 fsc-3 mb-3 flex-shrink-0">STATUS PEMESANAN</p>
+
+                                <div class="d-flex mt-5 h-50px bg-success align-items-center justify-content-center ratio-1 rounded-circle">
+                                    <img src="{{ asset('icons/checkmark.svg') }}" alt="" class="h-50 img-white">
+                                </div>
+
+                                <p class="fsc-2 mb-7 mt-5">Pesanan Sudah Selesai</p>
 
                             </div>
                             @elseif ($response['data']['transaction']['status'] === "cancelled_by_customer")
