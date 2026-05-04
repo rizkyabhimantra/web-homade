@@ -16,7 +16,7 @@
             @method('put')
 
             <div class="d-flex w-100 min-h-100 flex-shrink-0 flex-column bg-white justify-content-center align-content-center rounded-5 border-grey-1">
-                <p class="mb-0 w-100 text-center pb-10 pt-15 fsc-4 text-accent fw-bold">Tambah Alamat</p>
+                <p class="mb-0 w-100 text-center pb-10 pt-15 fsc-4 text-accent fw-bold">Edit Alamat</p>
                 <span class="w-100 h-1px bg-black"></span>
                 <div class="d-flex w-100 h-100 flex-column px-10">
 
